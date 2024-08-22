@@ -4,6 +4,7 @@ import { Inter as FontSans } from "next/font/google";
 import { ReactQueryClientProvider } from "./ReactQueryClient";
 import MobileMenuOpenProvider from "./components/Providers/MobileMenuOpen";
 import Header from "./components/Header";
+import Footer, { FooterCopyWrite, FooterInfo } from "./components/Footer";
 import "./globals.css";
 
 const fontSans = FontSans({
@@ -35,6 +36,16 @@ export default function RootLayout({
           <Header />
         </MobileMenuOpenProvider>
         <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+        <Footer>
+          <FooterInfo>
+            <p>810-724-900 • 1935 S Cedar St, Imlay City, MI 48444</p>
+          </FooterInfo>
+          <FooterCopyWrite>
+            <p className="text-xs text-gray-500">
+              &copy; 2021 Big Joe&rsquo;s Pizza, Chicken, Seafood & Ribs
+            </p>
+          </FooterCopyWrite>
+        </Footer>
       </body>
     </html>
   );

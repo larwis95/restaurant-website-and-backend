@@ -40,17 +40,17 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     setBodyOverflow();
-  }, [isMobileMenuOpen]);
+  });
 
   useEffect(() => {
     document.addEventListener("click", handleMenuClickOutClick);
     return () => {
       document.removeEventListener("click", handleMenuClickOutClick);
     };
-  }, [isMobileMenuOpen]);
+  });
 
   return (
-    <header className="w-screen p-2">
+    <header className="fixed top-0 w-screen p-2 z-[9999] bg-background">
       <div
         className={`grid grid-flow-col ${isMobile === false ? "place-content-start" : "place-content-between"} place-items-center gap-x-2`}
       >
@@ -58,7 +58,7 @@ const Header: React.FC = () => {
           href="/"
           className={`z-10 font-extrabold text-xl ${pathName === "/" ? "text-secondary pointer-events-none" : "hover:text-secondary hover:scale-105 transition-all"}`}
         >
-          Big Joe's
+          Big Joe&apos;s
         </Link>
         <Nav isMobile={isMobile} pathName={pathName} />
       </div>

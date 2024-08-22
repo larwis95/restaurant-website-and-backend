@@ -27,7 +27,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
       <div>
         {!isMobileMenuOpen && (
           <Button
-            className="fixed top-4 right-4"
+            className="fixed z-20 top-4 right-4"
             variant="outline"
             size="icon"
             onClick={toggleMobileMenu}
@@ -41,7 +41,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              className="mobile-menu fixed left-1/2 z-20 flex flex-col h-screen w-screen bg-background text-white p-4 bg-opacity-0 border border-border"
+              className="mobile-menu fixed left-1/2 z-[9997] flex flex-col h-screen w-screen bg-background text-white p-4 bg-opacity-0 border border-border"
               initial={{ x: "100%" }}
               animate={{ x: "-50%" }}
               exit={{ x: "100%" }}
