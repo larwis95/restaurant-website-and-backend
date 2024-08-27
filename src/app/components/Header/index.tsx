@@ -1,66 +1,26 @@
-"use client";
-import { useEffect, useState, useContext } from "react";
-import { usePathname } from "next/navigation";
-import { MobileMenuOpenContext } from "../Providers/MobileMenuOpen";
 import Link from "next/link";
 import Nav from "../Nav";
+import { headers } from "next/headers";
+import { UAParser } from "ua-parser-js";
 
 const Header: React.FC = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  const { isMobileMenuOpen, toggleMobileMenu } = useContext(
-    MobileMenuOpenContext
-  );
-  const pathName = usePathname();
-  const getScreenWidth = () => {
-    setIsMobile(window.innerWidth < 768);
-  };
-  const setBodyOverflow = () => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "auto";
-    }
-  };
-
-  const handleMenuClickOutClick = (e: MouseEvent) => {
-    const target = e.target as HTMLElement;
-    if (!isMobileMenuOpen) return;
-    if (target === document.querySelector(".mobile-menu")) return;
-    if (target.closest(".mobile-menu")) return;
-    toggleMobileMenu();
-  };
-
-  useEffect(() => {
-    getScreenWidth();
-    window.addEventListener("resize", getScreenWidth);
-    return () => {
-      window.removeEventListener("resize", getScreenWidth);
-    };
-  }, []);
-
-  useEffect(() => {
-    setBodyOverflow();
-  });
-
-  useEffect(() => {
-    document.addEventListener("click", handleMenuClickOutClick);
-    return () => {
-      document.removeEventListener("click", handleMenuClickOutClick);
-    };
-  });
+  const { get } = headers();
+  const ua = get("user-agent");
+  const parser = ua ? new UAParser(ua) : null;
+  const isMobile = parser ? parser.getDevice().type === "mobile" : false;
 
   return (
-    <header className="fixed top-0 w-screen p-2 z-[9999] bg-background">
+    <header className="fixed top-0 w-screen p-2 z-[9999]">
       <div
         className={`grid grid-flow-col ${isMobile === false ? "place-content-start" : "place-content-between"} place-items-center gap-x-2`}
       >
         <Link
           href="/"
-          className={`z-10 font-extrabold text-xl ${pathName === "/" ? "text-secondary pointer-events-none" : "hover:text-secondary hover:scale-105 transition-all"}`}
+          className={`z-10 font-extrabold text-xl hover:text-secondary hover:scale-105 transition-all`}
         >
           Big Joe&apos;s
         </Link>
-        <Nav isMobile={isMobile} pathName={pathName} />
+        <Nav isMobile={isMobile} />
       </div>
     </header>
   );

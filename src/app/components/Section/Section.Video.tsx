@@ -2,11 +2,12 @@ import { ISectionVideoProps } from "./Section.interfaces";
 import { getTikTok } from "../../libs/queries/tiktok/get.tiktok";
 
 const SectionVideo: React.FC<ISectionVideoProps> = async ({ url }) => {
-  const video = await getTikTok(url);
-  const html = video.html;
+  const [loading, data] = await getTikTok(url);
+  const { html } = data;
 
   return (
     <div className="sm:w-full md:w-full lg:w-1/2 flex justify-center">
+      {loading && <p>Loading...</p>}
       <div dangerouslySetInnerHTML={{ __html: html }} className="w-80" />
     </div>
   );

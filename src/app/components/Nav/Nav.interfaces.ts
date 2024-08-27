@@ -13,7 +13,6 @@ export interface INavMenuProps {
 
 export interface INavProps {
   isMobile: boolean;
-  pathName: string;
 }
 
 export interface IMobileIconProps {

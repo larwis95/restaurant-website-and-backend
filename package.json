@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "cd src/lib/db && npx tsx seeds.ts"
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.0",
@@ -14,11 +15,14 @@
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-navigation-menu": "^1.2.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-tabs": "^1.1.0",
     "@tabler/icons-react": "^3.12.0",
     "@tanstack/react-query": "^5.51.23",
     "@tensorflow/tfjs": "^4.20.0",
+    "@types/ua-parser-js": "^0.7.39",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
     "embla-carousel-autoplay": "^8.2.0",
     "embla-carousel-react": "^8.2.0",
     "framer-motion": "^11.3.29",
@@ -29,6 +33,7 @@
     "react-hook-form": "^7.52.2",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "ua-parser-js": "^1.0.38",
     "vaul": "^0.9.1"
   },
   "devDependencies": {

@@ -8,7 +8,7 @@ const HeroSubHeading: React.FC = () => {
         <Link
           key={button.href}
           href={button.href}
-          className={`flex font-extrabold text-center w-fit bg-${button.color} ${button.hoverColor} hover:drop-shadow-md border border-border rounded-md hover: hover:rounded-none hover:scale-105 transition-all duration-500 text-${button.textColor} ${button.hoverTextColor} p-4`}
+          className={`flex font-extrabold text-center w-fit ${button.color} ${button.hoverColor} hover:drop-shadow-md border border-border rounded-md hover: hover:rounded-none hover:scale-105 transition-all duration-500 text-${button.textColor} ${button.hoverTextColor} p-4`}
         >
           {button.title}
         </Link>
