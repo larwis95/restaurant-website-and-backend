@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { useState, useContext } from "react";
+import { useContext, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MobileMenuOpenContext } from "../Providers/MobileMenuOpen";
 import Link from "next/link";
@@ -22,12 +22,36 @@ const MobileNav: React.FC<INavMenuProps> = ({
     MobileMenuOpenContext
   );
 
+  const handleOutsideClick = (e: MouseEvent) => {
+    if (isMobileMenuOpen) {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".mobile-menu")) {
+        toggleMobileMenu();
+      }
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleOutsideClick);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick);
+    };
+  });
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [isMobileMenuOpen]);
+
   return (
     <div>
       <div>
         {!isMobileMenuOpen && (
           <Button
-            className="fixed z-20 top-4 right-4"
+            className="fixed z-20 right-4"
             variant="outline"
             size="icon"
             onClick={toggleMobileMenu}
@@ -41,7 +65,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              className="mobile-menu fixed left-1/2 z-[9997] flex flex-col h-screen w-screen bg-background text-white p-4 bg-opacity-0 border border-border"
+              className="mobile-menu fixed left-1/2 z-[9997] flex flex-col h-fit w-screen bg-black bg-opacity-70 text-white p-4 border border-border"
               initial={{ x: "100%" }}
               animate={{ x: "-50%" }}
               exit={{ x: "100%" }}

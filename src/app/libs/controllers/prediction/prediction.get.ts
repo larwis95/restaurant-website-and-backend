@@ -1,0 +1,41 @@
+import usePrediction from "@/lib/tensorflow";
+import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
+import { Sale } from "@/models";
+import getErrorMessage from "@/lib/getErrorMessage";
+import databaseConnection from "@/lib/db";
+import { SaleSchema } from "@/models/types";
+import { ITrainModelArgs } from "./prediction.interfaces";
+
+const sales = async (): Promise<SaleSchema[] | null> => {
+  await databaseConnection();
+  try {
+    const sales = (await Sale.find()) as SaleSchema[];
+    return sales;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    console.log(message);
+    return null;
+  }
+};
+
+const predict = async (req: NextApiRequest, res: NextApiResponse) => {
+  const trainingData = await sales();
+  if (!trainingData) {
+    return NextResponse.json(
+      { error: "Error fetching sales data." },
+      { status: 500 }
+    );
+  }
+  const [morningPrediction, nightPrediction] =
+    await usePrediction<ITrainModelArgs>(trainingData);
+  return NextResponse.json(
+    {
+      morningPrediction,
+      nightPrediction,
+    },
+    { status: 200 }
+  );
+};
+
+export default predict;

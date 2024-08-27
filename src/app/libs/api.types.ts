@@ -1,3 +1,5 @@
+import { SaleSchema } from "@/models/types";
+
 export type ErrorResponse = {
   error: string;
 };
@@ -12,6 +14,13 @@ export type ItemResponse = {
   name: string;
   price: number;
   description: string;
+};
+
+export type SaleResponse = {
+  date: Date;
+  morning: number;
+  night: number;
+  holiday?: string;
 };
 
 export type TikTokOembedResponse = {
@@ -29,3 +38,17 @@ export type TikTokOembedResponse = {
   version: string;
   width: number;
 };
+
+export type TrainingData = SaleSchema[];
+
+export type MorningData = {
+  date: Date;
+  sales: number;
+};
+
+export type NightData = {
+  date: Date;
+  sales: number;
+};
+
+export type TikTokGetResponse = [boolean, TikTokOembedResponse];
