@@ -21,7 +21,7 @@ const data = SALES_DATA.filter((sale) => {
 const sales = data.map((sale) => {
   return {
     date: sale.date,
-    morning: parseInt(sale.morning.replace(",", "")),
+    morning: parseInt(sale.morning?.replace(",", "") || "0"),
     night: parseInt(sale.night.replace(",", "")),
     holiday: sale.holiday || null,
   };

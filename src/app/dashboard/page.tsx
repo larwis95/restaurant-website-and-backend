@@ -14,7 +14,7 @@ const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <div className="w-full h-screen flex flex-col items-center pt-24 p-4">
+    <div className="w-full h-screen flex flex-col items-center pt-24 p-4 overflow-x-hidden">
       <NavigationTabs tabs={tabs} />
       <AnimatePresence mode="wait">
         {(searchParams.get("tab") === "Sales" ||

@@ -59,7 +59,7 @@ export const buttonConfig: Button[] = [
   {
     title: "Order Online",
     href: "https://order.spoton.com/big-joes-245/imlay-city-mi/6112fc839adef3d75c8d14b4",
-    color: "primary",
+    color: "bg-primary",
     textColor: "secondary",
     hoverColor: "hover:bg-secondary",
     hoverTextColor: "hover:text-primary",
@@ -67,7 +67,7 @@ export const buttonConfig: Button[] = [
   {
     title: "Get Delivery (DoorDash)",
     href: "https://www.doordash.com/store/big-joe's-pizza-chicken-ribs-seafood-imlay-city-2036859/?irgwc=1&pid=27795&srsltid=AfmBOor9WNhkVDP9Vt4_dsbsj0-Dko70-LD_a4EoaftsxsH7aupVtPEa&utm_campaign=Cx_US_AF_AF_IR_ACQ_CUSXXX_10350_&utm_medium=affiliate&utm_source=impactradius",
-    color: "secondary",
+    color: "bg-secondary",
     textColor: "primary",
     hoverColor: "hover:bg-primary",
     hoverTextColor: "hover:text-secondary",
@@ -75,7 +75,7 @@ export const buttonConfig: Button[] = [
   {
     title: "📞 Give us a Call",
     href: "tel:+18107249000",
-    color: "green-700",
+    color: "bg-green-700",
     textColor: "white",
     hoverColor: "hover:bg-primary",
     hoverTextColor: "hover:text-secondary",
