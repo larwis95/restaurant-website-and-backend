@@ -6,13 +6,14 @@ import Section from "../components/Section";
 import SectionText from "../components/Section/Section.Text";
 import { ISalesPageProps } from "./dashboard.interfaces";
 import Prediction from "../components/Dashboard/Sales/Prediction";
+import SalesGraph from "../components/Dashboard/Sales/SalesGraph";
 
 const SalesPage: React.FC<ISalesPageProps> = ({ tabs }) => {
   const searchParams = useSearchParams();
   const date = format(new Date(), "MMMM do, yyyy");
   return (
     <motion.div
-      className="pt-24 w-full text-center flex flex-row items-center justify-center overflow-x-hidden"
+      className="pt-24 w-full text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"
       initial={{ x: "-100%" }}
       animate={{ x: "0%" }}
       exit={{ x: "150%" }}
@@ -40,6 +41,9 @@ const SalesPage: React.FC<ISalesPageProps> = ({ tabs }) => {
           </div>
           <Prediction />
         </SectionText>
+      </Section>
+      <Section className="flex flex-col xl:w-1/3 lg:w-1/3 sm:w-full xs:w-full md:w-1/2 p-4 border border-white rounded-sm">
+        <SalesGraph />
       </Section>
     </motion.div>
   );

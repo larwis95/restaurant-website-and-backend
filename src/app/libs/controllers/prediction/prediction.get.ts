@@ -1,9 +1,9 @@
-import usePrediction from "@/lib/tensorflow";
+import getPrediction from "@/lib/tensorflow";
 import { NextApiRequest, NextApiResponse } from "next";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Sale } from "@/models";
 import getErrorMessage from "@/lib/getErrorMessage";
-import databaseConnection from "@/lib/db";
+import databaseConnection from "@/lib/_db";
 import { SaleSchema } from "@/models/types";
 import { ITrainModelArgs } from "./prediction.interfaces";
 
@@ -19,7 +19,7 @@ const sales = async (): Promise<SaleSchema[] | null> => {
   }
 };
 
-const predict = async (req: NextApiRequest, res: NextApiResponse) => {
+const predict = async (req: NextRequest, res: NextApiResponse) => {
   const trainingData = await sales();
   if (!trainingData) {
     return NextResponse.json(
@@ -28,7 +28,7 @@ const predict = async (req: NextApiRequest, res: NextApiResponse) => {
     );
   }
   const [morningPrediction, nightPrediction] =
-    await usePrediction<ITrainModelArgs>(trainingData);
+    await getPrediction<ITrainModelArgs>(trainingData);
   return NextResponse.json(
     {
       morningPrediction,

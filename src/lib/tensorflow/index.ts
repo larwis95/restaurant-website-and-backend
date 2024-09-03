@@ -29,7 +29,7 @@ export const clearCache = () => {
   cached.date = null;
 };
 
-const usePrediction = async <ITrainModelArgs>(
+const getPrediction = async <ITrainModelArgs>(
   trainingData: TrainingData
 ): Promise<number[]> => {
   const models = [];
@@ -90,4 +90,4 @@ const usePrediction = async <ITrainModelArgs>(
   return cached.model;
 };
 
-export default usePrediction;
+export default getPrediction;

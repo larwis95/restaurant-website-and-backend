@@ -2,7 +2,7 @@ import { Menu } from "@/models";
 import { NextApiRequest, NextApiResponse } from "next";
 import { MenuResponse, ErrorResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
-import databaseConnection from "@/lib/db";
+import databaseConnection from "@/lib/_db";
 import { NextResponse } from "next/server";
 
 const getAllMenus = async (
