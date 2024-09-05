@@ -30,12 +30,8 @@ export const getSalesbyWeek = async (
     const sales: SaleSchema[] = await Sale.find(
       {
         date: {
-          $gte: startOfWeek(new Date(), {
-            weekStartsOn: 1,
-          }),
-          $lt: endOfWeek(new Date(), {
-            weekStartsOn: 1,
-          }),
+          $gte: startOfWeek(new Date()),
+          $lt: endOfWeek(new Date()),
         },
       },
       "-__v"
