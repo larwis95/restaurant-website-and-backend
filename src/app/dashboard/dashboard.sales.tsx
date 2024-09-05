@@ -7,9 +7,9 @@ import SectionText from "../components/Section/Section.Text";
 import { ISalesPageProps } from "./dashboard.interfaces";
 import Prediction from "../components/Dashboard/Sales/Prediction";
 import SalesGraph from "../components/Dashboard/Sales/SalesGraph";
+import SalesTable from "../components/Dashboard/Sales/Table";
 
 const SalesPage: React.FC<ISalesPageProps> = ({ tabs }) => {
-  const searchParams = useSearchParams();
   const date = format(new Date(), "MMMM do, yyyy");
   return (
     <motion.div
@@ -44,6 +44,9 @@ const SalesPage: React.FC<ISalesPageProps> = ({ tabs }) => {
       </Section>
       <Section className="flex flex-col xl:w-1/3 lg:w-1/3 sm:w-full xs:w-full md:w-1/2 p-4 border border-white rounded-sm">
         <SalesGraph />
+      </Section>
+      <Section className="flex flex-col w-3/4 p-4 border border-white rounded-sm">
+        <SalesTable />
       </Section>
     </motion.div>
   );
