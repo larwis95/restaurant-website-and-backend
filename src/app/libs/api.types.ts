@@ -17,6 +17,7 @@ export type ItemResponse = {
 };
 
 export type SaleResponse = {
+  _id: string;
   date: Date;
   morning: number;
   night: number;
@@ -52,3 +53,18 @@ export type NightData = {
 };
 
 export type TikTokGetResponse = [boolean, TikTokOembedResponse];
+
+export type Month = number;
+
+export type Year = number;
+
+export type Week = number;
+
+export type Day = string;
+
+export type FindSaleArgs = {
+  year?: Year;
+  month?: Month;
+  week?: Week;
+  day?: Day;
+};

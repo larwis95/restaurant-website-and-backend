@@ -18,19 +18,34 @@ const data = SALES_DATA.filter((sale) => {
   }
 });
 
+const removeCommas = (str: string) => {
+  return str.replace(",", "");
+};
+
 const sales = data.map((sale) => {
   return {
     date: sale.date,
-    morning: parseInt(sale.morning?.replace(",", "") || "0"),
-    night: parseInt(sale.night.replace(",", "")),
+    morning:
+      typeof sale.morning === "string"
+        ? parseInt(removeCommas(sale.morning))
+        : sale.morning,
+    night:
+      typeof sale.night === "string"
+        ? parseInt(removeCommas(sale.night))
+        : sale.night,
     holiday: sale.holiday || null,
   };
 });
 
 const seedDb = async () => {
   await connectDb();
-  await Sale.insertMany(sales);
-  console.log("Database seeded");
+  try {
+    await Sale.insertMany(sales);
+    console.log("Database seeded");
+  } catch (err) {
+    console.error(err);
+  }
+
   process.exit(0);
 };
 

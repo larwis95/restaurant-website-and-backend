@@ -2,7 +2,7 @@ import { Sale } from "@/models";
 import { NextApiResponse } from "next";
 import { SaleResponse, ErrorResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
-import databaseConnection from "@/lib/_db";
+import databaseConnection from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 import { startOfWeek, endOfWeek } from "date-fns";
 import { SaleSchema } from "@/models/types";
@@ -30,8 +30,12 @@ export const getSalesbyWeek = async (
     const sales: SaleSchema[] = await Sale.find(
       {
         date: {
-          $gte: startOfWeek(new Date("9/2/2023")),
-          $lt: endOfWeek(new Date("9/2/2023")),
+          $gte: startOfWeek(new Date(), {
+            weekStartsOn: 1,
+          }),
+          $lt: endOfWeek(new Date(), {
+            weekStartsOn: 1,
+          }),
         },
       },
       "-__v"

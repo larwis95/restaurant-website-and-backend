@@ -3,7 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 import { Sale } from "@/models";
 import getErrorMessage from "@/lib/getErrorMessage";
-import databaseConnection from "@/lib/_db";
+import databaseConnection from "@/lib/db";
 import { SaleSchema } from "@/models/types";
 import { ITrainModelArgs } from "./prediction.interfaces";
 

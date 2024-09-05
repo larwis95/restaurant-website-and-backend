@@ -6,7 +6,6 @@ const saleSchema = new Schema<SaleSchema>({
     type: Date,
     index: true,
     required: true,
-    unique: true,
   },
   morning: {
     type: Number,
