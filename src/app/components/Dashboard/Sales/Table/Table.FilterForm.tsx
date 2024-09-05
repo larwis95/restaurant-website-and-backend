@@ -13,11 +13,12 @@ import TableInput from "./Table.Input";
 const FilterForm = ({ onSubmit, actionStore }: IFilterFormProps) => {
   const today = new Date();
   const [formType, setFormType] = useState<"year" | "month" | "week" | "day">(
-    "month"
+    "week"
   );
 
   return (
-    <>
+    <div className="flex flex-col w-fit items-start p-4 gap-4 border border-border">
+      <h2 className="text-white text-lg">Filter Sales</h2>
       <RadioGroup
         defaultValue="week"
         onValueChange={(value) => {
@@ -64,13 +65,96 @@ const FilterForm = ({ onSubmit, actionStore }: IFilterFormProps) => {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          <SubForm action={actionStore[formType]} onSubmit={onSubmit}>
-            <TableInput type="date" name="day" />
+          <SubForm
+            action={actionStore[formType]}
+            onSubmit={onSubmit}
+            type={formType}
+          >
+            <TableInput type="date" name="day" dataType="day" />
             <Button type="submit">Submit</Button>
           </SubForm>
         </motion.div>
       )}
-    </>
+      {formType === "week" && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <SubForm
+            action={actionStore[formType]}
+            onSubmit={onSubmit}
+            type={formType}
+          >
+            <TableInput
+              type="number"
+              name="month"
+              max={12}
+              min={1}
+              dataType={formType}
+            />
+            <TableInput
+              type="number"
+              name="week"
+              max={5}
+              min={1}
+              dataType={formType}
+            />
+            <TableInput
+              type="number"
+              name="year"
+              max={today.getFullYear()}
+              min={today.getFullYear() - 1}
+              dataType={formType}
+            />
+            <Button type="submit">Submit</Button>
+          </SubForm>
+        </motion.div>
+      )}
+      {formType === "month" && (
+        <motion.div>
+          <SubForm
+            action={actionStore[formType]}
+            onSubmit={onSubmit}
+            type={formType}
+          >
+            <TableInput
+              type="number"
+              name="month"
+              max={12}
+              min={1}
+              dataType={formType}
+            />
+            <TableInput
+              type="number"
+              name="year"
+              max={today.getFullYear()}
+              min={today.getFullYear() - 1}
+              dataType={formType}
+            />
+            <Button type="submit">Submit</Button>
+          </SubForm>
+        </motion.div>
+      )}
+      {formType === "year" && (
+        <motion.div>
+          <SubForm
+            action={actionStore[formType]}
+            onSubmit={onSubmit}
+            type={formType}
+          >
+            <TableInput
+              type="number"
+              name="year"
+              max={today.getFullYear()}
+              min={today.getFullYear() - 1}
+              dataType={formType}
+            />
+            <Button type="submit">Submit</Button>
+          </SubForm>
+        </motion.div>
+      )}
+    </div>
   );
 };
 

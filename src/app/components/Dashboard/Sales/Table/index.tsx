@@ -46,7 +46,7 @@ const SalesTable = () => {
   useEffect(() => {
     if (!sales) {
       handleFetchSales("month", {
-        year: 2023,
+        year: today.getFullYear(),
         month: today.getMonth() + 1,
         week: getWeekOfMonth(today, { weekStartsOn: 1 }),
       });

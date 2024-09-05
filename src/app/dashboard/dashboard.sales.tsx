@@ -13,14 +13,14 @@ const SalesPage: React.FC<ISalesPageProps> = ({ tabs }) => {
   const date = format(new Date(), "MMMM do, yyyy");
   return (
     <motion.div
-      className="pt-24 w-full text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"
+      className="pt-24 w-full h-fit text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"
       initial={{ x: "-100%" }}
       animate={{ x: "0%" }}
       exit={{ x: "150%" }}
       transition={{ duration: 1, type: "spring", stiffness: 120 }}
     >
-      <Section className="flex flex-col w-fit p-4 border border-white rounded-sm">
-        <SectionText className="flex flex-col w-full text-secondary gap-2">
+      <Section className="flex flex-col w-fit p-4 border border-white rounded-sm h-fit">
+        <SectionText className="flex flex-col w-full text-secondary gap-2 h-50%">
           <div className="flex flex-col items-center justify-center border-b border-secondary p-2">
             <motion.h2
               className="text-2xl w-fit"
@@ -45,7 +45,7 @@ const SalesPage: React.FC<ISalesPageProps> = ({ tabs }) => {
       <Section className="flex flex-col xl:w-1/3 lg:w-1/3 sm:w-full xs:w-full md:w-1/2 p-4 border border-white rounded-sm">
         <SalesGraph />
       </Section>
-      <Section className="flex flex-col w-3/4 p-4 border border-white rounded-sm">
+      <Section className="flex flex-col w-3/4 p-4 border border-white rounded-sm gap-4">
         <SalesTable />
       </Section>
     </motion.div>
