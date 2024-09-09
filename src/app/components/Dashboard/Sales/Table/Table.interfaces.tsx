@@ -2,7 +2,7 @@ import { IFindSaleServerAction } from "@/app/libs/api.interfaces";
 import { SaleResponse } from "@/app/libs/api.types";
 
 export interface IFilterFormState {
-  type?: "year" | "month" | "week" | "day";
+  type: "year" | "month" | "week" | "day" | "currentweek";
   args: {
     year?: number;
     month?: number;
@@ -12,16 +12,12 @@ export interface IFilterFormState {
 }
 
 export interface IFilterFormProps {
-  onSubmit: (sales: SaleResponse[]) => void;
-  actionStore: {
-    [key: string]: IFindSaleServerAction;
-  };
+  setFetch: (state: IFilterFormState) => void;
 }
 
 export interface ISubFormProps {
   children: React.ReactNode;
-  onSubmit: (sales: SaleResponse[]) => void;
-  action: IFindSaleServerAction;
+  setFetch: (state: IFilterFormState) => void;
   type: "year" | "month" | "week" | "day";
 }
 
@@ -33,7 +29,14 @@ export interface ITableInputProps {
   dataType: "year" | "month" | "week" | "day";
 }
 
-export interface IFormContext {
+export interface IFilterFormContext {
   formState: IFilterFormState;
   setFormState: (state: IFilterFormState) => void;
+}
+
+export interface ISelectedSale {
+  date: Date;
+  morning: number;
+  night: number;
+  holiday?: string;
 }

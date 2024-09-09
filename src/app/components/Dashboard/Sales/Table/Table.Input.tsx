@@ -25,11 +25,10 @@ const TableInput: React.FC<ITableInputProps> = ({
         [name]: e.target.value,
       },
     });
-    console.log(formState);
   };
 
   return (
-    <div className="flex flex-col gap-2 w-1/4">
+    <div className="flex flex-col w-fit">
       <label htmlFor={name}>
         {name.replace(/\b[a-z]/g, (x) => x.toUpperCase())}
       </label>
@@ -39,7 +38,7 @@ const TableInput: React.FC<ITableInputProps> = ({
         onChange={handleChange}
         max={max}
         min={min}
-        className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600"
+        className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-24"
       />
     </div>
   );
