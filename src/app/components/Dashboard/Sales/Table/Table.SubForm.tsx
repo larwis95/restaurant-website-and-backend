@@ -1,52 +1,38 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import {
   IFilterFormState,
-  IFormContext,
   ISubFormProps,
+  IFilterFormContext,
 } from "./Table.interfaces";
-import { format, getWeekOfMonth } from "date-fns";
 
-export const formContext = createContext<IFormContext>({
+export const formContext = createContext<IFilterFormContext>({
   formState: {
-    type: "week",
-    args: {
-      year: undefined,
-      month: undefined,
-      week: undefined,
-      day: undefined,
-    },
+    type: "currentweek",
+    args: {},
   },
   setFormState: (state: IFilterFormState) => {},
 });
 
-const SubForm: React.FC<ISubFormProps> = ({ children, onSubmit, action }) => {
-  const today = new Date();
+const SubForm: React.FC<ISubFormProps> = ({ children, setFetch, type }) => {
   const [formState, setFormState] = useState<IFilterFormState>({
-    type: "week",
-    args: {
-      year: today.getFullYear(),
-      month: today.getMonth(),
-      week: getWeekOfMonth(today, { weekStartsOn: 1 }),
-      day: format(today, "yyyy-MM-dd"),
-    },
+    type,
+    args: {},
+  });
+
+  useEffect(() => {
+    console.log(typeof setFetch);
   });
 
   const handleFetchSales = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(formState.args);
-    const sales = await action({ ...formState.args });
-    if (!Array.isArray(sales)) {
-      return;
-    }
-
-    onSubmit(sales);
+    setFetch(formState);
   };
 
   return (
     <formContext.Provider value={{ formState, setFormState }}>
       <form
         onSubmit={handleFetchSales}
-        className="w-full flex flex-row items-end gap-5 "
+        className="w-full flex flex-row flex-wrap items-end gap-2 p-2 "
       >
         {children}
       </form>

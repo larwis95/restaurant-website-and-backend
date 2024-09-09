@@ -45,7 +45,7 @@ const SalesPage: React.FC<ISalesPageProps> = ({ tabs }) => {
       <Section className="flex flex-col xl:w-1/3 lg:w-1/3 sm:w-full xs:w-full md:w-1/2 p-4 border border-white rounded-sm">
         <SalesGraph />
       </Section>
-      <Section className="flex flex-col w-3/4 p-4 border border-white rounded-sm gap-4">
+      <Section className="flex flex-col w-full p-4 border border-white rounded-sm gap-4">
         <SalesTable />
       </Section>
     </motion.div>

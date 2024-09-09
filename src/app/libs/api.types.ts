@@ -68,3 +68,16 @@ export type FindSaleArgs = {
   week?: Week;
   day?: Day;
 };
+
+export type UpdateSaleFields = {
+  morning?: number;
+  night?: number;
+  holiday?: string;
+};
+
+export type SaleRequest = {
+  date: Date;
+  morning: number;
+  night: number;
+  holiday?: string;
+};

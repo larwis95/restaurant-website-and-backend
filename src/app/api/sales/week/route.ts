@@ -1,3 +1,3 @@
-import { getSalesbyWeek } from "@/app/libs/controllers/sales/get.sales";
+import { getWeekSales } from "@/app/libs/controllers/sales/get.sales";
 
-export { getSalesbyWeek as GET };
+export { getWeekSales as GET };

@@ -7,7 +7,6 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ tabs }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const activeTab = searchParams.get("tab");
-  console.log(activeTab);
   const handleTabChange = (href: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", href);
