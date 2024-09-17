@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Modal from "../../Modal";
+import { LoadingSpinner } from "@/components/ui/loading";
 import {
   fetchSalesForCurrentWeek,
   fetchSalesForDay,
@@ -15,21 +15,39 @@ import {
   fetchSalesForWeek,
   fetchSalesForYear,
 } from "@/app/libs/queries/sales/sales.get";
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { AddSaleForm, UpdateSaleForm } from "../../Form";
+import { useToast } from "@/hooks/use-toast";
 import { updateSale } from "@/app/libs/mutations/sales/put.sales";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDynamicSalesFetch } from "@/app/libs/hooks/useDynamicFetch";
 import { format, getWeekOfMonth } from "date-fns";
-import { SaleResponse, UpdateSaleFields } from "@/app/libs/api.types";
+import { UTCDate } from "@date-fns/utc";
+import { UpdateSaleFields } from "@/app/libs/api.types";
 import { IFilterFormState, ISelectedSale } from "./Table.interfaces";
 import { Button } from "@/components/ui/button";
 import FilterForm from "./Table.FilterForm";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 const SalesTable = () => {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+  const [addOpen, setAddOpen] = useState(false);
+  const [updateOpen, setUpdateOpen] = useState(false);
   const [dynamicFetch, setDynamicFetch] = useState<IFilterFormState>({
-    type: "currentweek",
-    args: {},
+    type: "week",
+    args: {
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      week: getWeekOfMonth(new Date()),
+    },
   });
 
   const putSale = useMutation({
@@ -43,12 +61,26 @@ const SalesTable = () => {
       await updateSale({ date, fields });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [dynamicFetch.type] });
+      queryClient.invalidateQueries({
+        queryKey: [dynamicFetch.type],
+      });
+      toast({
+        title: "Success",
+        description: `Sale for: ${format(selectedSale?.date ?? new Date(), "MM/dd/yyyy")} updated successfully`,
+      });
+      setSelectedSale(null);
+      setUpdateOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
   const [selectedSale, setSelectedSale] = useState<ISelectedSale | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { isPending, error, data } = useDynamicSalesFetch(
     {
@@ -73,84 +105,48 @@ const SalesTable = () => {
         holiday: selectedSale.holiday,
       },
     });
-    setIsModalOpen(false);
   };
-
-  if (error) {
-    return <div>Error loading sales: {error.message}</div>;
-  }
 
   return (
     <>
-      <Modal setIsOpen={setIsModalOpen} isOpen={isModalOpen}>
-        <Modal.Content>
-          <Modal.Header>
-            <h2 className="text-2xl">
-              Sale for {format(selectedSale?.date ?? new Date(), "MM/dd/yyyy")}
-            </h2>
-            <Modal.Close />
-          </Modal.Header>
-          <form
-            className="flex flex-col items-center justify-center"
-            onSubmit={handleUpdateSale}
-          >
-            <label htmlFor="morning">Morning</label>
-            <input
-              type="number"
-              value={selectedSale?.morning}
-              onChange={(e) => {
-                if (!selectedSale) return;
-                setSelectedSale({
-                  ...selectedSale,
-                  morning: parseFloat(e.target.value),
-                });
-              }}
-              className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-            />
-            <label htmlFor="night">Night</label>
-            <input
-              type="number"
-              value={selectedSale?.night}
-              onChange={(e) => {
-                if (!selectedSale) return;
-                setSelectedSale({
-                  ...selectedSale,
-                  night: parseFloat(e.target.value),
-                });
-              }}
-              className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-            />
-
-            <label htmlFor="holiday">Holiday?</label>
-            <input
-              type="text"
-              value={selectedSale?.holiday}
-              onChange={(e) => {
-                if (!selectedSale) return;
-                setSelectedSale({
-                  ...selectedSale,
-                  holiday: e.target.value,
-                });
-              }}
-              className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-            />
-            <Button type="submit">Update</Button>
-          </form>
-        </Modal.Content>
-      </Modal>
-      <FilterForm setFetch={setDynamicFetch} />
-      <Button className="w-1/4">Add Sale</Button>
-      <Table>
-        <TableCaption className="text-green-600">
-          Total: $
+      <div className="flex flex-row flex-wrap gap-5 items-end">
+        <FilterForm setFetch={setDynamicFetch} />
+        <Dialog open={addOpen} onOpenChange={setAddOpen}>
+          <DialogTrigger asChild>
+            <Button className="w-fit" variant="outline">
+              Add Sale
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Sale</DialogTitle>
+              <DialogDescription>
+                Fill out the form to add a sale.
+              </DialogDescription>
+            </DialogHeader>
+            <AddSaleForm type={dynamicFetch.type} setModalOpen={setAddOpen} />
+          </DialogContent>
+        </Dialog>
+        <h2>
+          Sales Total: $
           {data
             ?.reduce((prev, curr) => {
               return prev + (curr.morning || 0) + (curr.night || 0);
             }, 0)
             .toFixed(2)}
+        </h2>
+      </div>
+      {isPending && (
+        <div className="w-full flex items-center justify-center">
+          <LoadingSpinner className="text-secondary" />
+        </div>
+      )}
+      <Table className="h-fit">
+        <TableCaption className="text-green-600">
+          Click on a row to update the sale.
         </TableCaption>
         <TableHeader>
-          <TableRow>
+          <TableRow className="h-6">
             <TableHead className="text-center">Date</TableHead>
             <TableHead className="text-center">Morning</TableHead>
             <TableHead className="text-center">Night</TableHead>
@@ -158,29 +154,49 @@ const SalesTable = () => {
             <TableHead className="text-center">Total</TableHead>
           </TableRow>
         </TableHeader>
-
         <TableBody>
-          {data?.map((sale) => (
-            <TableRow
-              key={format(sale.date, "MM/dd/yyyy")}
-              className="hover:cursor-pointer"
-              onClick={() => {
-                setSelectedSale({
-                  date: sale.date,
-                  morning: sale.morning,
-                  night: sale.night,
-                  holiday: sale.holiday,
-                });
-                setIsModalOpen(true);
-              }}
-            >
-              <TableCell>{format(sale.date, "MM/dd/yyyy")}</TableCell>
-              <TableCell>{sale.morning.toFixed(2)}</TableCell>
-              <TableCell>{sale.night.toFixed(2)}</TableCell>
-              <TableCell>{sale.holiday || "No"}</TableCell>
-              <TableCell>{(sale.morning + sale.night).toFixed(2)}</TableCell>
-            </TableRow>
-          ))}
+          <Dialog open={updateOpen} onOpenChange={setUpdateOpen}>
+            {data?.map((sale) => (
+              <DialogTrigger key={format(sale.date, "MM/dd/yyyy")} asChild>
+                <TableRow
+                  className="hover:cursor-pointer h-6"
+                  onClick={() => {
+                    setSelectedSale(sale);
+                  }}
+                >
+                  <TableCell>
+                    {format(new UTCDate(sale.date), "MM/dd/yyyy")}
+                  </TableCell>
+                  <TableCell>
+                    {sale.morning ? sale.morning.toFixed(2) : 0}
+                  </TableCell>
+                  <TableCell>{sale.night.toFixed(2)}</TableCell>
+                  <TableCell>{sale.holiday || "No"}</TableCell>
+                  <TableCell>
+                    {(sale.morning + sale.night).toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              </DialogTrigger>
+            ))}
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  Update Sale:{" "}
+                  {selectedSale &&
+                    format(new UTCDate(selectedSale.date), "MM/dd/yyyy")}
+                </DialogTitle>
+                <DialogDescription>
+                  Fill out the form to update the sale.
+                </DialogDescription>
+              </DialogHeader>
+              <UpdateSaleForm
+                handleUpdateSale={handleUpdateSale}
+                selectedSale={selectedSale}
+                setSelectedSale={setSelectedSale}
+                setModalOpen={setUpdateOpen}
+              />
+            </DialogContent>
+          </Dialog>
         </TableBody>
       </Table>
     </>

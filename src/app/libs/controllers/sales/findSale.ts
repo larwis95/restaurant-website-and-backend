@@ -45,7 +45,6 @@ export const findSalesByMonth: IFindSaleServerAction = async ({
     },
     "-__v"
   );
-  console.log("Month Sales: ", sales);
   if (!sales) {
     return NextResponse.json(
       { error: "No sales found for the month" },
@@ -61,7 +60,6 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
   week,
 }) => {
   await databaseConnection();
-  console.log("weak sales happening");
   if (typeof year === "undefined" || typeof month === "undefined") {
     return NextResponse.json(
       { error: "Year and month are required" },
@@ -71,8 +69,8 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
   const weekSales = await Sale.find(
     {
       date: {
-        $gte: new Date(`${year}-${month}-01`),
-        $lt: new Date(`${year}-${month}-31`),
+        $gte: `${year}-${month}-01`,
+        $lt: `${year}-${month}-31`,
       },
     },
     "-__v"
@@ -87,7 +85,6 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
   for (let i = 0; i < weekSales.length; i++) {
     const sale = weekSales[i];
     const weekOfMonth = getWeekOfMonth(sale.date);
-    console.log(sale.date, weekOfMonth);
     weeksMap.get(weekOfMonth.toString()).push(sale);
   }
 
@@ -103,17 +100,15 @@ export const findSaleByDay: IFindSaleServerAction = async ({ day }) => {
   if (typeof day === "undefined") {
     return NextResponse.json({ error: "Day is required" }, { status: 400 });
   }
-  console.log(day);
   const sale: SaleResponse | null = await Sale.findOne(
     {
       date: {
-        $gte: new Date(`${day}T00:00:00.000Z`),
-        $lt: new Date(`${day}T23:59:59.999Z`),
+        $gte: `${day}T00:00:00.000Z`,
+        $lt: `${day}T23:59:59.999Z`,
       },
     },
     "-__v"
   );
-  console.log("Sale: ", sale);
   if (!sale) {
     return NextResponse.json(
       { error: "No sales found for the day" },

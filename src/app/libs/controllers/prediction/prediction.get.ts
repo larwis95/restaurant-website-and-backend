@@ -13,8 +13,6 @@ const sales = async (): Promise<SaleSchema[] | null> => {
     const sales = (await Sale.find()) as SaleSchema[];
     return sales;
   } catch (error) {
-    const message = getErrorMessage(error);
-    console.log(message);
     return null;
   }
 };

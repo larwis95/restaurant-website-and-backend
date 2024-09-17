@@ -5,7 +5,6 @@ import { format } from "date-fns";
 
 export const updateSale: IUpdateSaleSeverAction = async ({ date, fields }) => {
   try {
-    console.log("Date: ", date);
     const sale = await Sale.findOneAndUpdate({ date: date }, fields, {
       new: true,
     });
