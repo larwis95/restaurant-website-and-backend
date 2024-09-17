@@ -32,7 +32,6 @@ export const getSaleForDate = async (
   context: { params: Params }
 ) => {
   const { date } = context.params;
-  console.log("Date: ", date);
   try {
     if (!date) {
       return NextResponse.json({ error: "Date is required" }, { status: 400 });
@@ -48,7 +47,6 @@ export const getWeekSales = async (req: NextRequest, res: NextResponse) => {
   const searchParams = req.nextUrl.searchParams.entries();
   const params = Object.fromEntries(searchParams);
   const { year, month, week, current } = params;
-  console.log("search Params", { year, month, week, current });
   if (!current) {
     return await findSalesByWeek({
       year: parseInt(year),
@@ -59,6 +57,7 @@ export const getWeekSales = async (req: NextRequest, res: NextResponse) => {
   const now = new Date();
   const start = startOfWeek(now);
   const end = endOfWeek(now);
+  await databaseConnection();
   const currentWeekSales = await Sale.find({
     date: {
       $gte: start,
@@ -66,7 +65,10 @@ export const getWeekSales = async (req: NextRequest, res: NextResponse) => {
     },
   });
   if (!currentWeekSales) {
-    return { error: "No sales found for the current week", status: 404 };
+    return NextResponse.json({
+      error: "No sales found for the current week",
+      status: 404,
+    });
   }
   return NextResponse.json(currentWeekSales, { status: 200 });
 };
@@ -98,14 +100,7 @@ export const getYearSales = async (req: NextRequest, res: NextResponse) => {
   const params = Object.fromEntries(searchParams);
   const { year } = params;
   try {
-    const yearSales = await findSalesByYear({ year: parseInt(year) });
-    if (!yearSales) {
-      return NextResponse.json(
-        { error: "No sales found for the year" },
-        { status: 404 }
-      );
-    }
-    return yearSales;
+    return await findSalesByYear({ year: parseInt(year) });
   } catch (error) {
     const message = getErrorMessage(error);
     return NextResponse.json({ error: message }, { status: 500 });

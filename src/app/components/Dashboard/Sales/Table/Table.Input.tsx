@@ -17,7 +17,6 @@ const TableInput: React.FC<ITableInputProps> = ({
     if (name === "day") {
       value = format(new Date(value), "mm/dd/yyyy");
     }
-    console.log(value);
     setFormState({
       type: dataType,
       args: {

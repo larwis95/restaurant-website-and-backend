@@ -4,6 +4,7 @@ import {
   ISubFormProps,
   IFilterFormContext,
 } from "./Table.interfaces";
+import { getWeekOfMonth } from "date-fns";
 
 export const formContext = createContext<IFilterFormContext>({
   formState: {
@@ -16,11 +17,11 @@ export const formContext = createContext<IFilterFormContext>({
 const SubForm: React.FC<ISubFormProps> = ({ children, setFetch, type }) => {
   const [formState, setFormState] = useState<IFilterFormState>({
     type,
-    args: {},
-  });
-
-  useEffect(() => {
-    console.log(typeof setFetch);
+    args: {
+      year: new Date().getFullYear(),
+      month: new Date().getMonth() + 1,
+      week: getWeekOfMonth(new Date()),
+    },
   });
 
   const handleFetchSales = async (e: React.FormEvent<HTMLFormElement>) => {

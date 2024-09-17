@@ -10,6 +10,7 @@
     "seed": "cd src/lib/db && npx tsx seeds.ts"
   },
   "dependencies": {
+    "@date-fns/utc": "^2.1.0",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -19,6 +20,7 @@
     "@radix-ui/react-radio-group": "^1.2.0",
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-tabs": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
     "@tabler/icons-react": "^3.12.0",
     "@tanstack/react-query": "^5.51.23",
     "@tensorflow/tfjs": "^4.20.0",

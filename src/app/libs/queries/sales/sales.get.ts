@@ -2,9 +2,7 @@ import { SaleResponse } from "../../api.types";
 import { QueryArgs } from "../../hooks/hooks.types";
 
 export const fetchSalesForCurrentWeek = async (): Promise<SaleResponse[]> => {
-  const response = await fetch(
-    `http://localhost:3000/api/sales/week?current=true`
-  );
+  const response = await fetch(`/api/sales/week`);
   const data: SaleResponse[] = await response.json();
   if (!data) {
     throw new Error("Error fetching sales data.");
@@ -18,7 +16,7 @@ export const fetchSalesForWeek = async ({
   week,
 }: QueryArgs): Promise<SaleResponse[]> => {
   const response = await fetch(
-    `http://localhost:3000/api/sales/week?year=${year}&month=${month}&week=${week}`
+    `/api/sales/week?year=${year}&month=${month}&week=${week}`
   );
   const data: SaleResponse[] = await response.json();
   if (!data) {
@@ -31,9 +29,7 @@ export const fetchSalesForMonth = async ({
   year,
   month,
 }: QueryArgs): Promise<SaleResponse[]> => {
-  const response = await fetch(
-    `http://localhost:3000/api/sales/month?year=${year}&month=${month}`
-  );
+  const response = await fetch(`/api/sales/month?year=${year}&month=${month}`);
   const data: SaleResponse[] = await response.json();
   if (!data) {
     throw new Error("Error fetching sales data.");
@@ -44,9 +40,7 @@ export const fetchSalesForMonth = async ({
 export const fetchSalesForYear = async ({
   year,
 }: QueryArgs): Promise<SaleResponse[]> => {
-  const response = await fetch(
-    `http://localhost:3000/api/sales/year?year=${year}`
-  );
+  const response = await fetch(`/api/sales/year?year=${year}`);
   const data: SaleResponse[] = await response.json();
   if (!data) {
     throw new Error("Error fetching sales data.");
@@ -57,7 +51,8 @@ export const fetchSalesForYear = async ({
 export const fetchSalesForDay = async ({
   day,
 }: QueryArgs): Promise<SaleResponse[]> => {
-  const response = await fetch(`http://localhost:3000/api/sales/${day}`);
+  const response = await fetch(`/api/sales/${day}`);
+
   const data: SaleResponse[] = await response.json();
   if (!data) {
     throw new Error("Error fetching sales data.");

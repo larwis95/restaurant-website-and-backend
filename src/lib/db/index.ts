@@ -4,10 +4,7 @@ declare global {
   var mongo: any;
 }
 
-const MONGODB_URI =
-  process.env.NODE_ENV === "production"
-    ? process.env.NEXT_PUBLIC_MONGODB_URI
-    : process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error(

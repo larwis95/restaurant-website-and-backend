@@ -24,6 +24,10 @@ export type SaleResponse = {
   holiday?: string;
 };
 
+export type SuccessResponse = {
+  message: string;
+};
+
 export type TikTokOembedResponse = {
   author_name: string;
   author_url: string;

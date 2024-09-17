@@ -4,6 +4,7 @@ import { Inter as FontSans } from "next/font/google";
 import { ReactQueryClientProvider } from "./ReactQueryClient";
 import MobileMenuOpenProvider from "./components/Providers/MobileMenuOpen";
 import Header from "./components/Header";
+import { Toaster } from "@/components/ui/toaster";
 import Footer, { FooterCopyWrite, FooterInfo } from "./components/Footer";
 import "./globals.css";
 
@@ -46,6 +47,7 @@ export default function RootLayout({
             </p>
           </FooterCopyWrite>
         </Footer>
+        <Toaster />
       </body>
     </html>
   );
