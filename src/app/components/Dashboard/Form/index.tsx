@@ -1,4 +1,9 @@
-import Add from "./Add";
+import { AddSaleForm, AddMenuCategoryForm, AddItemForm } from "./Add";
 import Update from "./Update";
 
-export { Add as AddSaleForm, Update as UpdateSaleForm };
+export {
+  AddSaleForm,
+  Update as UpdateSaleForm,
+  AddMenuCategoryForm,
+  AddItemForm,
+};

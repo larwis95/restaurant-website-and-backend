@@ -40,7 +40,7 @@ const Update: React.FC<IUpdateSaleFormProps> = ({
 
   return (
     <form
-      className="flex flex-col items-center justify-center gap-2"
+      className="flex flex-col items-start justify-start h-fit gap-2"
       onSubmit={handleUpdateSale}
     >
       <label htmlFor="morning">Morning</label>
@@ -87,7 +87,12 @@ const Update: React.FC<IUpdateSaleFormProps> = ({
         <Button type="submit" variant="outline">
           Update
         </Button>
-        <Button type="button" variant="destructive" onClick={handleDeleteSale}>
+        <Button
+          type="button"
+          variant="outline"
+          className="border-red-600 text-red-600"
+          onClick={handleDeleteSale}
+        >
           Delete Sale
         </Button>
       </div>

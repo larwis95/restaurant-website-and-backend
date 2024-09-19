@@ -1,13 +1,13 @@
 import { Menu } from "@/models";
-import { NextApiRequest, NextApiResponse } from "next";
 import { MenuResponse, ErrorResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 import databaseConnection from "@/lib/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
-const getAllMenus = async (
-  req: NextApiRequest,
-  res: NextApiResponse<MenuResponse[] | ErrorResponse>
+const getAllMenuCategories = async (
+  req: NextRequest,
+  res: NextResponse<MenuResponse[] | ErrorResponse>
 ) => {
   await databaseConnection();
   try {
@@ -19,13 +19,16 @@ const getAllMenus = async (
   }
 };
 
-const getMenu = async (
-  req: NextApiRequest,
-  res: NextApiResponse<MenuResponse | ErrorResponse>
+const getMenuByCategoryName = async (
+  req: NextRequest,
+  context: { params: Params }
 ) => {
+  const { category } = context.params;
   await databaseConnection();
   try {
-    const menu = await Menu.findById(req.query.id).populate("items");
+    const menu = await Menu.find({
+      name: category,
+    }).populate("items");
     if (!menu) {
       return NextResponse.json({ error: "Menu not found" }, { status: 404 });
     }
@@ -36,4 +39,4 @@ const getMenu = async (
   }
 };
 
-export { getAllMenus, getMenu };
+export { getAllMenuCategories, getMenuByCategoryName };

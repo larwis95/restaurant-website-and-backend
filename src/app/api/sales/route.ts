@@ -29,7 +29,7 @@ const postSale = async (req: NextRequest, res: NextResponse) => {
   const body = await req.json();
   const { date, morning, night, holiday } = body;
   try {
-    if (!date || !morning || !night) {
+    if (!date || morning === undefined || night === undefined) {
       return NextResponse.json(
         {
           error: "Missing required fields. Expected Date, Morning, and Night.",

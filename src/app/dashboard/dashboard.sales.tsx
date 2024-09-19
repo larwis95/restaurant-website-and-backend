@@ -1,26 +1,24 @@
 "use client";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { useSearchParams } from "next/navigation";
 import Section from "../components/Section";
 import SectionText from "../components/Section/Section.Text";
-import { ISalesPageProps } from "./dashboard.interfaces";
 import Prediction from "../components/Dashboard/Sales/Prediction";
 import SalesGraph from "../components/Dashboard/Sales/SalesGraph";
 import SalesTable from "../components/Dashboard/Sales/Table";
 
-const SalesPage: React.FC<ISalesPageProps> = ({ tabs }) => {
+const SalesPage: React.FC = () => {
   const date = format(new Date(), "MMMM do, yyyy");
   return (
     <motion.div
       className="pt-24 w-full h-fit text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"
-      initial={{ x: "-100%" }}
-      animate={{ x: "0%" }}
-      exit={{ x: "150%" }}
-      transition={{ duration: 1, type: "spring", stiffness: 120 }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
     >
       <Section className="flex flex-col w-fit p-4 border border-white rounded-sm h-fit">
-        <SectionText className="flex flex-col w-full text-secondary gap-2 h-50%">
+        <SectionText className="flex flex-col w-full text-secondary gap-2 h-44">
           <div className="flex flex-col items-center justify-center border-b border-secondary p-2">
             <motion.h2
               className="text-2xl w-fit"

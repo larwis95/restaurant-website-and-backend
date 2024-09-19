@@ -1,9 +1,11 @@
 "use client";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 
 const Prediction = () => {
+  const queryClient = useQueryClient();
   const { isPending, error, data } = useQuery({
     queryKey: ["prediction"],
     queryFn: async () => {
@@ -14,7 +16,20 @@ const Prediction = () => {
   });
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <div className="flex flex-row justify-around items-center">
+        <h2>Error Loading Prediction</h2>
+        <Button
+          onClick={() =>
+            queryClient.invalidateQueries({ queryKey: ["prediction"] })
+          }
+          variant="outline"
+          className="border-secondary"
+        >
+          <h3 className="text-2xl">↻</h3>
+        </Button>
+      </div>
+    );
   }
 
   return (
@@ -22,14 +37,13 @@ const Prediction = () => {
       <AnimatePresence mode="wait">
         {isPending && (
           <motion.div
-            className="flex flex-col"
+            className="flex flex-col w-full justify-center items-center"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <Skeleton className="w-full h-6 bg-background border border-white" />
-            <Skeleton className="w-full h-6 bg-background border border-white" />
+            <LoadingSpinner className="text-secondary" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -43,9 +57,9 @@ const Prediction = () => {
             transition={{ delay: 1.0 }}
           >
             <div className="p-2 border-r border-secondary">
-              <h1>Prediction</h1>
+              <h1>Projected Sales</h1>
             </div>
-            <div className="p-2 text-left text-green-700">
+            <div className="p-2 text-left text-green-600">
               <p>
                 <span className="text-secondary">AM:</span> $
                 {Math.floor(data.morningPrediction)}
