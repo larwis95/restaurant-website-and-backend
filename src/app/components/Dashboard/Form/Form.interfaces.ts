@@ -11,3 +11,16 @@ export interface IAddSaleFormProps {
   type?: string;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
+export interface ISetModalState {
+  addItem: boolean;
+  addCategory: boolean;
+}
+
+export interface IAddCategoryFormProps {
+  setModalOpen: React.Dispatch<React.SetStateAction<ISetModalState>>;
+}
+export interface IAddItemFormProps {
+  category: string;
+  setModalOpen: React.Dispatch<React.SetStateAction<ISetModalState>>;
+}

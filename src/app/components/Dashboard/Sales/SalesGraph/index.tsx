@@ -1,7 +1,5 @@
 "use client";
-
-import { Skeleton } from "@/components/ui/skeleton";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { fetchSalesForWeek } from "@/app/libs/queries/sales/sales.get";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
@@ -22,6 +20,7 @@ import { format, getWeekOfMonth } from "date-fns";
 import { chartConfig } from "./SalesGraph.config";
 import { Button } from "@/components/ui/button";
 import { AddSaleForm } from "../../Form";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 const SalesGraph = () => {
   const [addOpen, setAddOpen] = useState(false);
@@ -74,7 +73,7 @@ const SalesGraph = () => {
     <div className="w-full flex flex-col justify-center items-center overflow-x-hidden">
       {isPending && (
         <>
-          <Skeleton className="w-full h-96 bg-background border border-white" />
+          <LoadingSpinner className="text-secondary" />
         </>
       )}
       <ChartContainer config={chartConfig} className="w-full min-h-[200px]">

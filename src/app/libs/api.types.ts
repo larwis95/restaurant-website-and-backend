@@ -11,6 +11,7 @@ export type MenuResponse = {
 };
 
 export type ItemResponse = {
+  _id: string;
   name: string;
   price: number;
   description: string;
@@ -22,6 +23,10 @@ export type SaleResponse = {
   morning: number;
   night: number;
   holiday?: string;
+};
+
+export type DeleteResponse = {
+  message: string;
 };
 
 export type SuccessResponse = {
@@ -84,4 +89,11 @@ export type SaleRequest = {
   morning: number;
   night: number;
   holiday?: string;
+};
+
+export type ItemPostRequest = {
+  name: string;
+  price: number;
+  description: string;
+  category: string;
 };
