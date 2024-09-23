@@ -6,16 +6,25 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+
+import BulkAddSales from "./ModalContent/BulkAddSales";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
 import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 export const DashBoardNotification = () => {
   const { data } = useQuery({
     queryKey: ["missingSales"],
     queryFn: fetchMissingSalesDates,
   });
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   const missingSales = data?.data?.[0];
 
@@ -47,6 +56,12 @@ export const DashBoardNotification = () => {
               <h2 className="text-lg font-bold text-center text-white">
                 Missing Sales
               </h2>
+              <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+                <DialogTrigger>
+                  <Button variant="outline">Add Missing Sales</Button>
+                </DialogTrigger>
+                <BulkAddSales setModalOpen={setModalOpen} />
+              </Dialog>
               {missingSales.dates.map((date, index) => (
                 <>
                   <div
