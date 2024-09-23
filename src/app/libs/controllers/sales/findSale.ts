@@ -1,10 +1,15 @@
 "use server";
 import { Sale } from "@/models";
-import { getWeekOfMonth, startOfYear } from "date-fns";
-import { IFindSaleServerAction } from "../../api.interfaces";
+import { getWeekOfMonth, isToday, startOfYear } from "date-fns";
+import {
+  IFindMissingSaleServerAction,
+  IFindSaleServerAction,
+} from "../../api.interfaces";
 import databaseConnection from "@/lib/db";
 import { NextResponse } from "next/server";
-import { SaleResponse } from "../../api.types";
+import { MissingDate, SaleResponse } from "../../api.types";
+import { format } from "date-fns";
+import { UTCDate } from "@date-fns/utc";
 
 export const findSalesByYear: IFindSaleServerAction = async ({ year }) => {
   await databaseConnection();
@@ -116,4 +121,66 @@ export const findSaleByDay: IFindSaleServerAction = async ({ day }) => {
     );
   }
   return NextResponse.json([sale], { status: 200 });
+};
+
+export const findMissSalesForYear: IFindMissingSaleServerAction = async () => {
+  await databaseConnection();
+  const year = new Date().getFullYear();
+  let start = startOfYear(new Date(year, 0, 1));
+  let end = new UTCDate();
+  let dates = [];
+  while (!isToday(start)) {
+    dates.push(format(start, "yyyy-MM-dd"));
+    start.setDate(start.getDate() + 1);
+  }
+  try {
+    const missingSales: MissingDate[] = await Sale.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: startOfYear(new UTCDate(year, 0, 1)),
+            $lt: end,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          dates: {
+            $push: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$date",
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          dates: {
+            $setDifference: [dates, "$dates"],
+          },
+        },
+      },
+    ]);
+    if (!missingSales) {
+      return NextResponse.json(
+        { message: "No missing sales found for the year" },
+        { status: 400 }
+      );
+    }
+    return NextResponse.json(
+      {
+        message: "Missing sales found",
+        data: missingSales,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      { error: "An error occurred while fetching missing sales" },
+      { status: 500 }
+    );
+  }
 };

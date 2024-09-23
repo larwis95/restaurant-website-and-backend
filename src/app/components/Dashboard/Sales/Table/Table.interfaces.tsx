@@ -1,6 +1,3 @@
-import { IFindSaleServerAction } from "@/app/libs/api.interfaces";
-import { SaleResponse } from "@/app/libs/api.types";
-
 export interface IFilterFormState {
   type: "year" | "month" | "week" | "day" | "currentweek";
   args: {
@@ -33,7 +30,6 @@ export interface IFilterFormContext {
   formState: IFilterFormState;
   setFormState: (state: IFilterFormState) => void;
 }
-
 export interface ISelectedSale {
   date: Date;
   morning: number;

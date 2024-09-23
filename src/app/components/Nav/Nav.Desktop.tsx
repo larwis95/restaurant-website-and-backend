@@ -2,17 +2,18 @@
 import {
   NavigationMenu,
   NavigationMenuContent,
-  NavigationMenuIndicator,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  NavigationMenuViewport,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import Link from "next/link";
 import ListItem from "./Nav.listitem";
 import { INavMenuProps } from "./Nav.interfaces";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import styles from "./Nav.styles";
 
 const DesktopNav: React.FC<INavMenuProps> = ({
@@ -21,6 +22,8 @@ const DesktopNav: React.FC<INavMenuProps> = ({
   navLinks,
   pathName,
 }) => {
+  const router = useRouter();
+  const { status } = useSession();
   return (
     <NavigationMenu className="p-4">
       <NavigationMenuList className="space-x-0">
@@ -67,6 +70,29 @@ const DesktopNav: React.FC<INavMenuProps> = ({
             </Link>
           </NavigationMenuItem>
         ))}
+        {status === "authenticated" && (
+          <NavigationMenuItem>
+            <NavigationMenuTrigger className={styles.button}>
+              Dashboard
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
+                <ListItem title="Dashboard" href="/dashboard">
+                  View your dashboard.
+                </ListItem>
+                <ListItem
+                  title="Logout"
+                  onClick={async () => {
+                    await signOut({ redirect: false });
+                    router.push("/");
+                  }}
+                >
+                  Sign out of your account.
+                </ListItem>
+              </ul>
+            </NavigationMenuContent>
+          </NavigationMenuItem>
+        )}
       </NavigationMenuList>
     </NavigationMenu>
   );

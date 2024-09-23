@@ -9,7 +9,7 @@ export const updateSale = async ({
   fields: UpdateSaleFields;
 }) => {
   try {
-    const response = await fetch(`http://localhost:3000/api/sales`, {
+    const response = await fetch(`/api/sales`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

@@ -37,3 +37,4 @@ next-env.d.ts
 
 # seed data
 /src/lib/db/sales_data.json
+/src/lib/db/base_user.json

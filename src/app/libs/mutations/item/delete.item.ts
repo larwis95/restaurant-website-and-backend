@@ -5,7 +5,7 @@ export const deleteMutationForItem = async (
   _id: string
 ): Promise<DeleteResponse | ErrorResponse> => {
   try {
-    const response = await fetch("/api/item", {
+    const response = await fetch(`/api/item`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
