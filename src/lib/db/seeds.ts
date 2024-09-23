@@ -1,7 +1,8 @@
 import { Sale } from "@/models";
 import mongoose from "mongoose";
-const MONGODB_URI = "mongodb://localhost:27017/bigJoes";
 import * as SALES_DATA from "./sales_data.json";
+
+const MONGODB_URI = undefined;
 
 const connectDb = async () => {
   if (mongoose.connection.readyState >= 1) {

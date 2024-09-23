@@ -1,3 +1,4 @@
+import { SaleRequest } from "@/app/libs/api.types";
 import { ISelectedSale } from "../Sales/Table/Table.interfaces";
 
 export interface IUpdateSaleFormProps {
@@ -23,4 +24,15 @@ export interface IAddCategoryFormProps {
 export interface IAddItemFormProps {
   category: string;
   setModalOpen: React.Dispatch<React.SetStateAction<ISetModalState>>;
+}
+
+export interface IBulkAddSalesInputProps {
+  date: string;
+  handleChange: (
+    index: number,
+    key: keyof SaleRequest,
+    value: string | number
+  ) => void;
+  handleRemoveSale: (index: number) => void;
+  index: number;
 }

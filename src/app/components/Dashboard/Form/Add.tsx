@@ -3,6 +3,7 @@ import {
   IAddCategoryFormProps,
   IAddItemFormProps,
   IAddSaleFormProps,
+  IBulkAddSalesInputProps,
 } from "./Form.interfaces";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
@@ -14,6 +15,7 @@ import { format } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
 import { postMutationForMenu } from "@/app/libs/mutations/menu/post.menu";
 import { postMutationForItem } from "@/app/libs/mutations/item/post.item";
+import { Separator } from "@/components/ui/separator";
 
 export const AddSaleForm: React.FC<IAddSaleFormProps> = ({
   type,
@@ -249,5 +251,63 @@ export const AddItemForm: React.FC<IAddItemFormProps> = ({
         Add Item
       </Button>
     </form>
+  );
+};
+
+export const BulkSaleInputs: React.FC<IBulkAddSalesInputProps> = ({
+  date,
+  handleChange,
+  handleRemoveSale,
+  index,
+}) => {
+  return (
+    <div className="flex flex-col w-full justify-center gap-3 p-2">
+      <div className="flex flex-row w-full justify-end">
+        <Button
+          className="w-fit p-2"
+          variant="outline"
+          type="button"
+          onClick={() => handleRemoveSale(index)}
+        >
+          X
+        </Button>
+      </div>
+      <label htmlFor={`${date}${index}`}>Date</label>
+      <input
+        type="date"
+        id={`${date}${index}`}
+        className="border border-border rounded-md p-2 bg-primary text-white cursor-not-allowed w-fit"
+        value={date}
+        disabled
+        readOnly
+      />
+      <label htmlFor="morning">Morning</label>
+      <input
+        type="number"
+        id="morning"
+        className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+        min={0}
+        onChange={(e) =>
+          handleChange(index, "morning", parseInt(e.target.value))
+        }
+        required
+      />
+      <label htmlFor={`night${index}`}>Night</label>
+      <input
+        type="number"
+        id={`night${index}`}
+        className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+        min={0}
+        onChange={(e) => handleChange(index, "night", parseInt(e.target.value))}
+        required
+      />
+      <label htmlFor={`holiday${index}`}>Holiday?</label>
+      <input
+        id={`holiday${index}`}
+        className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+        onChange={(e) => handleChange(index, "holiday", e.target.value)}
+      />
+      <Separator />
+    </div>
   );
 };

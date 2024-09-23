@@ -27,6 +27,7 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
 
 # vercel
 .vercel
@@ -38,3 +39,5 @@ next-env.d.ts
 # seed data
 /src/lib/db/sales_data.json
 /src/lib/db/base_user.json
+/src/lib/db/seeds.ts
+/src/lib/db/seedBaseUser.ts
