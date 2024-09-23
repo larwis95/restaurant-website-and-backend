@@ -3,6 +3,7 @@ import { Viewport } from "next";
 import { Inter as FontSans } from "next/font/google";
 import { ReactQueryClientProvider } from "./ReactQueryClient";
 import MobileMenuOpenProvider from "./components/Providers/MobileMenuOpen";
+import AuthProvider from "./components/Auth/auth-provider";
 import Header from "./components/Header";
 import { Toaster } from "@/components/ui/toaster";
 import Footer, { FooterCopyWrite, FooterInfo } from "./components/Footer";
@@ -33,21 +34,23 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${fontSans.className} antialiased`}>
-        <MobileMenuOpenProvider>
-          <Header />
-        </MobileMenuOpenProvider>
-        <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
-        <Footer>
-          <FooterInfo>
-            <p>810-724-900 • 1935 S Cedar St, Imlay City, MI 48444</p>
-          </FooterInfo>
-          <FooterCopyWrite>
-            <p className="text-xs text-gray-500">
-              &copy; 2021 Big Joe&rsquo;s Pizza, Chicken, Seafood & Ribs
-            </p>
-          </FooterCopyWrite>
-        </Footer>
-        <Toaster />
+        <AuthProvider>
+          <MobileMenuOpenProvider>
+            <Header />
+          </MobileMenuOpenProvider>
+          <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+          <Footer>
+            <FooterInfo>
+              <p>810-724-900 • 1935 S Cedar St, Imlay City, MI 48444</p>
+            </FooterInfo>
+            <FooterCopyWrite>
+              <p className="text-xs text-gray-500">
+                &copy; 2021 Big Joe&rsquo;s Pizza, Chicken, Seafood & Ribs
+              </p>
+            </FooterCopyWrite>
+          </Footer>
+          <Toaster />
+        </AuthProvider>
       </body>
     </html>
   );

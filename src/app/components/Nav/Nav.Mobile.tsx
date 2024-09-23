@@ -11,6 +11,9 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { INavMenuProps } from "./Nav.interfaces";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const MobileNav: React.FC<INavMenuProps> = ({
   menuLinks,
@@ -18,9 +21,13 @@ const MobileNav: React.FC<INavMenuProps> = ({
   navLinks,
   pathName,
 }) => {
+  const router = useRouter();
+
   const { isMobileMenuOpen, toggleMobileMenu } = useContext(
     MobileMenuOpenContext
   );
+
+  const { status } = useSession();
 
   const handleOutsideClick = (e: MouseEvent) => {
     if (isMobileMenuOpen) {
@@ -82,7 +89,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
               </Button>
               <div className="grid gap-4 py-4">
                 <Collapsible className="grid gap-4">
-                  <CollapsibleTrigger className="flex w-full justify-start items-center text-lg font-semibold [&[data-state=open]>svg]:rotate-90">
+                  <CollapsibleTrigger className="flex w-full items-center text-lg font-semibold [&[data-state=open]>svg]:rotate-90 hover:underline hover:text-secondary">
                     Menu
                     <ChevronRightIcon className="ml-auto h-5 w-5 transition-all" />
                   </CollapsibleTrigger>
@@ -115,7 +122,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
                   </CollapsibleContent>
                 </Collapsible>
                 <Collapsible className="grid gap-4">
-                  <CollapsibleTrigger className="flex w-full items-center text-lg font-semibold [&[data-state=open]>svg]:rotate-90">
+                  <CollapsibleTrigger className="flex w-full items-center text-lg font-semibold [&[data-state=open]>svg]:rotate-90 hover:underline hover:text-secondary">
                     Socials
                     <ChevronRightIcon className="ml-auto h-5 w-5 transition-all" />
                   </CollapsibleTrigger>
@@ -157,6 +164,55 @@ const MobileNav: React.FC<INavMenuProps> = ({
                     {item.pageTitle}
                   </Link>
                 ))}
+                {status === "authenticated" && (
+                  <Collapsible className="grid gap-4">
+                    <CollapsibleTrigger className="flex w-full items-center text-lg font-semibold [&[data-state=open]>svg]:rotate-90 hover:underline hover:text-secondary">
+                      Dashboard
+                      <ChevronRightIcon className="ml-auto h-5 w-5 transition-all" />
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <motion.div
+                        className="-mx-6 grid gap-6 bg-primary p-6 border-border"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <Link
+                          href="/dashboard"
+                          className={`group grid h-auto w-full justify-start gap-1 group-hover:underline group-hover:text-secondary ${pathName === "/dashboard" ? "pointer-events-none" : ""}`}
+                          prefetch={false}
+                        >
+                          <div
+                            className={`${pathName === "/dashboard" ? "text-secondary" : ""} text-sm font-medium leading-none group-hover:text-secondary group-hover:underline`}
+                          >
+                            Dashboard
+                          </div>
+                          <div className="line-clamp-2 text-sm leading-snug text-gray-500 dark:text-gray-400">
+                            View your dashboard.
+                          </div>
+                        </Link>
+                        <Link
+                          href="/api/auth/signout"
+                          className="group grid h-auto w-full justify-start gap-1"
+                          prefetch={false}
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            await signOut({ redirect: false });
+                            router.push("/");
+                          }}
+                        >
+                          <div className="text-sm font-medium leading-none group-hover:text-secondary group-hover:underline">
+                            Logout
+                          </div>
+                          <div className="line-clamp-2 text-sm leading-snug text-gray-500 dark:text-gray-400">
+                            Sign out of your account.
+                          </div>
+                        </Link>
+                      </motion.div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
               </div>
             </motion.div>
           )}

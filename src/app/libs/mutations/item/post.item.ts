@@ -5,7 +5,7 @@ export const postMutationForItem = async (
   item: ItemPostRequest
 ): Promise<ItemResponse | ErrorResponse> => {
   try {
-    const response = await fetch("/api/item", {
+    const response = await fetch(`/api/item`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -6,6 +6,7 @@ import databaseConnection from "@/lib/db";
 import { NextResponse, NextRequest } from "next/server";
 import { startOfWeek, endOfWeek } from "date-fns";
 import {
+  findMissSalesForYear,
   findSaleByDay,
   findSalesByMonth,
   findSalesByWeek,
@@ -101,6 +102,18 @@ export const getYearSales = async (req: NextRequest, res: NextResponse) => {
   const { year } = params;
   try {
     return await findSalesByYear({ year: parseInt(year) });
+  } catch (error) {
+    const message = getErrorMessage(error);
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+};
+
+export const getMissingSalesDates = async (
+  req: NextRequest,
+  res: NextResponse
+) => {
+  try {
+    return await findMissSalesForYear({});
   } catch (error) {
     const message = getErrorMessage(error);
     return NextResponse.json({ error: message }, { status: 500 });

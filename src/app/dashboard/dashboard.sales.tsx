@@ -6,8 +6,12 @@ import SectionText from "../components/Section/Section.Text";
 import Prediction from "../components/Dashboard/Sales/Prediction";
 import SalesGraph from "../components/Dashboard/Sales/SalesGraph";
 import SalesTable from "../components/Dashboard/Sales/Table";
+import DashBoardNotification from "../components/Dashboard/Dashboard.notification";
+import { useSession } from "next-auth/react";
 
 const SalesPage: React.FC = () => {
+  const { data } = useSession();
+
   const date = format(new Date(), "MMMM do, yyyy");
   return (
     <motion.div
@@ -17,7 +21,9 @@ const SalesPage: React.FC = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
     >
-      <Section className="flex flex-col w-fit p-4 border border-white rounded-sm h-fit">
+      <Section className="flex flex-row flex-wrap w-fit p-4 border border-white rounded-sm h-fit">
+        <DashBoardNotification />
+        <div className="flex w-full justify-end items-start"></div>
         <SectionText className="flex flex-col w-full text-secondary gap-2 h-44">
           <div className="flex flex-col items-center justify-center border-b border-secondary p-2">
             <motion.h2
@@ -26,7 +32,15 @@ const SalesPage: React.FC = () => {
               animate={{ opacity: 1 }}
               transition={{ duration: 1.0 }}
             >
-              Hello, Andrew.
+              Hello,{" "}
+              <motion.span
+                className="text-secondary"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 3.0 }}
+              >
+                {data?.user?.name}
+              </motion.span>
             </motion.h2>
             <motion.p
               className="text-lg text-white"

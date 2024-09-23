@@ -1,6 +1,6 @@
 "use client";
 import NavigationTabs from "../components/NavigationTabs";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import SalesPage from "./dashboard.sales";
 import MenuPage from "./dashboard.menu";
 import { AnimatePresence } from "framer-motion";
@@ -10,7 +10,7 @@ const DashboardPage: React.FC = () => {
   const tabs = [
     { name: "Sales", href: "Sales" },
     { name: "Menu", href: "Menu" },
-    { name: "Customers", href: "Customers" },
+    { name: "Specials", href: "Specials" },
   ];
 
   return (
@@ -20,6 +20,9 @@ const DashboardPage: React.FC = () => {
         {(searchParams.get("tab") === "Sales" ||
           searchParams.get("tab") === null) && <SalesPage />}
         {searchParams.get("tab") === "Menu" && <MenuPage />}
+        {searchParams.get("tab") === "Specials" && (
+          <div>Not yet implemented.</div>
+        )}
       </AnimatePresence>
     </div>
   );

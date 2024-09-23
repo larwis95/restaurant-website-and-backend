@@ -1,6 +1,11 @@
 import getErrorMessage from "@/lib/getErrorMessage";
-import { ICreateSaleSeverAction } from "../../api.interfaces";
+import {
+  ICreateBulkSaleSeverAction,
+  ICreateSaleSeverAction,
+} from "../../api.interfaces";
 import { Sale } from "@/models";
+import { data } from "@tensorflow/tfjs";
+import { SaleRequest, SaleResponse } from "../../api.types";
 
 export const createSale: ICreateSaleSeverAction = async ({
   date,
@@ -9,13 +14,23 @@ export const createSale: ICreateSaleSeverAction = async ({
   holiday,
 }) => {
   try {
-    const sale = await Sale.create({
+    const sale: SaleResponse = await Sale.create({
       date,
       morning,
       night,
       holiday: holiday || "No",
     });
     return sale;
+  } catch (error) {
+    const message = getErrorMessage(error);
+    return { error: message };
+  }
+};
+
+export const bulkCreateSales: ICreateBulkSaleSeverAction = async (sales) => {
+  try {
+    const bulkSales: SaleResponse[] = await Sale.insertMany(sales);
+    return bulkSales;
   } catch (error) {
     const message = getErrorMessage(error);
     return { error: message };

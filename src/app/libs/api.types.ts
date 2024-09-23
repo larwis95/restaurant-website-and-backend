@@ -29,8 +29,14 @@ export type DeleteResponse = {
   message: string;
 };
 
-export type SuccessResponse = {
+export type SuccessResponse<T> = {
   message: string;
+  data?: T;
+};
+
+export type MissingDate = {
+  _id: null;
+  dates: Date[];
 };
 
 export type TikTokOembedResponse = {

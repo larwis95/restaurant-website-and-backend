@@ -1,5 +1,7 @@
-import { SaleResponse } from "../../api.types";
+import { get } from "http";
+import { MissingDate, SaleResponse, SuccessResponse } from "../../api.types";
 import { QueryArgs } from "../../hooks/hooks.types";
+import getErrorMessage from "@/lib/getErrorMessage";
 
 export const fetchSalesForCurrentWeek = async (): Promise<SaleResponse[]> => {
   const response = await fetch(`/api/sales/week`);
@@ -58,4 +60,19 @@ export const fetchSalesForDay = async ({
     throw new Error("Error fetching sales data.");
   }
   return data;
+};
+
+export const fetchMissingSalesDates = async (): Promise<
+  SuccessResponse<MissingDate[]>
+> => {
+  try {
+    const response = await fetch(`/api/sales/missing`);
+    const data: SuccessResponse<MissingDate[]> = await response.json();
+    if (!data) {
+      throw new Error("Error fetching missing sales dates.");
+    }
+    return data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
 };

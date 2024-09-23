@@ -4,9 +4,17 @@ import {
   ErrorResponse,
   FindSaleArgs,
   UpdateSaleFields,
+  SuccessResponse,
+  MissingDate,
 } from "./api.types";
 export interface IFindSaleServerAction {
   ({}: FindSaleArgs): Promise<NextResponse<SaleResponse[] | ErrorResponse>>;
+}
+
+export interface IFindMissingSaleServerAction {
+  ({}: FindSaleArgs): Promise<
+    NextResponse<SuccessResponse<MissingDate[]> | ErrorResponse>
+  >;
 }
 
 export interface IUpdateSaleSeverAction {
@@ -23,4 +31,8 @@ export interface ICreateSaleSeverAction {
     night: number;
     holiday?: string;
   }): Promise<SaleResponse | ErrorResponse>;
+}
+
+export interface ICreateBulkSaleSeverAction {
+  (sales: FindSaleArgs[]): Promise<SaleResponse[] | ErrorResponse>;
 }

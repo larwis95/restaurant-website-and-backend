@@ -9,7 +9,7 @@ const Prediction = () => {
   const { isPending, error, data } = useQuery({
     queryKey: ["prediction"],
     queryFn: async () => {
-      const response = await fetch("/api/prediction");
+      const response = await fetch(`/api/prediction`);
       const data = await response.json();
       return data;
     },
