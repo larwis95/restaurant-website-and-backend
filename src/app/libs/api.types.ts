@@ -15,6 +15,7 @@ export type ItemResponse = {
   name: string;
   price: number;
   description: string;
+  image: string;
 };
 
 export type SaleResponse = {

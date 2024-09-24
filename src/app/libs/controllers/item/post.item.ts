@@ -8,7 +8,7 @@ export const postItem = async (
   req: NextRequest,
   res: NextResponse
 ): Promise<NextResponse<ItemResponse | ErrorResponse>> => {
-  const { name, price, description, category } = await req.json();
+  const { name, price, description, category, image } = await req.json();
   await databaseConnection();
   try {
     if (!name || !price || !description || !category) {
@@ -17,7 +17,7 @@ export const postItem = async (
         { status: 400 }
       );
     }
-    const item = await Item.create({ name, price, description });
+    const item = await Item.create({ name, price, description, image });
     const updatedMenu = await Menu.updateOne(
       { name: category },
       { $addToSet: { items: item._id } },

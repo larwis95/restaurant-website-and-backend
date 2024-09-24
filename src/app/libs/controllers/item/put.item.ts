@@ -8,7 +8,7 @@ export const putItem = async (
   req: NextRequest,
   res: NextResponse
 ): Promise<NextResponse<ItemResponse | ErrorResponse>> => {
-  const { _id, name, price, description } = await req.json();
+  const { _id, name, price, description, image } = await req.json();
   await databaseConnection();
   try {
     if (!_id && !name && !price && !description) {
@@ -19,7 +19,7 @@ export const putItem = async (
     }
     const item = await Item.findByIdAndUpdate(
       _id,
-      { name, price, description },
+      { name, price, description, image },
       { new: true }
     );
     if (!item) {

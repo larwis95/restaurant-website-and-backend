@@ -6,17 +6,20 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteMutationForItem } from "@/app/libs/mutations/item/delete.item";
 import { putMutationForItem } from "@/app/libs/mutations/item/put.item";
 import { toast } from "@/hooks/use-toast";
 import { IMenuItemProps } from "./Menu.interfaces";
 import { ItemResponse } from "@/app/libs/api.types";
+import { fetchImages } from "@/app/libs/queries/images/get.images";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import Image from "next/image";
 
 const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
-  const { _id, name, description, price } = item;
+  const { _id, name, description, price, image } = item;
   const [updatedItem, setUpdatedItem] = useState(item);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -43,9 +46,28 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
     },
   });
 
+  const {
+    isPending,
+    error,
+    data: images,
+  } = useQuery({
+    queryKey: ["images"],
+    queryFn: fetchImages,
+  });
+
+  const [selectedImage, setSelectedImage] = useState<number | undefined>(
+    images?.data?.urls.indexOf(image)
+  );
+
   const updateItem = useMutation({
-    mutationFn: async ({ _id, name, price, description }: ItemResponse) => {
-      await putMutationForItem({ _id, name, price, description });
+    mutationFn: async ({
+      _id,
+      name,
+      price,
+      description,
+      image,
+    }: ItemResponse) => {
+      await putMutationForItem({ _id, name, price, description, image });
     },
     onSuccess: () => {
       toast({
@@ -87,7 +109,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
                 className="w-fit hover:cursor-pointer"
                 onClick={() => setIsUpdating(true)}
               >
-                ${price.toPrecision(4)}
+                ${price.toFixed(2)}
               </CardTitle>
             </>
           )}
@@ -129,14 +151,41 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
             </CardDescription>
           )}
           {isUpdating && (
-            <textarea
-              className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600  h-32 w-full"
-              value={updatedItem.description}
-              onChange={(e) =>
-                setUpdatedItem({ ...updatedItem, description: e.target.value })
-              }
-              required
-            />
+            <>
+              <textarea
+                className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600  h-32 w-full"
+                value={updatedItem.description}
+                onChange={(e) =>
+                  setUpdatedItem({
+                    ...updatedItem,
+                    description: e.target.value,
+                  })
+                }
+                required
+              />
+              <ScrollArea className="w-full h-32">
+                <div className="flex flex-row gap-2">
+                  {images?.data?.urls.map((url, index) => (
+                    <Image
+                      key={index}
+                      src={url}
+                      alt={`image-${url}`}
+                      width={80}
+                      height={80}
+                      className={`w-20 h-20 border border-border rounded-md hover:cursor-pointer ${
+                        selectedImage === index
+                          ? "border-green-600 border-2"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        setSelectedImage(index);
+                        setUpdatedItem({ ...updatedItem, image: image });
+                      }}
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
+            </>
           )}
         </CardContent>
         <CardFooter className="flex flex-row justify-between">
