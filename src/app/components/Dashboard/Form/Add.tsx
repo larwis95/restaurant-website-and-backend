@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   IAddCategoryFormProps,
   IAddItemFormProps,
@@ -15,7 +15,11 @@ import { format } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
 import { postMutationForMenu } from "@/app/libs/mutations/menu/post.menu";
 import { postMutationForItem } from "@/app/libs/mutations/item/post.item";
+import { fetchImages } from "@/app/libs/queries/images/get.images";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
+import Image from "next/image";
+import { LoadingSpinner } from "@/components/ui/loading";
 
 export const AddSaleForm: React.FC<IAddSaleFormProps> = ({
   type,
@@ -197,12 +201,24 @@ export const AddItemForm: React.FC<IAddItemFormProps> = ({
     },
   });
 
+  const {
+    isPending,
+    error,
+    data: images,
+  } = useQuery({
+    queryKey: ["images"],
+    queryFn: fetchImages,
+  });
+
   const [formState, setFormState] = useState({
     name: "",
     price: 0,
     description: "",
     category,
+    image: "",
   });
+
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -247,6 +263,28 @@ export const AddItemForm: React.FC<IAddItemFormProps> = ({
         }
         required
       />
+      <ScrollArea>
+        <div className="flex flex-row flex-wrap gap-2">
+          {isPending && <LoadingSpinner className="text-secondary" />}
+          {error && <p>Error: {error.message}</p>}
+          {images &&
+            images.data &&
+            images.data.urls.map((image, index) => (
+              <Image
+                key={image}
+                src={image}
+                alt={image}
+                width={80}
+                height={80}
+                className={`cursor-pointer ${selectedImage === index ? "border border-green-600 pointer-events-none cursor-auto" : "hover:scale-105 hover:border-secondary border border-border transition-all duration-500"}`}
+                onClick={() => {
+                  setFormState({ ...formState, image: image });
+                  setSelectedImage(index);
+                }}
+              />
+            ))}
+        </div>
+      </ScrollArea>
       <Button className="w-fit p-4" variant="outline">
         Add Item
       </Button>

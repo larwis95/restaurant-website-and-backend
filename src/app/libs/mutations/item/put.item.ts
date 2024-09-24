@@ -8,6 +8,7 @@ export const putMutationForItem = async ({
   name,
   price,
   description,
+  image,
 }: ItemResponse): Promise<ItemResponse> => {
   try {
     const response = await fetch(`/api/item`, {
