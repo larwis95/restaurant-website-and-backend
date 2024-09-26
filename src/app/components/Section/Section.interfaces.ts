@@ -1,6 +1,7 @@
 export interface ISectionProps {
   children: React.ReactNode;
   className: string;
+  id?: string;
 }
 
 export interface ISectionTextProps {

@@ -15,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { UTCDate } from "@date-fns/utc";
 
 interface BulkAddSalesProps {
   setModalOpen: (boolean: boolean) => void;
@@ -117,7 +118,7 @@ const BulkAddSales = ({ setModalOpen }: BulkAddSalesProps) => {
             <BulkSaleInputs
               key={index}
               index={index}
-              date={format(new Date(sale.date), "yyyy-MM-dd")}
+              date={format(new UTCDate(sale.date), "yyyy-MM-dd")}
               handleChange={handleSaleChange}
               handleRemoveSale={handleRemoveSale}
             />
