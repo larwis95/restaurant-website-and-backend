@@ -13,32 +13,32 @@ export const menuLinks: NavLinkListConfig[] = [
   {
     title: "Coupons & Specials",
     description: "The best deals in town.",
-    href: "/menu/coupons",
+    href: "/menu#coupons",
   },
   {
     title: "Broasted Chicken",
     description: "Juicy, crispy, and delicious.",
-    href: "/menu/chicken",
+    href: "/menu#chicken",
   },
   {
     title: "Pizza",
     description: "Deep dish, round, and more.",
-    href: "/menu/pizza",
+    href: "/menu#pizza",
   },
   {
     title: "Seafood",
     description: "Fresh and delicious seafood.",
-    href: "/menu/seafood",
+    href: "/menu#seafood",
   },
   {
     title: "Ribs & BBQ",
     description: "Finger-licking, sticky, let us do the cooking.",
-    href: "/menu/ribs",
+    href: "/menu#ribs",
   },
   {
     title: "Sides & More",
     description: "Looking for something extra?",
-    href: "/menu/sides",
+    href: "/menu#sides",
   },
   {
     title: "Catering",
@@ -48,7 +48,7 @@ export const menuLinks: NavLinkListConfig[] = [
   {
     title: "Desserts",
     description: "Satisfy your sweet tooth.",
-    href: "/menu/desserts",
+    href: "/menu#desserts",
   },
 ];
 
