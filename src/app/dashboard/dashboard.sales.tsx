@@ -8,11 +8,16 @@ import SalesGraph from "../components/Dashboard/Sales/SalesGraph";
 import SalesTable from "../components/Dashboard/Sales/Table";
 import DashBoardNotification from "../components/Dashboard/Dashboard.notification";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const SalesPage: React.FC = () => {
   const { data } = useSession();
+  const router = useRouter();
 
   const date = format(new Date(), "MMMM do, yyyy");
+
+  console.log(data);
+
   return (
     <motion.div
       className="pt-24 w-full h-fit text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"

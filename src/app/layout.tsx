@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Viewport } from "next";
 import { Inter as FontSans } from "next/font/google";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ReactQueryClientProvider } from "./ReactQueryClient";
 import MobileMenuOpenProvider from "./components/Providers/MobileMenuOpen";
 import AuthProvider from "./components/Auth/auth-provider";
@@ -22,8 +23,6 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  minimumScale: 1,
-  maximumScale: 1,
 };
 
 export default function RootLayout({
@@ -51,6 +50,7 @@ export default function RootLayout({
           </Footer>
           <Toaster />
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
