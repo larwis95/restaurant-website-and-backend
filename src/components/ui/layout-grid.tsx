@@ -10,6 +10,7 @@ type Card = {
   className: string;
   thumbnail: string;
   title: string;
+  price?: string;
 };
 
 export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
@@ -27,7 +28,7 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
   };
 
   return (
-    <div className="w-3/4 h-full p-0 xl:p-10 lg:p-10 md:p-4 sm:p-0 grid grid-cols-1 md:grid-cols-3 max-w-7xl  gap-4 relative">
+    <div className="w-full xl:w-3/4 lg:w-3/4 h-full p-0 xl:p-10 lg:p-10 md:p-4 sm:p-0 grid grid-cols-1 md:grid-cols-3 max-w-7xl  gap-4 relative">
       {cards.map((card, i) => (
         <div key={i} className={cn(card.className, "")}>
           <motion.div
@@ -53,7 +54,12 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                <div className="text-white text-4xl p-4">{card.title}</div>
+                <div className="flex flex-col items-center justify-start">
+                  <h2 className="text-white text-2xl font-bold">
+                    {card.title}
+                  </h2>
+                  <p className="text-white text-lg">${card.price}</p>
+                </div>
               </motion.div>
             )}
           </motion.div>
