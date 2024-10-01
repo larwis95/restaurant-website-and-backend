@@ -27,6 +27,7 @@ export const fetchAllMenusServerAction = async (): Promise<
     });
     const data: MenuResponse[] | ErrorResponse = await response.json();
     if ("error" in data) {
+      console.log(data);
       throw new Error(data.error);
     }
     return data;
