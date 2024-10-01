@@ -8,7 +8,7 @@ const MenuPage = async () => {
   if ("error" in menuCategories) {
     return (
       <div>
-        <h1>Error loading menu.</h1>
+        <h1>{menuCategories.error}</h1>
       </div>
     );
   }
