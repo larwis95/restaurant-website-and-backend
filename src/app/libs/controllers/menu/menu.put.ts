@@ -1,20 +1,19 @@
 import databaseConnection from "@/lib/db";
 import getErrorMessage from "@/lib/getErrorMessage";
 import { Menu } from "@/models";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import { NextRequest, NextResponse } from "next/server";
+import { ErrorResponse, ItemResponse, MenuResponse } from "../../api.types";
 
-const putMenuCategory = async (req: NextRequest, res: NextResponse) => {
-  const body = await req.json();
-  const { category, items } = body;
-  await databaseConnection();
+export const putMenuByCategory = async (
+  req: NextRequest,
+  context: { params: Params }
+): Promise<NextResponse<MenuResponse | ErrorResponse>> => {
+  const { category } = context.params;
+  const { items }: { items: ItemResponse[] } = await req.json();
   try {
-    if (!category || !items) {
-      return NextResponse.json(
-        { error: "Name and items are required" },
-        { status: 400 }
-      );
-    }
-    const menu = await Menu.findOneAndUpdate(
+    await databaseConnection();
+    const menu: MenuResponse | null = await Menu.findOneAndUpdate(
       { name: category },
       { items },
       { new: true }
@@ -28,5 +27,3 @@ const putMenuCategory = async (req: NextRequest, res: NextResponse) => {
     return NextResponse.json({ error: message }, { status: 500 });
   }
 };
-
-export default putMenuCategory;

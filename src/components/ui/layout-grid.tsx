@@ -54,11 +54,11 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               >
-                <div className="flex flex-col items-center justify-start">
-                  <h2 className="text-white text-2xl font-bold">
+                <div className="flex flex-col items-center justify-center w-fit">
+                  <h2 className="text-white text-2xl font-bold w-fit">
                     {card.title}
                   </h2>
-                  <p className="text-white text-lg">${card.price}</p>
+                  <p className="text-white text-lg w-fit">${card.price}</p>
                 </div>
               </motion.div>
             )}
@@ -122,7 +122,7 @@ const SelectedCard = ({ selected }: { selected: Card | null }) => {
           duration: 0.3,
           ease: "easeInOut",
         }}
-        className="relative px-8 pb-4 z-[70]"
+        className="relative z-[70]"
       >
         {selected?.content}
       </motion.div>

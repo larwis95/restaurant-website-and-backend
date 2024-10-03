@@ -15,7 +15,7 @@ import HeroChevron from "./Hero.Chevron";
 export const HeroCarousel: React.FC<ICarouselProps> = ({ items }) => {
   return (
     <Carousel
-      className="w-full p-4 flex justify-center rounded-md"
+      className="w-full h-screen flex justify-center"
       plugins={[
         AutoPlay({
           delay: 5000,
@@ -26,7 +26,7 @@ export const HeroCarousel: React.FC<ICarouselProps> = ({ items }) => {
       }}
     >
       <HeroHeading />
-      <CarouselContent className="rounded-lg">
+      <CarouselContent className="">
         {items.map((item, index) => (
           <CarouselItem key={index}>
             <Image

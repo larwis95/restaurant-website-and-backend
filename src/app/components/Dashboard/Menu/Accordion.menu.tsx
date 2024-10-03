@@ -13,7 +13,6 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { AddItemForm, AddMenuCategoryForm } from "../Form";
-import MenuItem from "./MenuItem.menu";
 
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +20,7 @@ import { fetchAllMenus } from "@/app/libs/queries/menu/get.menu";
 import { LoadingSpinner } from "@/components/ui/loading";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import Sortable from "./Sortable.menu";
 
 const MenuAccordion: React.FC = () => {
   const { isPending, data, error } = useQuery({
@@ -110,9 +110,7 @@ const MenuAccordion: React.FC = () => {
                 {category.items.length === 0 && (
                   <p className="w-fit">No items found in this category</p>
                 )}
-                {category.items.map((item, index) => (
-                  <MenuItem key={index} item={item} />
-                ))}
+                <Sortable category={category.name} items={category.items} />
               </AccordionContent>
             </AccordionItem>
           </>

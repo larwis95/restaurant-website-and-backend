@@ -15,13 +15,24 @@ import { toast } from "@/hooks/use-toast";
 import { IMenuItemProps } from "./Menu.interfaces";
 import { ItemResponse } from "@/app/libs/api.types";
 import { fetchImages } from "@/app/libs/queries/images/get.images";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
+import { useSortable } from "@dnd-kit/sortable";
+import { set } from "mongoose";
 
-const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
+const MenuItem: React.FC<IMenuItemProps> = ({ item, className }) => {
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({ id: item._id });
+
+  const style = {
+    transform: `translate3d(${transform?.x}px, ${transform?.y}px, 0)`,
+    transition: transition ?? undefined,
+  };
+
   const { _id, name, description, price, image } = item;
   const [updatedItem, setUpdatedItem] = useState(item);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const queryClient = useQueryClient();
   const deleteItem = useMutation({
@@ -94,7 +105,17 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
   };
 
   return (
-    <Card className="bg-slate-900 border border-border w-full sm:w-full md:w-1/2 lg:w-1/5 xl:w-1/5">
+    <Card
+      className={
+        className ||
+        `bg-slate-900 border border-border w-full sm:w-full md:w-1/2 lg:w-1/5 xl:w-1/5`
+      }
+      ref={setNodeRef}
+      {...listeners}
+      id={item._id}
+      onDrag={() => setIsDragging(true)}
+      onDragEnd={() => setIsDragging(false)}
+    >
       <form onSubmit={handleFormSubmit}>
         <CardHeader className="flex flex-col justify-start">
           {!isUpdating && (
@@ -141,7 +162,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
             </>
           )}
         </CardHeader>
-        <CardContent className="flex flex-col justify-start">
+        <CardContent className="flex flex-col justify-start gap-2">
           {!isUpdating && (
             <CardDescription
               className="w-fit hover:cursor-pointer text-left"
@@ -163,8 +184,8 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
                 }
                 required
               />
-              <ScrollArea className="w-full h-32">
-                <div className="flex flex-row gap-2">
+              <ScrollArea className="w-full h-28 border border-border p-2">
+                <div className="flex flex-row flex-wrap justify-start items-center gap-2">
                   {images?.data?.urls.map((url, index) => (
                     <Image
                       key={index}
@@ -172,7 +193,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item }) => {
                       alt={`image-${url}`}
                       width={80}
                       height={80}
-                      className={`w-20 h-20 border border-border rounded-md hover:cursor-pointer ${
+                      className={`w-20 h-20 border border-border rounded-md hover:cursor-pointer transition duration-500 ${
                         selectedImage === index
                           ? "border-green-600 border-2"
                           : ""
