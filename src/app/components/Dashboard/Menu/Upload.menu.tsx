@@ -1,12 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { postImageMutation } from "@/app/libs/upload/post.upload";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "@/hooks/use-toast";
 import { Input } from "@/components/ui/input";
 
 const UploadMenu: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
+  const ref = useRef<HTMLInputElement>(null);
   const uploadImage = useMutation({
     mutationFn: async (file: File) => await postImageMutation(file),
     onError: (error) => {
@@ -19,15 +20,25 @@ const UploadMenu: React.FC = () => {
     onSuccess: () => {
       toast({
         title: "Success",
-        description: "Image uploaded successfully",
+        description: `${file?.name} uploaded successfully`,
       });
+      setFile(null);
+      if (ref.current) {
+        ref.current.value = "";
+      }
     },
   });
 
   const handleUpload = () => {
     if (!file) {
+      toast({
+        title: "Error",
+        description: "No file provided",
+        variant: "destructive",
+      });
       return;
     }
+
     uploadImage.mutate(file);
   };
 
@@ -38,6 +49,7 @@ const UploadMenu: React.FC = () => {
         accept="image/*"
         onChange={(e) => setFile(e.target.files?.[0] || null)}
         className="w-1/2"
+        ref={ref}
       />
       <Button variant="outline" onClick={handleUpload}>
         Upload Image

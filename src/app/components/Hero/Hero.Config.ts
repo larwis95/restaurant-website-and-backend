@@ -73,7 +73,7 @@ export const buttonConfig: Button[] = [
     hoverTextColor: "hover:text-secondary",
   },
   {
-    title: "📞 Give us a Call",
+    title: "📞 810-724-9000",
     href: "tel:+18107249000",
     color: "bg-green-700",
     textColor: "white",
