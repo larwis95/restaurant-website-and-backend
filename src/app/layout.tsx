@@ -40,11 +40,22 @@ export default function RootLayout({
           <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
           <Footer>
             <FooterInfo>
-              <p>810-724-900 • 1935 S Cedar St, Imlay City, MI 48444</p>
+              <p className="text-secondary font-bold">
+                810-724-9000 • 1935 S Cedar St, Imlay City, MI 48444
+              </p>
+              <div className="flex flex-row flex-wrap w-full justify-between">
+                <div className="flex flex-col">
+                  <p className=" text-gray-500">Hours of Operation:</p>
+                  <ul className="flex flex-col">
+                    <li className=" text-gray-500">Mon-Thurs: 11am-9pm</li>
+                    <li className=" text-gray-500">Sun: 12pm-9pm</li>
+                  </ul>
+                </div>
+              </div>
             </FooterInfo>
             <FooterCopyWrite>
               <p className="text-xs text-gray-500">
-                &copy; 2021 Big Joe&rsquo;s Pizza, Chicken, Seafood & Ribs
+                &copy; 2024 Big Joe&rsquo;s Pizza, Chicken, Seafood & Ribs
               </p>
             </FooterCopyWrite>
           </Footer>

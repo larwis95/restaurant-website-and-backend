@@ -7,6 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
+import SpecialPage from "./dashboard.specials";
 
 const DashboardPage: React.FC = () => {
   const searchParams = useSearchParams();
@@ -38,9 +39,7 @@ const DashboardPage: React.FC = () => {
         {(searchParams.get("tab") === "Sales" ||
           searchParams.get("tab") === null) && <SalesPage />}
         {searchParams.get("tab") === "Menu" && <MenuPage />}
-        {searchParams.get("tab") === "Specials" && (
-          <div>Not yet implemented.</div>
-        )}
+        {searchParams.get("tab") === "Specials" && <SpecialPage />}
       </AnimatePresence>
     </div>
   );

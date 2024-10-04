@@ -36,3 +36,7 @@ export interface IBulkAddSalesInputProps {
   handleRemoveSale: (index: number) => void;
   index: number;
 }
+
+export interface IAddSpecialFormProps {
+  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
