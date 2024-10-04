@@ -11,9 +11,10 @@ import {
 import {
   SortableContext,
   arrayMove,
-  horizontalListSortingStrategy,
+  rectSortingStrategy,
+  verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { putMutatiuonForMenu } from "@/app/libs/mutations/menu/put.menu";
 import { toast } from "@/hooks/use-toast";
@@ -32,6 +33,9 @@ export const Sortable = ({
   category: string;
 }) => {
   const queryClient = useQueryClient();
+
+  const isMobile = window.innerWidth < 1024;
+
   const sortMenu = useMutation({
     mutationFn: async ({
       category,
@@ -49,6 +53,7 @@ export const Sortable = ({
         variant: "destructive",
       });
       setActiveId(null);
+      queryClient.invalidateQueries();
     },
     onSuccess: () => {
       toast({
@@ -56,33 +61,41 @@ export const Sortable = ({
         description: "Items sorted successfully",
       });
       setActiveId(null);
-      queryClient.invalidateQueries({
-        queryKey: ["fullMenu"],
-      });
     },
   });
+
+  const [clientItems, setClientItems] = useState(items);
   const [activeId, setActiveId] = useState(null);
+
   const touchSensor = useSensor(TouchSensor, {
     activationConstraint: {
       delay: 250,
       tolerance: 5,
     },
   });
+
   const mouseSensor = useSensor(MouseSensor, {
     activationConstraint: {
       distance: 10,
     },
   });
+
+  useEffect(() => {
+    setClientItems(items);
+  }, [items]);
+
   const sensors = useSensors(touchSensor, mouseSensor);
 
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
     if (active.id !== over.id) {
-      const oldIndex = items.findIndex((item) => item._id === active.id);
-      const newIndex = items.findIndex((item) => item._id === over.id);
-      const newItems = arrayMove(items, oldIndex, newIndex);
+      const oldIndex = clientItems.findIndex((item) => item._id === active.id);
+      const newIndex = clientItems.findIndex((item) => item._id === over.id);
+      const newItems = arrayMove(clientItems, oldIndex, newIndex);
+      setClientItems(newItems);
       sortMenu.mutate({ category, items: newItems });
     }
+    setActiveId(null);
   };
 
   const handleDragStart = (event: any) => {
@@ -98,18 +111,26 @@ export const Sortable = ({
       onDragStart={handleDragStart}
     >
       <SortableContext
-        items={items.map((item) => item._id)}
-        strategy={horizontalListSortingStrategy}
+        items={clientItems.map((item) => item._id)}
+        strategy={isMobile ? verticalListSortingStrategy : rectSortingStrategy}
       >
-        {items.map((item) => (
-          <MenuItem key={item._id} item={item} />
+        {clientItems.map((item) => (
+          <MenuItem
+            key={item._id}
+            item={item}
+            currentlyDragged={activeId === item._id}
+          />
         ))}
 
         <DragOverlay>
           {activeId ? (
             <MenuItem
-              item={items.find((item) => item._id === activeId) as ItemResponse}
-              className={`bg-slate-900 border border-border w-full bg-opacity-40 pointer-events-none`}
+              item={
+                clientItems.find(
+                  (item) => item._id === activeId
+                ) as ItemResponse
+              }
+              className={`bg-slate-900 border border-border w-full pointer-events-none`}
             />
           ) : null}
         </DragOverlay>

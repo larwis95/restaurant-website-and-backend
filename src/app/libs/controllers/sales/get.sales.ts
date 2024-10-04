@@ -1,5 +1,5 @@
 import { Sale } from "@/models";
-import next, { NextApiResponse } from "next";
+import { NextApiResponse } from "next";
 import { SaleResponse, ErrorResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 import databaseConnection from "@/lib/db";

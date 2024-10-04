@@ -26,6 +26,14 @@ export type SaleResponse = {
   holiday?: string;
 };
 
+export type SpecialResponse = {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+};
+
 export type DeleteResponse = {
   message: string;
 };
@@ -103,4 +111,11 @@ export type ItemPostRequest = {
   price: number;
   description: string;
   category: string;
+};
+
+export type SpecialRequest = {
+  name: string;
+  description: string;
+  image: string;
+  price: number;
 };

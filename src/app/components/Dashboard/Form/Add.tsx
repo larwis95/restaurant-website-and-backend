@@ -3,18 +3,24 @@ import {
   IAddCategoryFormProps,
   IAddItemFormProps,
   IAddSaleFormProps,
+  IAddSpecialFormProps,
   IBulkAddSalesInputProps,
 } from "./Form.interfaces";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import { addSale } from "@/app/libs/mutations/sales/post.sales";
 import { useQueryClient } from "@tanstack/react-query";
-import { ItemPostRequest, SaleRequest } from "@/app/libs/api.types";
+import {
+  ItemPostRequest,
+  SaleRequest,
+  SpecialRequest,
+} from "@/app/libs/api.types";
 import { useState } from "react";
 import { format } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
 import { postMutationForMenu } from "@/app/libs/mutations/menu/post.menu";
 import { postMutationForItem } from "@/app/libs/mutations/item/post.item";
+import postSpecial from "@/app/libs/mutations/specials/specials.post";
 import { fetchImages } from "@/app/libs/queries/images/get.images";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
@@ -183,9 +189,7 @@ export const AddItemForm: React.FC<IAddItemFormProps> = ({
       await postMutationForItem(item);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["fullMenu"],
-      });
+      queryClient.invalidateQueries();
       toast({
         title: "Success",
         description: `${formState.name} added successfully to ${category}`,
@@ -347,5 +351,120 @@ export const BulkSaleInputs: React.FC<IBulkAddSalesInputProps> = ({
       />
       <Separator />
     </div>
+  );
+};
+
+export const AddSpecialForm: React.FC<IAddSpecialFormProps> = ({
+  setModalOpen,
+}) => {
+  const queryClient = useQueryClient();
+  const postSpecialMutation = useMutation({
+    mutationFn: async (special: SpecialRequest) => {
+      await postSpecial(special);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+      toast({
+        title: "Success",
+        description: "Special added successfully.",
+      });
+      setModalOpen(false);
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
+  const {
+    isPending,
+    error,
+    data: images,
+  } = useQuery({
+    queryKey: ["images"],
+    queryFn: fetchImages,
+  });
+
+  const [formState, setFormState] = useState({
+    name: "",
+    description: "",
+    price: 0,
+    image: "",
+  });
+
+  const [selectedImage, setSelectedImage] = useState<number | null>(null);
+
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!formState.name || !formState.description || !formState.price) return;
+    postSpecialMutation.mutate(formState);
+  };
+
+  return (
+    <form
+      className={"flex flex-col items-start justify-start h-fit gap-2"}
+      onSubmit={handleFormSubmit}
+    >
+      <label htmlFor="name">Name</label>
+      <input
+        type="text"
+        id="name"
+        className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+        value={formState.name}
+        onChange={(e) => setFormState({ ...formState, name: e.target.value })}
+        required
+      />
+      <label htmlFor="description">Description</label>
+      <textarea
+        id="description"
+        className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+        value={formState.description}
+        onChange={(e) =>
+          setFormState({ ...formState, description: e.target.value })
+        }
+        required
+      />
+      <label htmlFor="price">Price</label>
+      <input
+        type="number"
+        id="price"
+        className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+        value={formState.price}
+        min={0}
+        step={0.01}
+        onChange={(e) =>
+          setFormState({ ...formState, price: parseFloat(e.target.value) })
+        }
+        required
+      />
+      <ScrollArea>
+        <div className="flex flex-row flex-wrap gap-2">
+          {isPending && <LoadingSpinner className="text-secondary" />}
+          {error && <p>Error: {error.message}</p>}
+          {images &&
+            images.data &&
+            images.data.urls.map((image, index) => (
+              <Image
+                key={image}
+                src={image}
+                alt={image}
+                width={80}
+                height={80}
+                className={`cursor-pointer ${selectedImage === index ? "border border-green-600 pointer-events-none cursor-auto" : "hover:scale-105 hover:border-secondary border border-border transition-all duration-500"}`}
+                onClick={() => {
+                  setFormState({ ...formState, image: image });
+                  setSelectedImage(index);
+                }}
+              />
+            ))}
+        </div>
+      </ScrollArea>
+      <Button className="w-fit p-4" variant="outline">
+        Add Special
+      </Button>
+    </form>
   );
 };

@@ -16,3 +16,10 @@ export type SaleSchema = {
   night: number;
   holiday?: string;
 };
+
+export type SpecialSchema = {
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+};

@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteMutationForItem } from "@/app/libs/mutations/item/delete.item";
@@ -18,23 +18,30 @@ import { fetchImages } from "@/app/libs/queries/images/get.images";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useSortable } from "@dnd-kit/sortable";
-import { set } from "mongoose";
+import { CSS } from "@dnd-kit/utilities";
 
-const MenuItem: React.FC<IMenuItemProps> = ({ item, className }) => {
+const MenuItem: React.FC<IMenuItemProps> = ({
+  item,
+  className,
+  currentlyDragged,
+}) => {
+  const { _id, name, description, price, image } = item;
+
   const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({ id: item._id });
+    useSortable({
+      id: item._id,
+    });
 
   const style = {
-    transform: `translate3d(${transform?.x}px, ${transform?.y}px, 0)`,
-    transition: transition ?? undefined,
+    transform: CSS.Transform.toString(transform),
+    transition,
   };
 
-  const { _id, name, description, price, image } = item;
   const [updatedItem, setUpdatedItem] = useState(item);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
 
   const queryClient = useQueryClient();
+
   const deleteItem = useMutation({
     mutationFn: async () => {
       await deleteMutationForItem(_id);
@@ -56,19 +63,6 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item, className }) => {
       });
     },
   });
-
-  const {
-    isPending,
-    error,
-    data: images,
-  } = useQuery({
-    queryKey: ["images"],
-    queryFn: fetchImages,
-  });
-
-  const [selectedImage, setSelectedImage] = useState<number | undefined>(
-    images?.data?.urls.indexOf(image)
-  );
 
   const updateItem = useMutation({
     mutationFn: async ({
@@ -99,6 +93,15 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item, className }) => {
     },
   });
 
+  const { data: images } = useQuery({
+    queryKey: ["images"],
+    queryFn: fetchImages,
+  });
+
+  const [selectedImage, setSelectedImage] = useState<number | undefined>(
+    images?.data?.urls.indexOf(image)
+  );
+
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     updateItem.mutate(updatedItem);
@@ -108,13 +111,13 @@ const MenuItem: React.FC<IMenuItemProps> = ({ item, className }) => {
     <Card
       className={
         className ||
-        `bg-slate-900 border border-border w-full sm:w-full md:w-1/2 lg:w-1/5 xl:w-1/5`
+        `bg-slate-900 border border-border w-full sm:w-full md:w-1/2 lg:w-1/5 xl:w-1/5 ${currentlyDragged && "opacity-0"} `
       }
       ref={setNodeRef}
       {...listeners}
+      {...attributes}
+      style={style}
       id={item._id}
-      onDrag={() => setIsDragging(true)}
-      onDragEnd={() => setIsDragging(false)}
     >
       <form onSubmit={handleFormSubmit}>
         <CardHeader className="flex flex-col justify-start">

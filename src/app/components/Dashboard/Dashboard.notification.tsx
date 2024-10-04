@@ -22,6 +22,7 @@ export const DashBoardNotification = () => {
   const { data } = useQuery({
     queryKey: ["missingSales"],
     queryFn: fetchMissingSalesDates,
+    refetchOnMount: true,
   });
 
   const [modalOpen, setModalOpen] = useState(false);
