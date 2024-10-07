@@ -1,4 +1,4 @@
-import { fetchAllMenusServerAction } from "../libs/queries/menu/get.menu";
+import { fetchAllMenusServerAction } from "@/lib/queries/menu/get.menu";
 import Search from "../components/Inputs/Search";
 import MenuProvider from "../components/Providers/Menu";
 import MenuSection from "../components/Menu/Menu.Section";
