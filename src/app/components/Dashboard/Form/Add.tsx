@@ -8,20 +8,16 @@ import {
 } from "./Form.interfaces";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { addSale } from "@/app/libs/mutations/sales/post.sales";
+import { addSale } from "@/lib/mutations/sales/post.sales";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  ItemPostRequest,
-  SaleRequest,
-  SpecialRequest,
-} from "@/app/libs/api.types";
+import { ItemPostRequest, SaleRequest, SpecialRequest } from "@/lib/api.types";
 import { useState } from "react";
 import { format } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
-import { postMutationForMenu } from "@/app/libs/mutations/menu/post.menu";
-import { postMutationForItem } from "@/app/libs/mutations/item/post.item";
-import postSpecial from "@/app/libs/mutations/specials/specials.post";
-import { fetchImages } from "@/app/libs/queries/images/get.images";
+import { postMutationForMenu } from "@/lib/mutations/menu/post.menu";
+import { postMutationForItem } from "@/lib/mutations/item/post.item";
+import postSpecial from "@/lib/mutations/specials/specials.post";
+import { fetchImages } from "@/lib/queries/images/get.images";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import Image from "next/image";

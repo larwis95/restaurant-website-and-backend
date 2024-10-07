@@ -1,4 +1,4 @@
-import { ItemResponse } from "@/app/libs/api.types";
+import { ItemResponse } from "@/lib/api.types";
 import {
   DndContext,
   closestCenter,
@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { useState, createContext, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { putMutatiuonForMenu } from "@/app/libs/mutations/menu/put.menu";
+import { putMutatiuonForMenu } from "@/lib/mutations/menu/put.menu";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import MenuItem from "./MenuItem.menu";

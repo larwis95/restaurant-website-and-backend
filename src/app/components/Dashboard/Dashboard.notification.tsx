@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchMissingSalesDates } from "@/app/libs/queries/sales/sales.get";
+import { fetchMissingSalesDates } from "@/lib/queries/sales/sales.get";
 import Bell from "../Bell";
 import {
   Popover,

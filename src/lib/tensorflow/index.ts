@@ -1,10 +1,10 @@
-import { TrainingData } from "@/app/libs/api.types";
+import { TrainingData } from "@/lib/api.types";
 import * as tf from "@tensorflow/tfjs";
 import { isAfter } from "date-fns";
 import {
   ITrainModel,
   ITrainModelArgs,
-} from "@/app/libs/controllers/prediction/prediction.interfaces";
+} from "@/lib/controllers/prediction/prediction.interfaces";
 
 declare global {
   var prediction: any;

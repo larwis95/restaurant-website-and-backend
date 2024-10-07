@@ -14,7 +14,7 @@ import {
   fetchSalesForMonth,
   fetchSalesForWeek,
   fetchSalesForYear,
-} from "@/app/libs/queries/sales/sales.get";
+} from "@/lib/queries/sales/sales.get";
 import {
   Dialog,
   DialogContent,
@@ -24,13 +24,13 @@ import {
 } from "@/components/ui/dialog";
 import { AddSaleForm, UpdateSaleForm } from "../../Form";
 import { useToast } from "@/hooks/use-toast";
-import { updateSale } from "@/app/libs/mutations/sales/put.sales";
+import { updateSale } from "@/lib/mutations/sales/put.sales";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDynamicSalesFetch } from "@/app/libs/hooks/useDynamicFetch";
+import { useDynamicSalesFetch } from "@/lib/hooks/useDynamicFetch";
 import { format, getWeekOfMonth } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
-import { UpdateSaleFields } from "@/app/libs/api.types";
+import { UpdateSaleFields } from "@/lib/api.types";
 import { IFilterFormState, ISelectedSale } from "./Table.interfaces";
 import { Button } from "@/components/ui/button";
 import FilterForm from "./Table.FilterForm";

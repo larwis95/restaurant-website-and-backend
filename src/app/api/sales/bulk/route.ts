@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { bulkCreateSales } from "@/app/libs/controllers/sales/createSale";
+import { bulkCreateSales } from "@/lib/controllers/sales/createSale";
 import getErrorMessage from "@/lib/getErrorMessage";
 
 const postBulkSales = async (req: NextRequest, res: NextResponse) => {

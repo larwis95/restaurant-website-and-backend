@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { postImageMutation } from "@/app/libs/upload/post.upload";
+import { postImageMutation } from "@/lib/upload/post.upload";
 import { useMutation } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { toast } from "@/hooks/use-toast";

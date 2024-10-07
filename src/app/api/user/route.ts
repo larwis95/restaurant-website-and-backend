@@ -1,3 +1,3 @@
-import userController from "@/app/libs/controllers/user/user";
+import userController from "@/lib/controllers/user/user";
 
 export { userController as GET };

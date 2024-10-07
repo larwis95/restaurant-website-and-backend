@@ -1,4 +1,4 @@
-import { ErrorResponse, SuccessResponse } from "@/app/libs/api.types";
+import { ErrorResponse, SuccessResponse } from "@/lib/api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 import { list, put } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";

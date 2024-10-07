@@ -1,4 +1,4 @@
-import postSpecial from "@/app/libs/controllers/special/special.post";
-import { getSpecials } from "@/app/libs/controllers/special/special.get";
+import postSpecial from "@/lib/controllers/special/special.post";
+import { getSpecials } from "@/lib/controllers/special/special.get";
 
 export { postSpecial as POST, getSpecials as GET };

@@ -3,7 +3,7 @@
 import { useContext, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
-import { MenuResponse } from "@/app/libs/api.types";
+import { MenuResponse } from "@/lib/api.types";
 import { MenuContext } from "../../Providers/Menu";
 
 const Search = ({ menu }: { menu: MenuResponse[] }) => {

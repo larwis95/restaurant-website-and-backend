@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { IUpdateSaleFormProps } from "./Form.interfaces";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteSaleByDate } from "@/app/libs/mutations/sales/delete.sales";
+import { deleteSaleByDate } from "@/lib/mutations/sales/delete.sales";
 import { toast } from "@/hooks/use-toast";
 
 const Update: React.FC<IUpdateSaleFormProps> = ({

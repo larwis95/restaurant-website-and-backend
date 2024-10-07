@@ -1,4 +1,4 @@
-import { getSaleForDate } from "@/app/libs/controllers/sales/get.sales";
-import deleteSaleByDate from "@/app/libs/controllers/sales/delete.sales";
+import { getSaleForDate } from "@/lib/controllers/sales/get.sales";
+import deleteSaleByDate from "@/lib/controllers/sales/delete.sales";
 
 export { getSaleForDate as GET, deleteSaleByDate as DELETE };
