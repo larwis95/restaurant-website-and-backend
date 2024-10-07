@@ -15,7 +15,7 @@ import {
 import { LoadingSpinner } from "@/components/ui/loading";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
-import { getSpecials } from "@/app/libs/queries/specials/get.specials";
+import { getSpecials } from "@/lib/queries/specials/get.specials";
 import { useState } from "react";
 import { AddSpecialForm } from "../Form/Add";
 

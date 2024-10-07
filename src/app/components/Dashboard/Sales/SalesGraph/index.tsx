@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { fetchSalesForWeek } from "@/app/libs/queries/sales/sales.get";
+import { fetchSalesForWeek } from "@/lib/queries/sales/sales.get";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,

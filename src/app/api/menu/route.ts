@@ -1,4 +1,4 @@
-import { getAllMenuCategories } from "@/app/libs/controllers/menu/menu.get";
-import postMenuCategory from "@/app/libs/controllers/menu/menu.post";
+import { getAllMenuCategories } from "@/lib/controllers/menu/menu.get";
+import postMenuCategory from "@/lib/controllers/menu/menu.post";
 
 export { getAllMenuCategories as GET, postMenuCategory as POST };

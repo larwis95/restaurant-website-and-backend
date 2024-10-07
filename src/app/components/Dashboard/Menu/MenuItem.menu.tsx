@@ -9,12 +9,12 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteMutationForItem } from "@/app/libs/mutations/item/delete.item";
-import { putMutationForItem } from "@/app/libs/mutations/item/put.item";
+import { deleteMutationForItem } from "@/lib/mutations/item/delete.item";
+import { putMutationForItem } from "@/lib/mutations/item/put.item";
 import { toast } from "@/hooks/use-toast";
 import { IMenuItemProps } from "./Menu.interfaces";
-import { ItemResponse } from "@/app/libs/api.types";
-import { fetchImages } from "@/app/libs/queries/images/get.images";
+import { ItemResponse } from "@/lib/api.types";
+import { fetchImages } from "@/lib/queries/images/get.images";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useSortable } from "@dnd-kit/sortable";

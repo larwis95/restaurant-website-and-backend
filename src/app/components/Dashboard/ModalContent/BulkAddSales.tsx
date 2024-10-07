@@ -4,12 +4,12 @@ import {
   DialogHeader,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { bulkAddSales } from "@/app/libs/mutations/sales/post.sales";
-import { fetchMissingSalesDates } from "@/app/libs/queries/sales/sales.get";
+import { bulkAddSales } from "@/lib/mutations/sales/post.sales";
+import { fetchMissingSalesDates } from "@/lib/queries/sales/sales.get";
 import { toast } from "@/hooks/use-toast";
 import { useState, useEffect, use } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { SaleRequest } from "@/app/libs/api.types";
+import { SaleRequest } from "@/lib/api.types";
 import { BulkSaleInputs } from "../Form/Add";
 import { useQueryClient } from "@tanstack/react-query";
 import { ScrollArea } from "@/components/ui/scroll-area";

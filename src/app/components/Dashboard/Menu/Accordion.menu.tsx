@@ -16,7 +16,7 @@ import { AddItemForm, AddMenuCategoryForm } from "../Form";
 
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
-import { fetchAllMenus } from "@/app/libs/queries/menu/get.menu";
+import { fetchAllMenus } from "@/lib/queries/menu/get.menu";
 import { LoadingSpinner } from "@/components/ui/loading";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";

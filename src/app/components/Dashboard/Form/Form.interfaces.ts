@@ -1,4 +1,4 @@
-import { SaleRequest } from "@/app/libs/api.types";
+import { SaleRequest } from "@/lib/api.types";
 import { ISelectedSale } from "../Sales/Table/Table.interfaces";
 
 export interface IUpdateSaleFormProps {

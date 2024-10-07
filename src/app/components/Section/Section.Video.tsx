@@ -1,5 +1,5 @@
 import { ISectionVideoProps } from "./Section.interfaces";
-import { getTikTok } from "../../libs/queries/tiktok/get.tiktok";
+import { getTikTok } from "@/lib/queries/tiktok/get.tiktok";
 
 const SectionVideo: React.FC<ISectionVideoProps> = async ({ url }) => {
   const [loading, data] = await getTikTok(url);

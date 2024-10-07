@@ -1,4 +1,4 @@
-import { ItemResponse } from "@/app/libs/api.types";
+import { ItemResponse } from "@/lib/api.types";
 
 export interface IMenuItemProps {
   item: ItemResponse;

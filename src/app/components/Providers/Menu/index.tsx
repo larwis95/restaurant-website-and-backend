@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuResponse } from "@/app/libs/api.types";
+import { MenuResponse } from "@/lib/api.types";
 import { useState, useContext, createContext } from "react";
 
 export const MenuContext = createContext<{

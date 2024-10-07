@@ -1,6 +1,6 @@
-import { UpdateSaleFields } from "@/app/libs/api.types";
-import { createSale } from "@/app/libs/controllers/sales/createSale";
-import { updateSale } from "@/app/libs/controllers/sales/updateSale";
+import { UpdateSaleFields } from "@/lib/api.types";
+import { createSale } from "@/lib/controllers/sales/createSale";
+import { updateSale } from "@/lib/controllers/sales/updateSale";
 import getErrorMessage from "@/lib/getErrorMessage";
 import { NextRequest, NextResponse } from "next/server";
 

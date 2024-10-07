@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { getSpecials } from "../libs/queries/specials/get.specials";
+import { getSpecials } from "@/lib/queries/specials/get.specials";
 import { HeroParallax } from "@/components/ui/hero-parallax";
 import { LoadingSpinner } from "@/components/ui/loading";
 
