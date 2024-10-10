@@ -1,6 +1,6 @@
-import { IMenuItemProps } from "../Dashboard/Menu/Menu.interfaces";
+import { IMenuCardProps } from "./interfaces.Cards";
 
-const MenuCard: React.FC<IMenuItemProps> = ({ item }) => {
+const MenuCard: React.FC<IMenuCardProps> = ({ item }) => {
   const { name, price, description } = item;
   return (
     <div className="bg-black bg-opacity-70 rounded-lg shadow-lg p-4 flex flex-col justify-start items-start w-full">
