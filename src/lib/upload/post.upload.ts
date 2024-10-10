@@ -5,8 +5,7 @@ export const postImageMutation = async (file: File) => {
     if (!file) {
       throw new Error("No file provided");
     }
-    const fileName = file.name;
-    const response = await fetch(`/api/upload/image?filename=${fileName}`, {
+    const response = await fetch(`/api/upload/image?filename=${file.name}`, {
       method: "POST",
       body: file,
     });

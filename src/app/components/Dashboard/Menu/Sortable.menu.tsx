@@ -1,4 +1,4 @@
-import { ItemResponse } from "@/lib/api.types";
+import { ItemResponse, SpecialResponse } from "@/lib/api.types";
 import {
   DndContext,
   closestCenter,
@@ -14,53 +14,60 @@ import {
   rectSortingStrategy,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useState, createContext, useEffect } from "react";
+import React, { useState, createContext, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { putMutatiuonForMenu } from "@/lib/mutations/menu/put.menu";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import MenuItem from "./MenuItem.menu";
+import { ISortableProps } from "./Menu.interfaces";
 
 export const ItemsContext = createContext({
   items: [] as ItemResponse[],
 });
 
-export const Sortable = ({
+export const Sortable: React.FC<ISortableProps> = ({
   items,
   category,
-}: {
-  items: ItemResponse[];
-  category: string;
+  mutation,
+  mutationMap,
 }) => {
   const queryClient = useQueryClient();
 
   const isMobile = window.innerWidth < 1024;
 
   const sortMenu = useMutation({
-    mutationFn: async ({
-      category,
-      items,
-    }: {
-      category: string;
-      items: ItemResponse[];
-    }) => {
-      await putMutatiuonForMenu(category, items);
+    mutationFn: async (
+      arg:
+        | { category: string; items: ItemResponse[] }
+        | { specials: SpecialResponse[] }
+    ) => {
+      if (!mutation) return;
+      await mutation(arg);
     },
     onError: (error) => {
+      if (!mutation) return;
       toast({
         title: "Error",
         description: "Failed to update items sort order",
         variant: "destructive",
       });
       setActiveId(null);
-      queryClient.invalidateQueries();
     },
     onSuccess: () => {
+      if (!mutation) return;
       toast({
         title: "Success",
         description: "Items sorted successfully",
       });
       setActiveId(null);
+      queryClient.invalidateQueries({
+        predicate(query) {
+          return ["menu", "activeSpecials"].includes(
+            query.queryKey[0] as string
+          );
+        },
+      });
     },
   });
 
@@ -81,6 +88,7 @@ export const Sortable = ({
   });
 
   useEffect(() => {
+    console.log("useEffect");
     setClientItems(items);
   }, [items]);
 
@@ -93,7 +101,8 @@ export const Sortable = ({
       const newIndex = clientItems.findIndex((item) => item._id === over.id);
       const newItems = arrayMove(clientItems, oldIndex, newIndex);
       setClientItems(newItems);
-      sortMenu.mutate({ category, items: newItems });
+      if (category) return sortMenu.mutate({ category, items: newItems });
+      sortMenu.mutate({ specials: newItems as SpecialResponse[] });
     }
     setActiveId(null);
   };
@@ -119,6 +128,7 @@ export const Sortable = ({
             key={item._id}
             item={item}
             currentlyDragged={activeId === item._id}
+            mutationMap={mutationMap}
           />
         ))}
 
@@ -131,6 +141,7 @@ export const Sortable = ({
                 ) as ItemResponse
               }
               className={`bg-slate-900 border border-border w-full pointer-events-none`}
+              mutationMap={mutationMap}
             />
           ) : null}
         </DragOverlay>

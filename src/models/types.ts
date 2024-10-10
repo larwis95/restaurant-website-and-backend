@@ -22,4 +22,9 @@ export type SpecialSchema = {
   description: string;
   image: string;
   price: number;
+  active: boolean;
+};
+
+export type ActiveSpecialsSchema = {
+  specials: SpecialSchema[];
 };

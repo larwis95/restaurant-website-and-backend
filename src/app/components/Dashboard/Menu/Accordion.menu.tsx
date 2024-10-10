@@ -13,7 +13,9 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { AddItemForm, AddMenuCategoryForm } from "../Form";
-
+import { putMutationForItem } from "@/lib/mutations/item/put.item";
+import { deleteMutationForItem } from "@/lib/mutations/item/delete.item";
+import { putMutatiuonForMenu } from "@/lib/mutations/menu/put.menu";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllMenus } from "@/lib/queries/menu/get.menu";
@@ -110,7 +112,15 @@ const MenuAccordion: React.FC = () => {
                 {category.items.length === 0 && (
                   <p className="w-fit">No items found in this category</p>
                 )}
-                <Sortable category={category.name} items={category.items} />
+                <Sortable
+                  category={category.name}
+                  items={category.items}
+                  mutation={putMutatiuonForMenu}
+                  mutationMap={{
+                    put: putMutationForItem,
+                    del: deleteMutationForItem,
+                  }}
+                />
               </AccordionContent>
             </AccordionItem>
           </>

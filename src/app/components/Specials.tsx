@@ -1,16 +1,20 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { getSpecials } from "@/lib/queries/specials/get.specials";
+import { getActiveSpecials } from "@/lib/queries/specials/get.specials";
 import { HeroParallax } from "@/components/ui/hero-parallax";
 import { LoadingSpinner } from "@/components/ui/loading";
 
 const Specials = () => {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["specials"],
-    queryFn: getSpecials,
+  const {
+    data: activeSpecials,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["activeSpecials"],
+    queryFn: getActiveSpecials,
   });
 
-  const specials = data?.map((special) => {
+  const specials = activeSpecials?.map((special) => {
     return {
       title: special.name,
       description: special.description,

@@ -20,13 +20,13 @@ const SalesPage: React.FC = () => {
 
   return (
     <motion.div
-      className="pt-24 w-full h-fit text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"
+      className="w-full h-fit text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
     >
-      <Section className="flex flex-row flex-wrap w-fit p-4 border border-white rounded-sm h-fit">
+      <Section className="flex flex-row flex-wrap w-full xl:w-fit lg:w-fit md:w-fit sm:w-full p-4 border border-white rounded-sm h-fit">
         <DashBoardNotification />
         <div className="flex w-full justify-end items-start"></div>
         <SectionText className="flex flex-col w-full text-secondary gap-2 h-44">
