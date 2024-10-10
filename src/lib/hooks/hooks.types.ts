@@ -9,7 +9,7 @@ export type QueryFn = ({
   month,
   week,
   day,
-}?: QueryArgs) => Promise<SaleResponse[]>;
+}: QueryArgs) => Promise<SaleResponse[]>;
 
 export type UseDynamicSalesFetch = (
   queryMap: QueryMap,
