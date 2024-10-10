@@ -6,7 +6,7 @@ import UploadMenu from "../components/Dashboard/Menu/Upload.menu";
 const MenuPage: React.FC = () => {
   return (
     <motion.div
-      className="pt-24 w-full h-fit text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"
+      className="w-full h-fit text-center flex flex-wrap gap-5 flex-row items-center justify-center overflow-x-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}

@@ -16,7 +16,7 @@ export const putMutationForItem = async ({
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ _id, name, price, description }),
+      body: JSON.stringify({ _id, name, price, description, image }),
     });
     const data: ItemResponse | ErrorResponse = await response.json();
     if ("error" in data) {

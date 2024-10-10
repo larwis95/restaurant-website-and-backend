@@ -18,23 +18,11 @@ const DashboardPage: React.FC = () => {
     { name: "Specials", href: "Specials" },
   ];
 
-  if (data?.user.name === "Stephanie") {
-    toast({
-      title: ".|..",
-      description: (
-        <Image
-          src="https://jhxtohkjwg0z7s7m.public.blob.vercel-storage.com/IMG_0094-IxmNX7534YiltRUjia4hWaSEd0Jjli.jpeg"
-          alt="Stephanie"
-          width={300}
-          height={300}
-        />
-      ),
-    });
-  }
-
   return (
-    <div className="w-full h-fit flex flex-col items-center pt-24 p-4 overflow-x-hidden">
-      <NavigationTabs tabs={tabs} />
+    <div className="w-full h-fit flex flex-col pt-24 pb-1 overflow-x-hidden">
+      <div className="flex w-fit flex-row justify-start items-end p-2">
+        <NavigationTabs tabs={tabs} />
+      </div>
       <AnimatePresence mode="wait">
         {(searchParams.get("tab") === "Sales" ||
           searchParams.get("tab") === null) && <SalesPage />}

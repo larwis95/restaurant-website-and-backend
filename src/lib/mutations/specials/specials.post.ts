@@ -25,4 +25,24 @@ const postSpecial = async (body: {
   }
 };
 
+export const postActiveSpecial = async (): Promise<
+  SpecialResponse[] | ErrorResponse
+> => {
+  try {
+    const response = await fetch(`/api/special/active`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data: SpecialResponse[] | ErrorResponse = await response.json();
+    if ("error" in data) {
+      throw new Error(data.error);
+    }
+    return data;
+  } catch (error) {
+    throw new Error(getErrorMessage(error));
+  }
+};
+
 export default postSpecial;

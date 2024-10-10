@@ -1,10 +1,13 @@
 import getErrorMessage from "@/lib/getErrorMessage";
 import { ErrorResponse, ItemResponse, MenuResponse } from "../../api.types";
 
-export const putMutatiuonForMenu = async (
-  category: string,
-  items: ItemResponse[]
-) => {
+export const putMutatiuonForMenu = async ({
+  category,
+  items,
+}: {
+  category: string;
+  items: ItemResponse[];
+}) => {
   try {
     const response = await fetch(`/api/menu/${category}`, {
       method: "PUT",

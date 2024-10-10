@@ -24,8 +24,10 @@ const MenuItem: React.FC<IMenuItemProps> = ({
   item,
   className,
   currentlyDragged,
+  mutationMap,
 }) => {
   const { _id, name, description, price, image } = item;
+  const { put, del } = mutationMap;
 
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
@@ -44,16 +46,14 @@ const MenuItem: React.FC<IMenuItemProps> = ({
 
   const deleteItem = useMutation({
     mutationFn: async () => {
-      await deleteMutationForItem(_id);
+      await del(_id);
     },
     onSuccess: () => {
       toast({
         title: "Success",
         description: `${name} deleted successfully`,
       });
-      queryClient.invalidateQueries({
-        queryKey: ["fullMenu"],
-      });
+      queryClient.invalidateQueries();
     },
     onError: (error) => {
       toast({
@@ -72,16 +72,14 @@ const MenuItem: React.FC<IMenuItemProps> = ({
       description,
       image,
     }: ItemResponse) => {
-      await putMutationForItem({ _id, name, price, description, image });
+      await put({ _id, name, price, description, image });
     },
     onSuccess: () => {
       toast({
         title: "Success",
         description: `${name} updated successfully`,
       });
-      queryClient.invalidateQueries({
-        queryKey: ["fullMenu"],
-      });
+      queryClient.invalidateQueries();
       setIsUpdating(false);
     },
     onError: (error) => {
