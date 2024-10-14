@@ -1,17 +1,13 @@
 "use client";
 import NavigationTabs from "../components/NavigationTabs";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import SalesPage from "./dashboard.sales";
 import MenuPage from "./dashboard.menu";
 import { AnimatePresence } from "framer-motion";
-import { useSession } from "next-auth/react";
-import { toast } from "@/hooks/use-toast";
-import Image from "next/image";
 import SpecialPage from "./dashboard.specials";
 
 const DashboardPage: React.FC = () => {
   const searchParams = useSearchParams();
-  const { data } = useSession();
   const tabs = [
     { name: "Sales", href: "Sales" },
     { name: "Menu", href: "Menu" },

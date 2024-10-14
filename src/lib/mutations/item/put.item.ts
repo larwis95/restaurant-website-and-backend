@@ -1,8 +1,6 @@
 import getErrorMessage from "@/lib/getErrorMessage";
 import { ErrorResponse, ItemResponse } from "../../api.types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
 export const putMutationForItem = async ({
   _id,
   name,
