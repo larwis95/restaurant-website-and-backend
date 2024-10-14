@@ -41,11 +41,17 @@ export const findSalesByMonth: IFindSaleServerAction = async ({
   month,
 }) => {
   await databaseConnection();
+  if (typeof year === "undefined" || typeof month === "undefined") {
+    return NextResponse.json(
+      { error: "Year and month are required" },
+      { status: 400 }
+    );
+  }
   const sales: SaleResponse[] = await Sale.find(
     {
       date: {
         $gte: new Date(`${year}-${month}-01`),
-        $lt: new Date(`${year}-${month}-31`),
+        $lt: new Date(`${year}-${month + 1}-01`),
       },
     },
     "-__v"
@@ -86,10 +92,12 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
   weeksMap.set("3", []);
   weeksMap.set("4", []);
   weeksMap.set("5", []);
+  weeksMap.set("6", []);
 
   for (let i = 0; i < weekSales.length; i++) {
     const sale = weekSales[i];
     const weekOfMonth = getWeekOfMonth(sale.date);
+    console.log(weekOfMonth);
     weeksMap.get(weekOfMonth.toString()).push(sale);
   }
 

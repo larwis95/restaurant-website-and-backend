@@ -10,7 +10,6 @@ import {
 export interface IFindSaleServerAction {
   ({}: FindSaleArgs): Promise<NextResponse<SaleResponse[] | ErrorResponse>>;
 }
-
 export interface IFindMissingSaleServerAction {
   ({}: FindSaleArgs): Promise<
     NextResponse<SuccessResponse<MissingDate[]> | ErrorResponse>
@@ -23,7 +22,6 @@ export interface IUpdateSaleSeverAction {
     fields: UpdateSaleFields;
   }): Promise<SaleResponse | ErrorResponse>;
 }
-
 export interface ICreateSaleSeverAction {
   ({}: {
     date: string;
@@ -32,7 +30,6 @@ export interface ICreateSaleSeverAction {
     holiday?: string;
   }): Promise<SaleResponse | ErrorResponse>;
 }
-
 export interface ICreateBulkSaleSeverAction {
   (sales: FindSaleArgs[]): Promise<SaleResponse[] | ErrorResponse>;
 }

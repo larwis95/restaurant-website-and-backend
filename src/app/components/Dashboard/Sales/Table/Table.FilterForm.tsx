@@ -92,7 +92,7 @@ const FilterForm = ({ setFetch }: IFilterFormProps) => {
             <TableInput
               type="number"
               name="week"
-              max={5}
+              max={6}
               min={1}
               dataType={formType.type}
             />
