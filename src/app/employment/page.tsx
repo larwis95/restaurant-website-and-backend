@@ -27,7 +27,7 @@ const EmploymentPage: React.FC = () => {
   ];
   return (
     <div className="w-full flex flex-col pt-24 overflow-x-hidden">
-      <Section className="w-full flex flex-col justify-center items-start">
+      <Section className="w-full h-fit flex flex-col justify-center items-start">
         <Collage photos={photos} />
         <EmploymentForm />
       </Section>
