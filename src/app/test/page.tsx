@@ -4,9 +4,8 @@ import makingPizza from "../../../public/images/728CD99A-D369-481C-9CCC-4CA6FB79
 import transaction from "../../../public/images/transaction.webp";
 import team from "../../../public/images/DSC_6549.webp";
 import kitchen from "../../../public/images/DSC_7225.webp";
-import EmploymentForm from "../components/Forms/Employment";
 
-const EmploymentPage: React.FC = () => {
+const TestPage = () => {
   const photos = [
     {
       src: makingPizza,
@@ -25,14 +24,13 @@ const EmploymentPage: React.FC = () => {
       alt: "Working the kitchen at Big Joe's",
     },
   ];
+
   return (
-    <div className="w-full flex flex-col pt-24 overflow-x-hidden">
-      <Section className="w-full flex flex-col justify-center items-start">
-        <Collage photos={photos} />
-        <EmploymentForm />
-      </Section>
-    </div>
+    <Section className="w-full h-fit flex flex-col justify-center items-center py-24  border-b border-border">
+      <h1>Test</h1>
+      <Collage photos={photos} />
+    </Section>
   );
 };
 
-export default EmploymentPage;
+export default TestPage;
