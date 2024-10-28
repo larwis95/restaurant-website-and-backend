@@ -8,7 +8,7 @@ interface ICollageProps {
 
 const Collage: React.FC<ICollageProps> = ({ photos }) => {
   return (
-    <div className="w-full h-[200svh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-center max-w-7xl gap-4">
+    <div className="w-full h-[200svh] xl:h-fit lg:h-fit md:h-fit sm:h-[200svh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-center max-w-7xl gap-4">
       {photos.map((photo, index) => (
         <motion.div
           key={index}

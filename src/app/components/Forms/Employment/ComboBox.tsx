@@ -24,59 +24,68 @@ const ComboBox: React.FC<IComboBoxProps> = ({ positions }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-[200px] justify-between"
-        >
-          {(value &&
-            positions.find((position) => position.value === value)?.label) ||
-            "Select a position"}
-          <motion.svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            animate={{ rotate: open ? 180 : 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+    <>
+      <input
+        type="text"
+        value={value}
+        name="position"
+        readOnly
+        className="hidden"
+      />
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            variant="outline"
+            role="combobox"
+            aria-expanded={open}
+            className="w-[200px] justify-between"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </motion.svg>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
-        <Command>
-          <CommandInput placeholder="Search for a position" />
-          <CommandList>
-            <CommandEmpty>No positions found</CommandEmpty>
-            <CommandGroup>
-              {positions.map((position) => (
-                <CommandItem
-                  key={position.value}
-                  value={position.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
-                    setOpen(false);
-                  }}
-                  className={`${position.value === value ? "border-2 border-green-600" : ""} transition duration-500 `}
-                >
-                  {position.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+            {(value &&
+              positions.find((position) => position.value === value)?.label) ||
+              "Select a position"}
+            <motion.svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              animate={{ rotate: open ? 180 : 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </motion.svg>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-[200px] p-0">
+          <Command>
+            <CommandInput placeholder="Search for a position" />
+            <CommandList>
+              <CommandEmpty>No positions found</CommandEmpty>
+              <CommandGroup>
+                {positions.map((position) => (
+                  <CommandItem
+                    key={position.value}
+                    value={position.value}
+                    onSelect={(currentValue) => {
+                      setValue(currentValue === value ? "" : currentValue);
+                      setOpen(false);
+                    }}
+                    className={`${position.value === value ? "border-2 border-green-600" : ""} transition duration-500 `}
+                  >
+                    {position.label}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
+          </Command>
+        </PopoverContent>
+      </Popover>
+    </>
   );
 };
 
