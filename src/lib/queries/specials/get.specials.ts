@@ -29,11 +29,9 @@ const getSpecialById = async (id: string): Promise<SpecialResponse> => {
 
 const getSpecialsServerAction = async (): Promise<SpecialResponse[]> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-  console.log("Specials Server Action", apiUrl);
   try {
     const response = await fetch(`${apiUrl}/special`);
     const data: SpecialResponse[] | ErrorResponse = await response.json();
-    console.log("Specials data", data);
     if ("error" in data) {
       throw new Error(data.error);
     }

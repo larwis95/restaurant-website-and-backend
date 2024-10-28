@@ -88,7 +88,6 @@ export const Sortable: React.FC<ISortableProps> = ({
   });
 
   useEffect(() => {
-    console.log("useEffect");
     setClientItems(items);
   }, [items]);
 

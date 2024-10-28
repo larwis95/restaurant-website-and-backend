@@ -21,6 +21,7 @@ import { chartConfig } from "./SalesGraph.config";
 import { Button } from "@/components/ui/button";
 import { AddSaleForm } from "../../Form";
 import { LoadingSpinner } from "@/components/ui/loading";
+import { UTCDate } from "@date-fns/utc";
 
 const SalesGraph = () => {
   const [addOpen, setAddOpen] = useState(false);
@@ -36,7 +37,7 @@ const SalesGraph = () => {
   });
 
   const salesData = data?.map((sale) => ({
-    date: format(new Date(sale.date), "MM/dd"),
+    date: format(new UTCDate(sale.date), "MM/dd"),
     morning: sale.morning,
     night: sale.night,
   }));
