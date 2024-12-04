@@ -5,7 +5,7 @@ import DesktopNav from "./Nav.Desktop";
 import MobileNav from "./Nav.Mobile";
 import { INavProps } from "./Nav.interfaces";
 
-const Nav: React.FC<INavProps> = ({ isMobile }) => {
+const Nav: React.FC<INavProps> = ({ isMobile, status }) => {
   const pathName = usePathname();
   return (
     <>
@@ -15,6 +15,7 @@ const Nav: React.FC<INavProps> = ({ isMobile }) => {
           socialLinks={socialLinks}
           navLinks={navLinks}
           pathName={pathName}
+          status={status}
         />
       ) : (
         <DesktopNav
@@ -22,6 +23,7 @@ const Nav: React.FC<INavProps> = ({ isMobile }) => {
           socialLinks={socialLinks}
           navLinks={navLinks}
           pathName={pathName}
+          status={status}
         />
       )}
     </>

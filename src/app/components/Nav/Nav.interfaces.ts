@@ -1,3 +1,4 @@
+import { Session } from "next-auth";
 import {
   NavLinkConfig,
   SocialLinkListConfig,
@@ -9,10 +10,12 @@ export interface INavMenuProps {
   socialLinks: SocialLinkListConfig[];
   navLinks: NavLinkConfig[];
   pathName: string;
+  status: Session | null;
 }
 
 export interface INavProps {
   isMobile: boolean;
+  status: Session | null;
 }
 
 export interface IMobileIconProps {

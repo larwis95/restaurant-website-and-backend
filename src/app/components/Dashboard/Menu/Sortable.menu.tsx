@@ -16,7 +16,6 @@ import {
 } from "@dnd-kit/sortable";
 import React, { useState, createContext, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { putMutatiuonForMenu } from "@/lib/mutations/menu/put.menu";
 import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import MenuItem from "./MenuItem.menu";
@@ -61,13 +60,7 @@ export const Sortable: React.FC<ISortableProps> = ({
         description: "Items sorted successfully",
       });
       setActiveId(null);
-      queryClient.invalidateQueries({
-        predicate(query) {
-          return ["menu", "activeSpecials"].includes(
-            query.queryKey[0] as string
-          );
-        },
-      });
+      queryClient.invalidateQueries();
     },
   });
 

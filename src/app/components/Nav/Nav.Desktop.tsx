@@ -14,21 +14,23 @@ import { INavMenuProps } from "./Nav.interfaces";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import styles from "./Nav.styles";
+import { cn } from "@/lib/utils";
 
 const DesktopNav: React.FC<INavMenuProps> = ({
   menuLinks,
   socialLinks,
   navLinks,
   pathName,
+  status,
 }) => {
   const router = useRouter();
-  const { status } = useSession();
   return (
-    <NavigationMenu className="p-4">
-      <NavigationMenuList className="space-x-0">
+    <NavigationMenu className="w-full">
+      <NavigationMenuList className="flex gap-3">
         <NavigationMenuItem>
-          <NavigationMenuTrigger className={styles.button}>
+          <NavigationMenuTrigger
+            className={`rounded-none transition-all duration-500 ${pathName.includes("/menu") ? "border-b-2" : ""}`}
+          >
             Menu
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -42,7 +44,7 @@ const DesktopNav: React.FC<INavMenuProps> = ({
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger className={styles.button}>
+          <NavigationMenuTrigger className="rounded-none">
             Socials
           </NavigationMenuTrigger>
           <NavigationMenuContent>
@@ -60,19 +62,20 @@ const DesktopNav: React.FC<INavMenuProps> = ({
           </NavigationMenuContent>
         </NavigationMenuItem>
         {navLinks.map((item) => (
-          <NavigationMenuItem key={item.href}>
+          <NavigationMenuItem
+            className={`${cn(navigationMenuTriggerStyle(), "rounded-none")} ${pathName.includes(item.href) ? "border-b-2 pointer-events-none" : ""}`}
+            key={item.href}
+          >
             <Link href={item.href} legacyBehavior passHref>
-              <NavigationMenuLink
-                className={`${navigationMenuTriggerStyle()} ${pathName === item.href ? styles.active : styles.button}`}
-              >
-                {item.pageTitle}
-              </NavigationMenuLink>
+              <NavigationMenuLink>{item.pageTitle}</NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
         ))}
-        {status === "authenticated" && (
+        {status && (
           <NavigationMenuItem>
-            <NavigationMenuTrigger className={styles.button}>
+            <NavigationMenuTrigger
+              className={`rounded-none transition-all duration-500 ${pathName.includes("/dashboard") ? "border-b-2" : ""}`}
+            >
               Dashboard
             </NavigationMenuTrigger>
             <NavigationMenuContent>
@@ -85,6 +88,7 @@ const DesktopNav: React.FC<INavMenuProps> = ({
                   onClick={async () => {
                     await signOut({ redirect: false });
                     router.push("/");
+                    router.refresh();
                   }}
                 >
                   Sign out of your account.
