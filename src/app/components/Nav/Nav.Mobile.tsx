@@ -11,7 +11,6 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { INavMenuProps } from "./Nav.interfaces";
-import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -20,14 +19,13 @@ const MobileNav: React.FC<INavMenuProps> = ({
   socialLinks,
   navLinks,
   pathName,
+  status,
 }) => {
   const router = useRouter();
 
   const { isMobileMenuOpen, toggleMobileMenu } = useContext(
     MobileMenuOpenContext
   );
-
-  const { status } = useSession();
 
   const handleOutsideClick = (e: MouseEvent) => {
     if (isMobileMenuOpen) {
@@ -58,7 +56,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
       <div>
         {!isMobileMenuOpen && (
           <Button
-            className="fixed z-[15] right-4"
+            className="z-[15]"
             variant="outline"
             size="icon"
             onClick={toggleMobileMenu}
@@ -81,7 +79,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
               <Button
                 variant="ghost"
                 size="icon"
-                className="self-start"
+                className="self-end"
                 onClick={toggleMobileMenu}
               >
                 <XIcon className="h-6 w-6" />
@@ -107,6 +105,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
                           href={item.href}
                           className={`group grid h-auto w-full justify-start gap-1 ${pathName === item.href ? "pointer-events-none" : ""}`}
                           prefetch={false}
+                          onClick={toggleMobileMenu}
                         >
                           <div
                             className={`${pathName === item.href ? "text-secondary" : ""} text-sm font-medium leading-none group-hover:text-secondary group-hover:underline`}
@@ -140,6 +139,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
                           href={item.href}
                           className={`group grid h-auto w-full justify-start gap-1 ${pathName === item.href ? "pointer-events-none" : ""}`}
                           prefetch={false}
+                          onClick={toggleMobileMenu}
                         >
                           <div
                             className={`${pathName === item.href ? "text-secondary" : ""} text-sm font-medium leading-none group-hover:text-secondary group-hover:underline`}
@@ -160,11 +160,12 @@ const MobileNav: React.FC<INavMenuProps> = ({
                     href={item.href}
                     className={`flex w-full items-center py-2 text-lg font-semibold ${pathName === item.href ? "text-secondary pointer-events-none" : "hover:text-secondary hover:underline"}`}
                     prefetch={false}
+                    onClick={toggleMobileMenu}
                   >
                     {item.pageTitle}
                   </Link>
                 ))}
-                {status === "authenticated" && (
+                {status && (
                   <Collapsible className="grid gap-4">
                     <CollapsibleTrigger className="flex w-full items-center text-lg font-semibold [&[data-state=open]>svg]:rotate-90 hover:underline hover:text-secondary">
                       Dashboard
@@ -182,6 +183,7 @@ const MobileNav: React.FC<INavMenuProps> = ({
                           href="/dashboard"
                           className={`group grid h-auto w-full justify-start gap-1 group-hover:underline group-hover:text-secondary ${pathName === "/dashboard" ? "pointer-events-none" : ""}`}
                           prefetch={false}
+                          onClick={toggleMobileMenu}
                         >
                           <div
                             className={`${pathName === "/dashboard" ? "text-secondary" : ""} text-sm font-medium leading-none group-hover:text-secondary group-hover:underline`}
@@ -199,7 +201,9 @@ const MobileNav: React.FC<INavMenuProps> = ({
                           onClick={async (e) => {
                             e.preventDefault();
                             await signOut({ redirect: false });
+                            toggleMobileMenu();
                             router.push("/");
+                            router.refresh();
                           }}
                         >
                           <div className="text-sm font-medium leading-none group-hover:text-secondary group-hover:underline">
