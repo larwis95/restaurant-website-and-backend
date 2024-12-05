@@ -22,19 +22,19 @@ const salesTypeMap = {
       year: new Date().getFullYear(),
       month:
         weekofMonth === 1 ? new Date().getMonth() : new Date().getMonth() + 1,
-      week: weekofMonth === 1 ? 4 : weekofMonth - 1,
+      week: weekofMonth === 1 ? 5 : weekofMonth - 1,
     });
   },
   currentMonth: async () => {
     return await fetchSalesForMonth({
       year: new Date().getFullYear(),
-      month: 9,
+      month: new Date().getMonth() + 1,
     });
   },
   prevMonth: async () => {
     return await fetchSalesForMonth({
       year: new Date().getFullYear(),
-      month: 8,
+      month: new Date().getMonth(),
     });
   },
   currentYear: async () => {
