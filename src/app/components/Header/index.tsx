@@ -11,7 +11,6 @@ const Header: React.FC = async () => {
   const parser = ua ? new UAParser(ua) : null;
   const isMobile = parser ? parser.getDevice().type === "mobile" : false;
   const status = await getServerSession(authOptions);
-  console.log(status);
 
   return (
     <header className="sticky top-0 w-screen p-2 z-[9999] bg-background">

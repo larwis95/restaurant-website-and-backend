@@ -20,14 +20,12 @@ export const fetchAllMenusServerAction = async (): Promise<
   MenuResponse[] | ErrorResponse
 > => {
   const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
-  console.log("apiURL", apiURL);
   try {
     const response = await fetch(`${apiURL}/menu`, {
       cache: "no-store",
     });
     const data: MenuResponse[] | ErrorResponse = await response.json();
     if ("error" in data) {
-      console.log(data);
       throw new Error(data.error);
     }
     return data;

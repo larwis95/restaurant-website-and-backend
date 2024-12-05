@@ -12,11 +12,7 @@ import { useRouter } from "next/navigation";
 
 const SalesPage: React.FC = () => {
   const { data } = useSession();
-  const router = useRouter();
-
   const date = format(new Date(), "MMMM do, yyyy");
-
-  console.log(data);
 
   return (
     <motion.div
@@ -59,7 +55,7 @@ const SalesPage: React.FC = () => {
           <Prediction />
         </SectionText>
       </Section>
-      <Section className="flex flex-col xl:w-1/3 lg:w-1/3 sm:w-full xs:w-full md:w-1/2 p-4 border border-white rounded-sm">
+      <Section className="flex flex-col w-full h-screen p-4 border border-white rounded-sm">
         <SalesGraph />
       </Section>
       <Section className="flex flex-col w-full p-4 border border-white rounded-sm gap-4">
