@@ -47,7 +47,6 @@ export const findSalesByMonth: IFindSaleServerAction = async ({
       { status: 400 }
     );
   }
-  console.log(year, month);
   const sales: SaleResponse[] = await Sale.find(
     {
       date: {

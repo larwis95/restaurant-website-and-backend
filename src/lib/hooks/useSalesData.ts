@@ -8,6 +8,7 @@ import { getWeekOfMonth } from "date-fns";
 import { UseSalesResponse } from "./hooks.types";
 
 const weekofMonth = getWeekOfMonth(new Date());
+const currentMonth = new Date().getMonth();
 
 const salesTypeMap = {
   currentWeek: async () => {
@@ -28,13 +29,16 @@ const salesTypeMap = {
   currentMonth: async () => {
     return await fetchSalesForMonth({
       year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1,
+      month: currentMonth,
     });
   },
   prevMonth: async () => {
     return await fetchSalesForMonth({
-      year: new Date().getFullYear(),
-      month: new Date().getMonth(),
+      year:
+        currentMonth === 0
+          ? new Date().getFullYear() - 1
+          : new Date().getFullYear(),
+      month: currentMonth === 0 ? 11 : currentMonth - 1,
     });
   },
   currentYear: async () => {
