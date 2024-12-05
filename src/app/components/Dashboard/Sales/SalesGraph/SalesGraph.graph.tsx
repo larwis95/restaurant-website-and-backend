@@ -18,7 +18,6 @@ import useSalesGraphData from "@/lib/hooks/useSalesGraphData";
 import { UTCDate } from "@date-fns/utc";
 import { format } from "date-fns";
 import Arrow from "@/app/components/Arrow";
-import { m } from "framer-motion";
 
 interface IGraphProps {
   data: UseSalesResponse;
@@ -66,6 +65,7 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
   >("currentWeek");
 
   const { total, chartData } = useSalesGraphData(data);
+  console.log(total);
 
   const weeklyTrend =
     (total.currentWeek ?? 0) < (total.prevWeekToDay ?? 0) ? "down" : "up";
