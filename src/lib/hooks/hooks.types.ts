@@ -1,3 +1,4 @@
+import { UseQueryResult } from "@tanstack/react-query";
 import { SaleResponse } from "../api.types";
 
 export type QueryMap = {
@@ -26,4 +27,13 @@ export type QueryArgs = {
   month?: number;
   week?: number;
   day?: string;
+};
+
+export type UseSalesResponse = {
+  currentWeek: UseQueryResult<SaleResponse[], Error>;
+  prevWeek: UseQueryResult<SaleResponse[], Error>;
+  currentMonth: UseQueryResult<SaleResponse[], Error>;
+  prevMonth: UseQueryResult<SaleResponse[], Error>;
+  currentYear: UseQueryResult<SaleResponse[], Error>;
+  prevYear: UseQueryResult<SaleResponse[], Error>;
 };
