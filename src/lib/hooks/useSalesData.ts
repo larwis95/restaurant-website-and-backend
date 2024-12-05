@@ -10,6 +10,8 @@ import { UseSalesResponse } from "./hooks.types";
 const weekofMonth = getWeekOfMonth(new Date());
 const currentMonth = new Date().getMonth();
 
+console.log(weekofMonth, currentMonth);
+
 const salesTypeMap = {
   currentWeek: async () => {
     return await fetchSalesForWeek({
@@ -29,16 +31,16 @@ const salesTypeMap = {
   currentMonth: async () => {
     return await fetchSalesForMonth({
       year: new Date().getFullYear(),
-      month: currentMonth,
+      month: currentMonth + 1,
     });
   },
   prevMonth: async () => {
     return await fetchSalesForMonth({
       year:
-        currentMonth === 0
+        currentMonth === 1
           ? new Date().getFullYear() - 1
           : new Date().getFullYear(),
-      month: currentMonth === 0 ? 11 : currentMonth - 1,
+      month: currentMonth === 1 ? 12 : currentMonth,
     });
   },
   currentYear: async () => {
