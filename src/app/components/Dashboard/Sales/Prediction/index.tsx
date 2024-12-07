@@ -1,19 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
+import { format } from "date-fns";
 
-const Prediction = () => {
+import { IPredictionProps } from "./Prediction.interfaces";
+import { IPrediction } from "@/lib/tensorflow";
+
+const Prediction: React.FC<IPredictionProps> = ({ data, isPending, error }) => {
   const queryClient = useQueryClient();
-  const { isPending, error, data } = useQuery({
-    queryKey: ["prediction"],
-    queryFn: async () => {
-      const response = await fetch(`/api/prediction`);
-      const data = await response.json();
-      return data;
-    },
-  });
+  const date = format(new Date(), "EEEE").toLowerCase() as keyof IPrediction;
 
   if (error) {
     return (
@@ -62,11 +59,11 @@ const Prediction = () => {
             <div className="p-2 text-left text-green-600">
               <p>
                 <span className="text-secondary">AM:</span> $
-                {Math.floor(data.morningPrediction)}
+                {Math.floor(data[date as keyof IPrediction].morning ?? 0)}
               </p>
               <p>
                 <span className="text-secondary">PM:</span> $
-                {Math.floor(data.nightPrediction)}
+                {Math.floor(data[date].night ?? 0)}
               </p>
             </div>
           </motion.div>

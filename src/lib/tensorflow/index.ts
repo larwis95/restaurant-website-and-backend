@@ -1,6 +1,13 @@
 import { TrainingData } from "@/lib/api.types";
 import * as tf from "@tensorflow/tfjs";
-import { isAfter } from "date-fns";
+
+import {
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  isAfter,
+  format,
+} from "date-fns";
 import {
   ITrainModel,
   ITrainModelArgs,
@@ -8,6 +15,68 @@ import {
 
 declare global {
   var prediction: any;
+}
+
+interface IPredictionTensors {
+  monday: {
+    morning: tf.Tensor | null;
+    night: tf.Tensor | null;
+  };
+  tuesday: {
+    morning: tf.Tensor | null;
+    night: tf.Tensor | null;
+  };
+  wednesday: {
+    morning: tf.Tensor | null;
+    night: tf.Tensor | null;
+  };
+  thursday: {
+    morning: tf.Tensor | null;
+    night: tf.Tensor | null;
+  };
+  friday: {
+    morning: tf.Tensor | null;
+    night: tf.Tensor | null;
+  };
+  saturday: {
+    morning: tf.Tensor | null;
+    night: tf.Tensor | null;
+  };
+  sunday: {
+    morning: tf.Tensor | null;
+    night: tf.Tensor | null;
+  };
+}
+
+export interface IPrediction {
+  monday: {
+    morning: number | null;
+    night: number | null;
+  };
+  tuesday: {
+    morning: number | null;
+    night: number | null;
+  };
+  wednesday: {
+    morning: number | null;
+    night: number | null;
+  };
+  thursday: {
+    morning: number | null;
+    night: number | null;
+  };
+  friday: {
+    morning: number | null;
+    night: number | null;
+  };
+  saturday: {
+    morning: number | null;
+    night: number | null;
+  };
+  sunday: {
+    morning: number | null;
+    night: number | null;
+  };
 }
 
 let cached = global.prediction;
@@ -73,17 +142,41 @@ const getPrediction = async <ITrainModelArgs>(
     ]);
   }
   try {
+    const currentWeekDates = eachDayOfInterval({
+      start: startOfWeek(new Date(), { weekStartsOn: 1 }),
+      end: endOfWeek(new Date(), { weekStartsOn: 1 }),
+    });
     const [morningModel, nightModel] = models;
-    const morningPrediction = morningModel.predict(
-      tf.tensor1d([new Date().getDay()])
-    ) as tf.Tensor;
-    const nightPrediction = nightModel.predict(
-      tf.tensor1d([new Date().getDay()])
-    ) as tf.Tensor;
-    cached.model = [
-      Math.floor(morningPrediction.dataSync()[0]),
-      Math.floor(nightPrediction.dataSync()[0]),
-    ];
+    const prediction = currentWeekDates.reduce<IPredictionTensors>(
+      (acc, date, index) => {
+        const day = format(date, "EEEE").toLowerCase() as keyof IPrediction;
+        if (!acc[day]) {
+          acc[day] = { morning: null, night: null };
+        }
+        if (acc[day].morning === null) {
+          acc[day].morning = morningModel.predict(
+            tf.tensor1d([date.getDay()])
+          ) as tf.Tensor;
+        }
+        if (acc[day].night === null) {
+          acc[day].night = nightModel.predict(
+            tf.tensor1d([date.getDay()])
+          ) as tf.Tensor;
+        }
+        return acc;
+      },
+      {} as IPredictionTensors
+    );
+
+    cached.model = currentWeekDates.reduce<IPrediction>((acc, date) => {
+      const day = format(date, "EEEE").toLowerCase() as keyof IPrediction;
+      if (!acc[day]) {
+        acc[day] = { morning: null, night: null };
+      }
+      acc[day].morning = (prediction[day].morning as tf.Tensor).dataSync()[0];
+      acc[day].night = (prediction[day].night as tf.Tensor).dataSync()[0];
+      return acc;
+    }, {} as IPrediction);
   } catch (error) {
     console.error("Error training model", error);
   }

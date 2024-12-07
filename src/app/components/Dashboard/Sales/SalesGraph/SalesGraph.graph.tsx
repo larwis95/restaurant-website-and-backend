@@ -12,12 +12,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useState } from "react";
+import Trends from "./SalesGraph.Trends";
+import { useState, useMemo } from "react";
 import { UseSalesResponse } from "@/lib/hooks/hooks.types";
 import useSalesGraphData from "@/lib/hooks/useSalesGraphData";
 import { UTCDate } from "@date-fns/utc";
 import { format } from "date-fns";
-import Arrow from "@/app/components/Arrow";
 
 interface IGraphProps {
   data: UseSalesResponse;
@@ -65,24 +65,20 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
   >("currentWeek");
 
   const { total, chartData } = useSalesGraphData(data);
-  console.log(total);
 
-  const weeklyTrend =
-    (total.currentWeek ?? 0) < (total.prevWeekToDay ?? 0) ? "down" : "up";
-  const monthlyTrend =
-    (total.currentMonth ?? 0) < (total.prevMonthToDay ?? 0) ? "down" : "up";
-  const yearlyTrend =
-    (total.currentYear ?? 0) < (total.prevYearToDay ?? 0) ? "down" : "up";
-
-  const trendPercentage = (current: number, prev: number) => {
-    const result = ((current - prev) / prev) * 100;
-    if (isNaN(result)) {
-      return "Error Calculating Percentage";
-    }
-    if (result === Infinity) {
-      return "100%";
-    }
-    return result.toFixed(2) + "%";
+  const trends = useMemo(() => {
+    return {
+      weeklyTrend:
+        (total.currentWeek ?? 0) > (total.prevWeekToDay ?? 0) ? "up" : "down",
+      monthlyTrend:
+        (total.currentMonth ?? 0) > (total.prevMonthToDay ?? 0) ? "up" : "down",
+      yearlyTrend:
+        (total.currentYear ?? 0) > (total.prevYearToDay ?? 0) ? "up" : "down",
+    };
+  }, [total]) satisfies {
+    weeklyTrend: "up" | "down";
+    monthlyTrend: "up" | "down";
+    yearlyTrend: "up" | "down";
   };
 
   return (
@@ -95,7 +91,7 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
             year.
           </CardDescription>
         </div>
-        <div className="flex">
+        <div className="flex overflow-x-scroll no-scrollbar">
           {[
             "currentWeek",
             "prevWeek",
@@ -160,7 +156,7 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
                 tickMargin={8}
                 minTickGap={32}
                 tickFormatter={(value) => {
-                  return format(new UTCDate(0, value - 1, 1), "MMM");
+                  return format(new UTCDate(0, value, 1), "MMM");
                 }}
               />
             )}
@@ -171,16 +167,14 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                return new UTCDate(value).toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+                return format(new UTCDate(value), "dd MMM");
               }}
             />
             <ChartTooltip content={<ChartTooltipContent />} />
             <Bar
               dataKey={activeChartType === "week" ? "morning" : "total"}
               fill={activeChartType === "week" ? "#FFC107" : "#FFC107"}
+              barSize={32}
             />
             {activeChartType === "week" && (
               <Bar
@@ -188,67 +182,13 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
                 fill="#FF5722"
                 stackId="stack"
                 label={{ position: "top" }}
+                barSize={32}
               />
             )}
           </BarChart>
         </ChartContainer>
-        <CardFooter className="flex justify-end p-4 w-full">
-          <div className="flex flex-row flex-wrap justify-end w-full">
-            <div className="flex flex-col items-end w-full p-2">
-              <div className="flex flex-col w-fit justify-start">
-                <h2 className="w-fit text-lg">Sales Trends</h2>
-                <p className="text-gray-500 text-sm w-fit">
-                  Your sales trends calculated to current date.
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 border-border border p-2">
-              <p className="text-lg">Weekly Sales</p>
-              <Arrow
-                direction={weeklyTrend}
-                className={
-                  weeklyTrend === "down" ? "text-red-500" : "text-green-500"
-                }
-              />
-              <p className="text text-muted">
-                {trendPercentage(
-                  total.currentWeek ?? 0,
-                  total.prevWeekToDay ?? 0
-                )}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 border-border border p-2">
-              <p className="text-lg">Monthly Sales</p>
-              <Arrow
-                direction={monthlyTrend}
-                className={
-                  monthlyTrend === "down" ? "text-red-500" : "text-green-500"
-                }
-              />
-              <p className="text text-muted">
-                {trendPercentage(
-                  total.currentMonth ?? 0,
-                  total.prevMonthToDay ?? 0
-                )}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 border-border border p-2">
-              <p className="text-lg">Yearly Sales</p>
-              <Arrow
-                direction={yearlyTrend}
-                className={
-                  yearlyTrend === "down" ? "text-red-500" : "text-green-500"
-                }
-              />
-              <p className="text text-muted">
-                {trendPercentage(
-                  total.currentYear ?? 0,
-                  total.prevYearToDay ?? 0
-                )}
-              </p>
-            </div>
-          </div>
-        </CardFooter>
+        <CardFooter className="flex justify-end p-4 w-full"></CardFooter>
+        <Trends trends={trends} total={total} />
       </CardContent>
     </Card>
   );
