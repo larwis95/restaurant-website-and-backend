@@ -25,15 +25,9 @@ const predict = async (req: NextRequest, res: NextApiResponse) => {
       { status: 500 }
     );
   }
-  const [morningPrediction, nightPrediction] =
-    await getPrediction<ITrainModelArgs>(trainingData);
-  return NextResponse.json(
-    {
-      morningPrediction,
-      nightPrediction,
-    },
-    { status: 200 }
-  );
+  const prediction = await getPrediction<ITrainModelArgs>(trainingData);
+  console.log(prediction);
+  return NextResponse.json(prediction, { status: 200 });
 };
 
 export default predict;

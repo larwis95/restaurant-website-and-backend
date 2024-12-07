@@ -16,7 +16,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="w-full h-fit flex flex-col pt-24 pb-1 overflow-x-hidden">
-      <div className="flex w-fit flex-row justify-start items-end p-2">
+      <div className="flex w-full flex-row justify-center items-center p-4">
         <NavigationTabs tabs={tabs} />
       </div>
       <AnimatePresence mode="wait">
