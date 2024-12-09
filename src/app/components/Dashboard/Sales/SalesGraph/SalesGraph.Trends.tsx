@@ -18,17 +18,14 @@ interface ITrendsProps {
 
 const Trends: React.FC<ITrendsProps> = ({ total, trends }) => {
   const trendPercentage = (current: number, prev: number) => {
-    const result = ((current - prev) / prev) * 100;
-    if (isNaN(result)) {
-      return "Error";
-    }
-    if (result === Infinity) {
-      return "100%";
-    }
-    return result.toFixed(2) + "%";
+    console.log(current, prev);
+    if (prev === 0 || current === 0) return "Needs data";
+    const diff = current - prev;
+    const percentage = (diff / prev) * 100;
+    return `${percentage.toFixed(2)}%`;
   };
-
   const trendTypes = ["week", "month", "year"];
+  console.log(total);
 
   return (
     <div className="flex flex-col flex-wrap items-end w-full">
@@ -43,9 +40,13 @@ const Trends: React.FC<ITrendsProps> = ({ total, trends }) => {
       <div className="flex flex-1 flex-wrap w-1/3 justify-end items-end">
         {trendTypes.map((type) => {
           const trendKey = `${type}lyTrend` as keyof typeof trends;
+          console.log(trendKey);
           const currentKey =
             `current${type[0].toUpperCase()}${type.slice(1)}` as keyof typeof total;
-          const prevKey = `prev${type}ToDay` as keyof typeof total;
+          console.log(currentKey);
+          const prevKey =
+            `prev${type[0].toUpperCase()}${type.slice(1)}ToDay` as keyof typeof total;
+          console.log("current" + total[currentKey], "prev" + total[prevKey]);
           return (
             <Trend
               key={type}

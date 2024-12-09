@@ -14,6 +14,8 @@ const Arrow: React.FC<ArrowProps> = ({ direction, className }) => {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      width={24}
+      height={24}
     >
       {direction === "up" ? (
         <polyline points="18 15 12 9 6 15"></polyline>
