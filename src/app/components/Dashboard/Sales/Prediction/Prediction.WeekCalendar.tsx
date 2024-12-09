@@ -24,16 +24,16 @@ const WeekCalendar: React.FC<IWeekCardProps> = ({ prediction }) => {
 
   return prediction ? (
     <Card className="bg-background overflow-hidden">
-      <CardHeader className="border-b">
-        <CardTitle>Your Week Ahead</CardTitle>
+      <CardHeader className="flex items-start justify-start border-b pb-2">
+        <CardTitle className="text-2xl">Your Week Ahead</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col items-stretch justify-center space-y-0 border-b p-0 sm:flex-row bg-background">
-        <div className="flex justify-center items-center overflow-x-scroll no-scrollbar px-10">
+      <CardContent className="flex flex-col items-stretch justify-stretch space-y-0 border-b p-0 sm:flex-row bg-background">
+        <div className="flex flex-1 justify-center items-center overflow-x-scroll no-scrollbar w-full">
           {days.map((day) => {
             return (
               <div
                 key={day}
-                className={`flex flex-col justify-start p-8 items-start border-l border-r ${day === currentDay ? "border-green-500" : null}`}
+                className={`flex flex-col p-8 border-l border-r ${day === currentDay ? "border-green-500 border-r-4 border-l-4" : null}`}
               >
                 <h3 className="text-lg">{day}</h3>
                 <CardDescription

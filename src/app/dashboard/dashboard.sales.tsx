@@ -26,46 +26,46 @@ const SalesPage: React.FC = () => {
 
   return (
     <motion.div
-      className="w-full h-fit text-center flex flex-wrap gap-5 flex-row items-center justify-center"
+      className="w-full h-fit text-center flex flex-wrap gap-5 flex-row items-stretch justify-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 1 }}
     >
-      <Section className="flex flex-row flex-wrap xl:w-1/4 lg:w-1/4 md:w-1/2 sm:w-full p-4 border border-border rounded-sm h-fit">
-        <DashBoardNotification />
-        <div className="flex w-full justify-end items-start"></div>
-        <SectionText className="flex flex-col w-full text-secondary gap-2 h-44">
-          <div className="flex flex-col items-center justify-center border-b border-secondary p-2">
-            <motion.h2
-              className="text-2xl w-fit"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.0 }}
-            >
-              Hello,{" "}
-              <motion.span
-                className="text-secondary"
+      <Section className="flex flex-row flex-wrap w-full p-4 gap-4 items-center justify-center">
+        <Section className="flex flex-row flex-wrap xl:w-1/4 lg:w-1/4 md:w-1/2 sm:w-full border border-border rounded-sm h-fit">
+          <DashBoardNotification />
+          <div className="flex w-full justify-end items-start"></div>
+          <SectionText className="flex flex-col w-full text-secondary gap-2 h-44">
+            <div className="flex flex-col items-center justify-center border-b border-secondary p-2">
+              <motion.h2
+                className="text-2xl w-fit"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ duration: 3.0 }}
+                transition={{ duration: 1.0 }}
               >
-                {session?.user?.name}
-              </motion.span>
-            </motion.h2>
-            <motion.p
-              className="text-lg text-white"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1.0 }}
-            >
-              Today, {date}
-            </motion.p>
-          </div>
-          <Prediction data={data} isPending={isPending} error={error} />
-        </SectionText>
-      </Section>
-      <Section className="flex flex-col w-full p-4 rounded-sm">
+                Hello,{" "}
+                <motion.span
+                  className="text-secondary"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 3.0 }}
+                >
+                  {session?.user?.name}
+                </motion.span>
+              </motion.h2>
+              <motion.p
+                className="text-lg text-white"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.0 }}
+              >
+                Today, {date}
+              </motion.p>
+            </div>
+            <Prediction data={data} isPending={isPending} error={error} />
+          </SectionText>
+        </Section>
         <WeekCalendar prediction={data} />
       </Section>
       <Section className="flex flex-col w-full p-4  rounded-sm">

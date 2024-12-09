@@ -82,7 +82,7 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
   };
 
   return (
-    <Card>
+    <Card className="flex flex-col">
       <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row bg-background">
         <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
           <CardTitle>Sales Chart - Interactive</CardTitle>
@@ -187,8 +187,9 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
             )}
           </BarChart>
         </ChartContainer>
-        <CardFooter className="flex justify-end p-4 w-full"></CardFooter>
-        <Trends trends={trends} total={total} />
+        <CardFooter className="flex justify-end p-4 w-full">
+          <Trends trends={trends} total={total} />
+        </CardFooter>
       </CardContent>
     </Card>
   );
