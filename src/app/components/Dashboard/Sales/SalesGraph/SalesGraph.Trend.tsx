@@ -10,8 +10,9 @@ const Trend: React.FC<ITrendProps> = ({ trend, trendPercentage, type }) => {
   const titleCase = (str: string) => {
     return str[0].toUpperCase() + str.slice(1);
   };
+  console.log(trendPercentage);
   return (
-    <div className="flex flex-col items-center gap-2 border-border border p-2">
+    <div className="flex flex-col flex-1 items-center gap-2 border-border border p-2">
       <p className="text-lg">{titleCase(type)}</p>
       <div className="flex flex-row justify-start">
         <Arrow
