@@ -9,8 +9,6 @@ import {
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteMutationForItem } from "@/lib/mutations/item/delete.item";
-import { putMutationForItem } from "@/lib/mutations/item/put.item";
 import { toast } from "@/hooks/use-toast";
 import { IMenuItemProps } from "./Menu.interfaces";
 import { ItemResponse } from "@/lib/api.types";
@@ -131,7 +129,9 @@ const MenuItem: React.FC<IMenuItemProps> = ({
                 className="w-fit hover:cursor-pointer"
                 onClick={() => setIsUpdating(true)}
               >
-                ${price.toFixed(2)}
+                {typeof price === "number"
+                  ? `$${price.toFixed(2)}`
+                  : `${price.small !== undefined ? `Small: $${price.small.toFixed(2)}` : ""} ${price.medium !== undefined ? `Medium: ${price.medium.toFixed(2)}` : ""} Large: $${price.large?.toFixed(2) || ""}`}
               </CardTitle>
             </>
           )}
@@ -146,20 +146,95 @@ const MenuItem: React.FC<IMenuItemProps> = ({
                 }
                 required
               />
-              <input
-                type="number"
-                min={0}
-                step={0.01}
-                className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-                value={updatedItem.price}
-                onChange={(e) =>
-                  setUpdatedItem({
-                    ...updatedItem,
-                    price: parseFloat(e.target.value),
-                  })
-                }
-                required
-              />
+              {typeof updatedItem.price === "number" && (
+                <input
+                  type="number"
+                  min={0}
+                  step={0.01}
+                  className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+                  value={updatedItem.price}
+                  onChange={(e) =>
+                    setUpdatedItem({
+                      ...updatedItem,
+                      price: parseFloat(e.target.value),
+                    })
+                  }
+                  required
+                />
+              )}
+              {typeof updatedItem.price !== "number" &&
+                typeof updatedItem.price === "object" && (
+                  <div className="flex flex-col gap-2">
+                    {updatedItem.price.small !== undefined && (
+                      <>
+                        <label className="text-white">Small</label>
+                        <input
+                          type="number"
+                          min={0}
+                          step={0.01}
+                          className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+                          value={updatedItem.price.small}
+                          onChange={(e) =>
+                            setUpdatedItem({
+                              ...updatedItem,
+                              price: {
+                                ...(typeof updatedItem.price === "object"
+                                  ? updatedItem.price
+                                  : {}),
+                                small: parseFloat(e.target.value),
+                              },
+                            })
+                          }
+                          required
+                        />
+                      </>
+                    )}
+                    {updatedItem.price.medium !== undefined && (
+                      <>
+                        <label className="text-white">Medium</label>
+                        <input
+                          type="number"
+                          min={0}
+                          step={0.01}
+                          className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+                          value={updatedItem.price.medium}
+                          onChange={(e) =>
+                            setUpdatedItem({
+                              ...updatedItem,
+                              price: {
+                                ...(typeof updatedItem.price === "object"
+                                  ? updatedItem.price
+                                  : {}),
+                                medium: parseFloat(e.target.value),
+                              },
+                            })
+                          }
+                          required
+                        />
+                      </>
+                    )}
+                    <label className="text-white">Large</label>
+                    <input
+                      type="number"
+                      min={0}
+                      step={0.01}
+                      className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
+                      value={updatedItem.price.large}
+                      onChange={(e) =>
+                        setUpdatedItem({
+                          ...updatedItem,
+                          price: {
+                            ...(typeof updatedItem.price === "object"
+                              ? updatedItem.price
+                              : {}),
+                            large: parseFloat(e.target.value),
+                          },
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                )}
             </>
           )}
         </CardHeader>
@@ -201,7 +276,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({
                       }`}
                       onClick={() => {
                         setSelectedImage(index);
-                        setUpdatedItem({ ...updatedItem, image: image });
+                        setUpdatedItem({ ...updatedItem, image: url });
                       }}
                     />
                   ))}

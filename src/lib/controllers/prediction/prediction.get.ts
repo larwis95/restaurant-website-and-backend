@@ -26,7 +26,6 @@ const predict = async (req: NextRequest, res: NextApiResponse) => {
     );
   }
   const prediction = await getPrediction<ITrainModelArgs>(trainingData);
-  console.log(prediction);
   return NextResponse.json(prediction, { status: 200 });
 };
 

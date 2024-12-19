@@ -7,7 +7,7 @@ const itemSchema = new Schema<ItemSchema>({
     required: true,
   },
   price: {
-    type: Number,
+    type: mongoose.Schema.Types.Mixed,
     required: true,
   },
   description: {

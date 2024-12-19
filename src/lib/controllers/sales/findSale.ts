@@ -99,7 +99,6 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
   for (let i = 0; i < weekSales.length; i++) {
     const sale = weekSales[i];
     const weekOfMonth = getWeekOfMonth(sale.date);
-    console.log(weekOfMonth);
     weeksMap.get(weekOfMonth.toString()).push(sale);
   }
 

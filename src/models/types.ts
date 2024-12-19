@@ -1,9 +1,18 @@
 export type ItemSchema = {
   name: string;
-  price: number;
+  price: Price;
   description: string;
   image: string;
 };
+
+export type Price =
+  | number
+  | {
+      small?: number;
+      medium?: number;
+      large?: number;
+      xl?: number;
+    };
 
 export type MenuSchema = {
   name: string;
