@@ -9,7 +9,9 @@ const SalesGraph = () => {
   return (
     <>
       {isLoading ? (
-        <LoadingSpinner className="text-secondary" />
+        <div className="flex justify-center items-center h-96 w-full">
+          <LoadingSpinner className="text-secondary" />
+        </div>
       ) : (
         <Graph data={salesData} />
       )}

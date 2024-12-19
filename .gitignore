@@ -41,3 +41,5 @@ next-env.d.ts
 /src/lib/db/base_user.json
 /src/lib/db/seeds.ts
 /src/lib/db/seedBaseUser.ts
+/src/lib/db/menuSeed.ts
+/src/lib/db/*.json

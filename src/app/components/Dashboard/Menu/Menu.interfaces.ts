@@ -15,7 +15,7 @@ export interface IMenuItemProps {
     }: {
       _id: string;
       name: string;
-      price: number;
+      price: number | { small?: number; medium?: number; large?: number };
       description: string;
       image: string;
     }) => Promise<ItemResponse>;
@@ -37,7 +37,7 @@ export interface ISortableProps {
     }: {
       _id: string;
       name: string;
-      price: number;
+      price: number | { small?: number; medium?: number; large?: number };
       description: string;
       image: string;
     }) => Promise<ItemResponse>;

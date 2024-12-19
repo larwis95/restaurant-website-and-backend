@@ -29,7 +29,7 @@ const MenuSection = () => {
                   thumbnail: item.image,
                   className: cardLayout[index % 3],
                   title: item.name,
-                  price: item.price.toFixed(2),
+                  price: item.price,
                 };
               })}
             />

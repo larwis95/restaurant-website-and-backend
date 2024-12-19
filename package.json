@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "cd src/lib/db && npx tsx seeds.ts",
-    "seedusers": "cd src/lib/db && npx tsx seedBaseUser.ts"
+    "seedusers": "cd src/lib/db && npx tsx seedBaseUser.ts",
+    "menudev": "cd src/lib/db && npx tsx menuSeed.ts --development"
   },
   "dependencies": {
     "@date-fns/utc": "^2.1.0",

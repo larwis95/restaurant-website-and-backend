@@ -27,7 +27,7 @@ const Specials = () => {
     <>
       {isLoading && <LoadingSpinner className="text-secondary" />}
       {error && <div>Error: {error.message}</div>}
-      {specials && <HeroParallax products={specials} />}
+      {/* {specials && <HeroParallax products={specials} />} */}
     </>
   );
 };

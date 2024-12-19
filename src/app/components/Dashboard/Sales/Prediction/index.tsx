@@ -47,7 +47,7 @@ const Prediction: React.FC<IPredictionProps> = ({ data, isPending, error }) => {
       <AnimatePresence mode="wait">
         {data && (
           <motion.div
-            className="w-full flex-row justify-around items-center p-4"
+            className="w-full flex-row justify-center items-center p-4"
             initial={{ opacity: 0, display: "none" }}
             animate={{ opacity: 1, display: "flex" }}
             exit={{ opacity: 0 }}
@@ -56,7 +56,7 @@ const Prediction: React.FC<IPredictionProps> = ({ data, isPending, error }) => {
             <div className="p-2 border-r border-secondary">
               <h1>Projected Sales</h1>
             </div>
-            <div className="p-2 text-left text-green-600">
+            <div className="p-2 text-left flex flex-col text-green-600">
               <p>
                 <span className="text-secondary">AM:</span> $
                 {Math.floor(data[date as keyof IPrediction].morning ?? 0)}

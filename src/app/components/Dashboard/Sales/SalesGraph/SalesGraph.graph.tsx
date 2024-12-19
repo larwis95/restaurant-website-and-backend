@@ -133,7 +133,7 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
       <CardContent className="px-2 sm:p-6 bg-background">
         <ChartContainer
           config={activeChartType === "week" ? weekConfig : monthConfig}
-          className="aspect-auto h-[500px] w-full"
+          className="aspect-auto h-[700px] w-full p-4"
         >
           <BarChart
             accessibilityLayer
@@ -146,15 +146,15 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
               left: 12,
               right: 12,
             }}
+            className="p-4"
           >
-            <CartesianGrid vertical={false} />
+            <CartesianGrid vertical={false} className="p-10" />
             {activeChartType === "year" && (
               <XAxis
                 dataKey="month"
                 tickLine={false}
                 axisLine={false}
-                tickMargin={8}
-                minTickGap={32}
+                minTickGap={20}
                 tickFormatter={(value) => {
                   return format(new UTCDate(0, value, 1), "MMM");
                 }}
@@ -164,17 +164,32 @@ const Graph: React.FC<IGraphProps> = ({ data }) => {
               dataKey="date"
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
+              minTickGap={20}
               tickFormatter={(value) => {
                 return format(new UTCDate(value), "dd MMM");
               }}
             />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip
+              labelFormatter={(label, payload) => {
+                switch (activeChartType) {
+                  case "week":
+                    return format(new UTCDate(label), "EEEE, MMM dd");
+                  case "month":
+                    return format(new UTCDate(label), "dd MMM");
+                  case "year":
+                    return format(
+                      new UTCDate(0, payload[0].payload?.month, 1),
+                      "MMM"
+                    );
+                }
+              }}
+              content={<ChartTooltipContent />}
+            />
             <Bar
               dataKey={activeChartType === "week" ? "morning" : "total"}
               fill={activeChartType === "week" ? "#FFC107" : "#FFC107"}
               barSize={32}
+              stackId="stack"
             />
             {activeChartType === "week" && (
               <Bar

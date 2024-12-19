@@ -10,7 +10,7 @@ type Card = {
   className: string;
   thumbnail: string;
   title: string;
-  price?: string;
+  price?: number | { small?: number; medium?: number; large?: number };
 };
 
 export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
@@ -28,9 +28,9 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
   };
 
   return (
-    <div className="w-full xl:w-3/4 lg:w-3/4 h-full p-0 xl:p-10 lg:p-10 md:p-4 sm:p-0 grid grid-cols-1 md:grid-cols-3 max-w-7xl  gap-4 relative">
+    <div className="w-full min-h-fit xl:w-3/4 lg:w-3/4 p-0 xl:p-10 lg:p-10 md:p-4 sm:p-0 grid grid-cols-1 md:grid-cols-3 max-w-7xl  gap-4 relative">
       {cards.map((card, i) => (
-        <div key={i} className={cn(card.className, "")}>
+        <div key={i} className={cn(card.className, "w-fit h-fit")}>
           <motion.div
             onClick={() => handleClick(card)}
             className={cn(
@@ -58,7 +58,13 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
                   <h2 className="text-white text-2xl font-bold w-fit">
                     {card.title}
                   </h2>
-                  <p className="text-white text-lg w-fit">${card.price}</p>
+                  <p className="text-white text-lg w-fit">
+                    {typeof card.price === "number"
+                      ? `$${card.price.toFixed(2)}`
+                      : card.price
+                        ? `Small: $${card.price.small?.toFixed(2) || ""} ${card.price.medium !== undefined ? `Medium: ${card.price.medium.toFixed(2)}` : ""} Large: $${card.price.large?.toFixed(2) || ""}`
+                        : ""}
+                  </p>
                 </div>
               </motion.div>
             )}

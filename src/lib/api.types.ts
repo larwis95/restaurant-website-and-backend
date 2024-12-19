@@ -13,7 +13,7 @@ export type MenuResponse = {
 export type ItemResponse = {
   _id: string;
   name: string;
-  price: number;
+  price: number | { small?: number; medium?: number; large?: number };
   description: string;
   image: string;
 };
@@ -31,7 +31,7 @@ export type SpecialResponse = {
   name: string;
   description: string;
   image: string;
-  price: number;
+  price: number | { small?: number; medium?: number; large?: number };
 };
 
 export type DeleteResponse = {
