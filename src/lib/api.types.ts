@@ -91,6 +91,7 @@ export type FindSaleArgs = {
   month?: Month;
   week?: Week;
   day?: Day;
+  server?: boolean;
 };
 
 export type UpdateSaleFields = {

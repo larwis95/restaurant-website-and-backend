@@ -55,24 +55,31 @@ const MobileNav: React.FC<INavMenuProps> = ({
     <div>
       <div>
         {!isMobileMenuOpen && (
-          <Button
-            className="z-[15]"
-            variant="outline"
-            size="icon"
-            onClick={toggleMobileMenu}
+          <motion.div
+            className="flex items-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.5 }}
           >
-            <MenuIcon className="h-6 w-6" />
-            <span className="sr-only">Toggle navigation menu</span>
-          </Button>
+            <Button
+              className="z-[15]"
+              variant="outline"
+              size="icon"
+              onClick={toggleMobileMenu}
+            >
+              <MenuIcon className="h-6 w-6" />
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
+          </motion.div>
         )}
       </div>
       <div>
         <AnimatePresence>
           {isMobileMenuOpen && (
             <motion.div
-              className="mobile-menu fixed left-1/2 z-[15] flex flex-col h-fit w-screen bg-black bg-opacity-70 text-white p-4 border border-border"
+              className="mobile-menu sticky flex flex-col top-0 h-screen w-screen bg-black bg-opacity-70 text-white p-4 border border-border"
               initial={{ x: "100%" }}
-              animate={{ x: "-50%" }}
+              animate={{ x: "0%" }}
               exit={{ x: "100%" }}
               transition={{ duration: 0.3 }}
             >
@@ -81,6 +88,8 @@ const MobileNav: React.FC<INavMenuProps> = ({
                 size="icon"
                 className="self-end"
                 onClick={toggleMobileMenu}
+                role="button"
+                aria-label="Toggle mobile navigation menu"
               >
                 <XIcon className="h-6 w-6" />
                 <span className="sr-only">Toggle navigation menu</span>

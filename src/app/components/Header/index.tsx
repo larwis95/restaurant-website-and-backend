@@ -13,7 +13,7 @@ const Header: React.FC = async () => {
   const status = await getServerSession(authOptions);
 
   return (
-    <header className="sticky top-0 w-screen p-2 z-[9999] bg-background">
+    <header className="sticky top-0 w-screen p-2 z-[10001] bg-background">
       <div
         className={`flex justify-between items-center w-full max-w-7xl mx-auto`}
       >
