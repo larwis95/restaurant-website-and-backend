@@ -49,7 +49,6 @@ export const findSalesByYear: IFindSaleServerAction = async ({ year }) => {
 export const findSalesByMonth: IFindSaleServerAction = async ({
   year,
   month,
-  server,
 }) => {
   await databaseConnection();
   if (typeof year === "undefined" || typeof month === "undefined") {
@@ -70,7 +69,6 @@ export const findSalesByMonth: IFindSaleServerAction = async ({
     },
     "-__v"
   );
-  if (server) return sales;
   if (!sales) {
     return NextResponse.json(
       { error: "No sales found for the month" },
