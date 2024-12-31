@@ -6,15 +6,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-
 import BulkAddSales from "./ModalContent/BulkAddSales";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
@@ -64,17 +60,14 @@ export const DashBoardNotification = () => {
                 <BulkAddSales setModalOpen={setModalOpen} />
               </Dialog>
               {missingSales.dates.map((date, index) => (
-                <>
-                  <div
-                    key={index}
-                    className="flex flex-col justify-start items-start w-fit"
-                  >
-                    <p className="text-white w-fit">
-                      {format(new UTCDate(date), "MMMM do, yyyy")}
-                    </p>
-                  </div>
-                  <Separator />
-                </>
+                <div
+                  key={index}
+                  className="flex flex-col justify-start items-start w-fit border-b"
+                >
+                  <p className="text-white w-fit">
+                    {format(new UTCDate(date), "MMMM do, yyyy")}
+                  </p>
+                </div>
               ))}
             </div>
           </ScrollArea>

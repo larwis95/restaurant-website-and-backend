@@ -74,9 +74,9 @@ const MenuAccordion: React.FC = () => {
         </DialogContent>
       </Dialog>
       <Accordion type="single" className="w-full" collapsible>
-        {menuCategories.map((category, index) => (
-          <>
-            <AccordionItem key={index} value={category.name}>
+        {menuCategories.map((category) => (
+          <div key={category.name}>
+            <AccordionItem key={category.name} value={category.name}>
               <AccordionTrigger>{category.name}</AccordionTrigger>
               <Separator />
               <AccordionContent className="flex flex-row flex-wrap  p-2 gap-4">
@@ -123,7 +123,7 @@ const MenuAccordion: React.FC = () => {
                 />
               </AccordionContent>
             </AccordionItem>
-          </>
+          </div>
         ))}
       </Accordion>
     </div>

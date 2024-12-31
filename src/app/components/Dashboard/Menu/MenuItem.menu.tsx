@@ -1,14 +1,19 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import EditableText from "../../Inputs/EditableInput";
+import EditablePrice from "../../Inputs/EditablePrice";
+import {
+  useMutation,
+  useSuspenseQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { IMenuItemProps } from "./Menu.interfaces";
 import { ItemResponse } from "@/lib/api.types";
@@ -17,6 +22,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Price } from "../../Inputs/EditablePrice";
 
 const MenuItem: React.FC<IMenuItemProps> = ({
   item,
@@ -38,8 +44,6 @@ const MenuItem: React.FC<IMenuItemProps> = ({
   };
 
   const [updatedItem, setUpdatedItem] = useState(item);
-  const [isUpdating, setIsUpdating] = useState(false);
-
   const queryClient = useQueryClient();
 
   const deleteItem = useMutation({
@@ -63,14 +67,8 @@ const MenuItem: React.FC<IMenuItemProps> = ({
   });
 
   const updateItem = useMutation({
-    mutationFn: async ({
-      _id,
-      name,
-      price,
-      description,
-      image,
-    }: ItemResponse) => {
-      await put({ _id, name, price, description, image });
+    mutationFn: async (updatedItem: ItemResponse) => {
+      await put(updatedItem);
     },
     onSuccess: () => {
       toast({
@@ -78,7 +76,6 @@ const MenuItem: React.FC<IMenuItemProps> = ({
         description: `${name} updated successfully`,
       });
       queryClient.invalidateQueries();
-      setIsUpdating(false);
     },
     onError: (error) => {
       toast({
@@ -89,7 +86,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({
     },
   });
 
-  const { data: images } = useQuery({
+  const { data: images } = useSuspenseQuery({
     queryKey: ["images"],
     queryFn: fetchImages,
   });
@@ -103,11 +100,18 @@ const MenuItem: React.FC<IMenuItemProps> = ({
     updateItem.mutate(updatedItem);
   };
 
+  const handleSave = (field: keyof ItemResponse, value: Price) => {
+    if (value === undefined) return;
+    setUpdatedItem((prev) => ({ ...prev, [field]: value }));
+  };
+
   return (
     <Card
       className={
         className ||
-        `bg-slate-900 border border-border w-full sm:w-full md:w-1/2 lg:w-1/5 xl:w-1/5 ${currentlyDragged && "opacity-0"} `
+        `bg-slate-900 flex flex-col flex-grow border border-border w-full sm:w-full md:w-1/2 lg:w-1/5 xl:w-1/5 ${
+          currentlyDragged && "opacity-0"
+        } cursor-move`
       }
       ref={setNodeRef}
       {...listeners}
@@ -116,193 +120,68 @@ const MenuItem: React.FC<IMenuItemProps> = ({
       id={item._id}
     >
       <form onSubmit={handleFormSubmit}>
-        <CardHeader className="flex flex-col justify-start">
-          {!isUpdating && (
-            <>
-              <CardTitle
-                className="w-fit text-2xl font-bold hover:cursor-pointer"
-                onClick={() => setIsUpdating(true)}
-              >
-                {name}
-              </CardTitle>
-              <CardTitle
-                className="w-fit hover:cursor-pointer"
-                onClick={() => setIsUpdating(true)}
-              >
-                {typeof price === "number"
-                  ? `$${price.toFixed(2)}`
-                  : `${price.small !== undefined ? `Small: $${price.small.toFixed(2)}` : ""} ${price.medium !== undefined ? `Medium: ${price.medium.toFixed(2)}` : ""} Large: $${price.large?.toFixed(2) || ""}`}
-              </CardTitle>
-            </>
-          )}
-          {isUpdating && (
-            <>
-              <input
-                type="text"
-                className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-                value={updatedItem.name}
-                onChange={(e) =>
-                  setUpdatedItem({ ...updatedItem, name: e.target.value })
-                }
-                required
-              />
-              {typeof updatedItem.price === "number" && (
-                <input
-                  type="number"
-                  min={0}
-                  step={0.01}
-                  className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-                  value={updatedItem.price}
-                  onChange={(e) =>
-                    setUpdatedItem({
-                      ...updatedItem,
-                      price: parseFloat(e.target.value),
-                    })
-                  }
-                  required
-                />
-              )}
-              {typeof updatedItem.price !== "number" &&
-                typeof updatedItem.price === "object" && (
-                  <div className="flex flex-col gap-2">
-                    {updatedItem.price.small !== undefined && (
-                      <>
-                        <label className="text-white">Small</label>
-                        <input
-                          type="number"
-                          min={0}
-                          step={0.01}
-                          className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-                          value={updatedItem.price.small}
-                          onChange={(e) =>
-                            setUpdatedItem({
-                              ...updatedItem,
-                              price: {
-                                ...(typeof updatedItem.price === "object"
-                                  ? updatedItem.price
-                                  : {}),
-                                small: parseFloat(e.target.value),
-                              },
-                            })
-                          }
-                          required
-                        />
-                      </>
-                    )}
-                    {updatedItem.price.medium !== undefined && (
-                      <>
-                        <label className="text-white">Medium</label>
-                        <input
-                          type="number"
-                          min={0}
-                          step={0.01}
-                          className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-                          value={updatedItem.price.medium}
-                          onChange={(e) =>
-                            setUpdatedItem({
-                              ...updatedItem,
-                              price: {
-                                ...(typeof updatedItem.price === "object"
-                                  ? updatedItem.price
-                                  : {}),
-                                medium: parseFloat(e.target.value),
-                              },
-                            })
-                          }
-                          required
-                        />
-                      </>
-                    )}
-                    <label className="text-white">Large</label>
-                    <input
-                      type="number"
-                      min={0}
-                      step={0.01}
-                      className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
-                      value={updatedItem.price.large}
-                      onChange={(e) =>
-                        setUpdatedItem({
-                          ...updatedItem,
-                          price: {
-                            ...(typeof updatedItem.price === "object"
-                              ? updatedItem.price
-                              : {}),
-                            large: parseFloat(e.target.value),
-                          },
-                        })
-                      }
-                      required
-                    />
-                  </div>
-                )}
-            </>
-          )}
-        </CardHeader>
-        <CardContent className="flex flex-col justify-start gap-2">
-          {!isUpdating && (
-            <CardDescription
-              className="w-fit hover:cursor-pointer text-left"
-              onClick={() => setIsUpdating(true)}
+        <CardHeader className="flex flex-col justify-start text-left">
+          <CardTitle className="w-fit text-2xl font-bold">
+            <EditableText
+              initialValue={name}
+              onSave={(value) => handleSave("name", value)}
             >
-              {description}
-            </CardDescription>
-          )}
-          {isUpdating && (
-            <>
-              <textarea
-                className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600  h-32 w-full"
-                value={updatedItem.description}
-                onChange={(e) =>
-                  setUpdatedItem({
-                    ...updatedItem,
-                    description: e.target.value,
-                  })
-                }
-                required
-              />
-              <ScrollArea className="w-full h-28 border border-border p-2">
-                <div className="flex flex-row flex-wrap justify-start items-center gap-2">
-                  {images?.data?.urls.map((url, index) => (
-                    <Image
-                      key={index}
-                      src={url}
-                      alt={`image-${url}`}
-                      width={80}
-                      height={80}
-                      className={`w-20 h-20 border border-border rounded-md hover:cursor-pointer transition duration-500 ${
-                        selectedImage === index
-                          ? "border-green-600 border-2"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        setSelectedImage(index);
-                        setUpdatedItem({ ...updatedItem, image: url });
-                      }}
-                    />
-                  ))}
-                </div>
-              </ScrollArea>
-            </>
-          )}
+              {name}
+            </EditableText>
+          </CardTitle>
+          <CardTitle className="w-full text-lg">
+            <EditablePrice price={price} handleSave={handleSave} />
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col justify-start gap-2 w-full text-left">
+          <EditableText
+            initialValue={description}
+            onSave={(value) => handleSave("description", value)}
+            textBox
+          >
+            {description}
+          </EditableText>
+          <ScrollArea className="w-full h-28 border border-border p-2">
+            <div className="flex flex-row flex-wrap justify-start items-center gap-2">
+              {images?.data?.urls.map((url, index) => (
+                <Image
+                  key={index}
+                  src={url}
+                  alt={`image-${url}`}
+                  width={80}
+                  height={80}
+                  className={`w-20 h-20 border border-border rounded-md hover:cursor-pointer transition duration-500 ${
+                    selectedImage === index ? "border-green-600 border-2" : ""
+                  }`}
+                  onClick={() => {
+                    setSelectedImage(index);
+                    handleSave("image", url);
+                  }}
+                />
+              ))}
+            </div>
+          </ScrollArea>
         </CardContent>
-        <CardFooter className="flex flex-row justify-between">
+        <CardFooter className="flex flex-row justify-between w-full">
           <Button
             variant="outline"
             type="button"
             className="text-red-600 border border-red-600"
             onClick={() => deleteItem.mutate()}
           >
-            Delete
+            {deleteItem.isPending ? "Deleting" : "Delete"}
           </Button>
-          {isUpdating && (
-            <Button
-              variant="outline"
-              type="submit"
-              className="text-green-600 border border-green-600"
-            >
-              Save
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            type="submit"
+            className={`border ${
+              updateItem.isPending
+                ? "pointer-events-none text-red-600 border-red-600"
+                : "border-green-600 text-green-600"
+            } transition duration-500`}
+          >
+            {updateItem.isPending ? "Updating" : "Update"}
+          </Button>
         </CardFooter>
       </form>
     </Card>

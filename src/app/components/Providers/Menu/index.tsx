@@ -1,6 +1,6 @@
 "use client";
 
-import { MenuResponse } from "@/lib/api.types";
+import { ItemResponse, MenuResponse } from "@/lib/api.types";
 import { useState, useContext, createContext } from "react";
 
 export const MenuContext = createContext<{
@@ -11,6 +11,16 @@ export const MenuContext = createContext<{
   setMenu: () => {},
 });
 
+type LayoutContext = {
+  selected: ItemResponse | null;
+  setSelected: (item: ItemResponse | null) => void;
+};
+
+export const LayoutContext = createContext<LayoutContext>({
+  selected: null,
+  setSelected: (item) => {},
+});
+
 const MenuProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
@@ -19,6 +29,17 @@ const MenuProvider: React.FC<{
     <MenuContext.Provider value={{ menu, setMenu }}>
       {children}
     </MenuContext.Provider>
+  );
+};
+
+export const SelectedCardProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [selected, setSelected] = useState<ItemResponse | null>(null);
+  return (
+    <LayoutContext.Provider value={{ selected, setSelected }}>
+      {children}
+    </LayoutContext.Provider>
   );
 };
 
