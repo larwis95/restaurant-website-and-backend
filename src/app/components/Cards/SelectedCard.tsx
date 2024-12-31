@@ -14,7 +14,7 @@ import { renderPrice } from "@/lib/helpers/renderPrice";
 import { forwardRef } from "react";
 
 const SelectedCard = forwardRef<HTMLDivElement, IMenuCardProps>(
-  ({ item }, ref) => {
+  function SelectCard({ item }, ref) {
     const { name, price, description, image } = item;
     const { selected, setSelected } = useContext(LayoutContext);
 
