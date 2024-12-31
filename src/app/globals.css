@@ -82,3 +82,8 @@
     scrollbar-width: none; /* Firefox */
   }
 }
+
+body {
+  font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}

@@ -1,6 +1,16 @@
 "use server";
 import { Sale } from "@/models";
-import { getWeekOfMonth, isToday, startOfYear } from "date-fns";
+import {
+  startOfWeek,
+  endOfWeek,
+  isToday,
+  startOfYear,
+  eachDayOfInterval,
+  parse,
+  startOfMonth,
+  endOfMonth,
+  getWeekOfMonth,
+} from "date-fns";
 import {
   IFindMissingSaleServerAction,
   IFindSaleServerAction,
@@ -39,6 +49,7 @@ export const findSalesByYear: IFindSaleServerAction = async ({ year }) => {
 export const findSalesByMonth: IFindSaleServerAction = async ({
   year,
   month,
+  server,
 }) => {
   await databaseConnection();
   if (typeof year === "undefined" || typeof month === "undefined") {
@@ -47,6 +58,7 @@ export const findSalesByMonth: IFindSaleServerAction = async ({
       { status: 400 }
     );
   }
+  console.log(year, month);
   const sales: SaleResponse[] = await Sale.find(
     {
       date: {
@@ -58,6 +70,7 @@ export const findSalesByMonth: IFindSaleServerAction = async ({
     },
     "-__v"
   );
+  if (server) return sales;
   if (!sales) {
     return NextResponse.json(
       { error: "No sales found for the month" },
@@ -79,34 +92,66 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
       { status: 400 }
     );
   }
-  const weekSales = await Sale.find(
-    {
-      date: {
-        $gte: `${year}-${month}-01`,
-        $lt: `${year}-${month}-31`,
-      },
-    },
-    "-__v"
-  );
-  const weeksMap = new Map();
-  weeksMap.set("1", []);
-  weeksMap.set("2", []);
-  weeksMap.set("3", []);
-  weeksMap.set("4", []);
-  weeksMap.set("5", []);
-  weeksMap.set("6", []);
+  const startDateOfMonth = startOfMonth(new Date(year, month - 1));
+  const endDateOfMonth = endOfMonth(new Date(year, month - 1));
 
-  for (let i = 0; i < weekSales.length; i++) {
-    const sale = weekSales[i];
-    const weekOfMonth = getWeekOfMonth(sale.date);
-    weeksMap.get(weekOfMonth.toString()).push(sale);
+  const weeksMap = new Map<string, { days: string[] }>();
+
+  const dates = eachDayOfInterval({
+    start: startDateOfMonth,
+    end: endDateOfMonth,
+  });
+
+  for (let i = 0; i < dates.length; i++) {
+    const date = dates[i];
+    const week = getWeekOfMonth(date);
+    const weekKey = week.toString();
+    if (!weeksMap.has(weekKey)) {
+      weeksMap.set(weekKey, {
+        days: [],
+      });
+    }
+    weeksMap.get(weekKey)?.days.push(format(date, "yyyy-MM-dd"));
   }
 
   if (typeof week === "undefined") {
     return NextResponse.json({ error: "Week is required" }, { status: 400 });
   }
 
-  return NextResponse.json(weeksMap.get(week.toString()), { status: 200 });
+  const weekKey = week.toString();
+  const weekDays = weeksMap.get(weekKey);
+  const salesData: SaleResponse[] = [];
+
+  if (!weekDays) {
+    return NextResponse.json(
+      { error: "Invalid week specified" },
+      { status: 400 }
+    );
+  }
+
+  for (let i = 0; i < weekDays.days.length; i++) {
+    const sale: SaleResponse | null = await Sale.findOne(
+      {
+        date: {
+          $gte: `${weekDays?.days[i]}T00:00:00.000Z`,
+          $lt: `${weekDays?.days[i]}T23:59:59.999Z`,
+        },
+      },
+      "-__v"
+    );
+    if (sale) {
+      salesData.push(sale);
+    }
+  }
+
+  if (!salesData) {
+    return NextResponse.json(
+      { error: "No sales found for the week" },
+      { status: 404 }
+    );
+  }
+
+  return NextResponse.json(salesData, { status: 200 });
 };
 
 export const findSaleByDay: IFindSaleServerAction = async ({ day }) => {

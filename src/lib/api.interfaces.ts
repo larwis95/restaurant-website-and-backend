@@ -8,7 +8,11 @@ import {
   MissingDate,
 } from "./api.types";
 export interface IFindSaleServerAction {
-  ({}: FindSaleArgs): Promise<NextResponse<SaleResponse[] | ErrorResponse>>;
+  ({}: FindSaleArgs): Promise<
+    | NextResponse<SaleResponse[] | ErrorResponse>
+    | SaleResponse[]
+    | ErrorResponse
+  >;
 }
 export interface IFindMissingSaleServerAction {
   ({}: FindSaleArgs): Promise<
