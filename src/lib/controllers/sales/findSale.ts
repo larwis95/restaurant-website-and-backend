@@ -175,10 +175,21 @@ export const findSaleByDay: IFindSaleServerAction = async ({ day }) => {
   return NextResponse.json([sale], { status: 200 });
 };
 
+const findOldestSale = async () => {
+  await databaseConnection();
+  const sale: SaleResponse | null = await Sale.findOne({}, "-__v", {
+    sort: { date: 1 },
+  });
+  if (!sale) throw new Error("No sales found");
+  return sale.date;
+};
+
 export const findMissSalesForYear: IFindMissingSaleServerAction = async () => {
   await databaseConnection();
   const year = new Date().getFullYear();
-  let start = startOfYear(new Date(year, 0, 1));
+  const firstSaleDate = await findOldestSale();
+  console.log(firstSaleDate);
+  let start = startOfYear(new UTCDate(firstSaleDate));
   let end = new UTCDate();
   let dates = [];
   while (!isToday(start)) {
@@ -190,7 +201,7 @@ export const findMissSalesForYear: IFindMissingSaleServerAction = async () => {
       {
         $match: {
           date: {
-            $gte: startOfYear(new UTCDate(year, 0, 1)),
+            $gte: startOfYear(new UTCDate(firstSaleDate)),
             $lt: end,
           },
         },

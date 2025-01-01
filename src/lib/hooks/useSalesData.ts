@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import {
   fetchSalesForMonth,
   fetchSalesForWeek,
@@ -54,43 +54,20 @@ const salesTypeMap = {
 };
 
 const useSalesData = (): UseSalesResponse => {
-  const currentWeek = useQuery({
-    queryKey: ["currentweek"],
-    queryFn: salesTypeMap.currentWeek,
-  });
-
-  const prevWeek = useQuery({
-    queryKey: ["prevweek"],
-    queryFn: salesTypeMap.prevWeek,
-  });
-
-  const currentMonth = useQuery({
-    queryKey: ["currentMonth"],
-    queryFn: salesTypeMap.currentMonth,
-  });
-
-  const prevMonth = useQuery({
-    queryKey: ["prevMonth"],
-    queryFn: salesTypeMap.prevMonth,
-  });
-
-  const currentYear = useQuery({
-    queryKey: ["currentYear"],
-    queryFn: salesTypeMap.currentYear,
-  });
-
-  const prevYear = useQuery({
-    queryKey: ["prevYear"],
-    queryFn: salesTypeMap.prevYear,
+  const data = useQueries({
+    queries: Object.keys(salesTypeMap).map((key) => ({
+      queryKey: [key],
+      queryFn: salesTypeMap[key as keyof typeof salesTypeMap],
+    })),
   });
 
   return {
-    currentWeek,
-    prevWeek,
-    currentMonth,
-    prevMonth,
-    currentYear,
-    prevYear,
+    currentWeek: data[0],
+    prevWeek: data[1],
+    currentMonth: data[2],
+    prevMonth: data[3],
+    currentYear: data[4],
+    prevYear: data[5],
   };
 };
 
