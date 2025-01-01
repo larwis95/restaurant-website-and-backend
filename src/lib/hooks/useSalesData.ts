@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueries } from "@tanstack/react-query";
 import {
   fetchSalesForMonth,
   fetchSalesForWeek,
@@ -9,88 +9,65 @@ import { UseSalesResponse } from "./hooks.types";
 
 const weekofMonth = getWeekOfMonth(new Date());
 const currentMonth = new Date().getMonth();
+const currentYear = new Date().getFullYear();
+const month = currentMonth === 0 ? 12 : currentMonth - 1;
+const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+const prevWeek = weekofMonth === 1 ? 5 : weekofMonth;
 
 const salesTypeMap = {
   currentWeek: async () => {
     return await fetchSalesForWeek({
-      year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1,
+      year: currentYear,
+      month: currentMonth + 1,
       week: weekofMonth,
     });
   },
   prevWeek: async () => {
     return await fetchSalesForWeek({
-      year: new Date().getFullYear(),
-      month:
-        weekofMonth === 1 ? new Date().getMonth() : new Date().getMonth() + 1,
-      week: weekofMonth === 1 ? 5 : weekofMonth - 1,
+      year,
+      month,
+      week: prevWeek,
     });
   },
   currentMonth: async () => {
     return await fetchSalesForMonth({
-      year: new Date().getFullYear(),
+      year: currentYear,
       month: currentMonth + 1,
     });
   },
   prevMonth: async () => {
     return await fetchSalesForMonth({
-      year:
-        currentMonth === 1
-          ? new Date().getFullYear() - 1
-          : new Date().getFullYear(),
-      month: currentMonth === 1 ? 12 : currentMonth,
+      year,
+      month,
     });
   },
   currentYear: async () => {
     return await fetchSalesForYear({
-      year: new Date().getFullYear(),
+      year: currentYear,
     });
   },
   prevYear: async () => {
     return await fetchSalesForYear({
-      year: new Date().getFullYear() - 1,
+      year,
     });
   },
 };
 
 const useSalesData = (): UseSalesResponse => {
-  const currentWeek = useQuery({
-    queryKey: ["currentweek"],
-    queryFn: salesTypeMap.currentWeek,
-  });
-
-  const prevWeek = useQuery({
-    queryKey: ["prevweek"],
-    queryFn: salesTypeMap.prevWeek,
-  });
-
-  const currentMonth = useQuery({
-    queryKey: ["currentMonth"],
-    queryFn: salesTypeMap.currentMonth,
-  });
-
-  const prevMonth = useQuery({
-    queryKey: ["prevMonth"],
-    queryFn: salesTypeMap.prevMonth,
-  });
-
-  const currentYear = useQuery({
-    queryKey: ["currentYear"],
-    queryFn: salesTypeMap.currentYear,
-  });
-
-  const prevYear = useQuery({
-    queryKey: ["prevYear"],
-    queryFn: salesTypeMap.prevYear,
+  const data = useQueries({
+    queries: Object.keys(salesTypeMap).map((key) => ({
+      queryKey: [key],
+      queryFn: salesTypeMap[key as keyof typeof salesTypeMap],
+    })),
   });
 
   return {
-    currentWeek,
-    prevWeek,
-    currentMonth,
-    prevMonth,
-    currentYear,
-    prevYear,
+    currentWeek: data[0],
+    prevWeek: data[1],
+    currentMonth: data[2],
+    prevMonth: data[3],
+    currentYear: data[4],
+    prevYear: data[5],
   };
 };
 
