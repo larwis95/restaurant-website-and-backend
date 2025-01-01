@@ -9,46 +9,46 @@ import { UseSalesResponse } from "./hooks.types";
 
 const weekofMonth = getWeekOfMonth(new Date());
 const currentMonth = new Date().getMonth();
+const currentYear = new Date().getFullYear();
+const month = currentMonth === 0 ? 12 : currentMonth - 1;
+const year = currentMonth === 0 ? currentYear - 1 : currentYear;
+const prevWeek = weekofMonth === 1 ? 5 : weekofMonth;
 
 const salesTypeMap = {
   currentWeek: async () => {
     return await fetchSalesForWeek({
-      year: new Date().getFullYear(),
-      month: new Date().getMonth() + 1,
+      year: currentYear,
+      month: currentMonth + 1,
       week: weekofMonth,
     });
   },
   prevWeek: async () => {
     return await fetchSalesForWeek({
-      year: new Date().getFullYear(),
-      month:
-        weekofMonth === 1 ? new Date().getMonth() : new Date().getMonth() + 1,
-      week: weekofMonth === 1 ? 5 : weekofMonth - 1,
+      year,
+      month,
+      week: prevWeek,
     });
   },
   currentMonth: async () => {
     return await fetchSalesForMonth({
-      year: new Date().getFullYear(),
+      year: currentYear,
       month: currentMonth + 1,
     });
   },
   prevMonth: async () => {
     return await fetchSalesForMonth({
-      year:
-        currentMonth === 1
-          ? new Date().getFullYear() - 1
-          : new Date().getFullYear(),
-      month: currentMonth === 1 ? 12 : currentMonth,
+      year,
+      month,
     });
   },
   currentYear: async () => {
     return await fetchSalesForYear({
-      year: new Date().getFullYear(),
+      year: currentYear,
     });
   },
   prevYear: async () => {
     return await fetchSalesForYear({
-      year: new Date().getFullYear() - 1,
+      year,
     });
   },
 };

@@ -12,6 +12,8 @@ const useSalesGraphData = (data: UseSalesResponse) => {
     prevYear,
   } = data;
 
+  console.log(data);
+
   const total = useMemo(
     () => ({
       currentWeek: currentWeek.data?.reduce(
