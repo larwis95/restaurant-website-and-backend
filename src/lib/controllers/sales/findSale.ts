@@ -201,7 +201,7 @@ export const findMissSalesForYear: IFindMissingSaleServerAction = async () => {
       {
         $match: {
           date: {
-            $gte: startOfYear(start),
+            $gte: startOfYear(firstSaleDate),
             $lt: end,
           },
         },
