@@ -1,33 +1,24 @@
-import { useQuery, useQueries } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import {
   fetchSalesForMonth,
-  fetchSalesForWeek,
+  fetchSalesForCurrentWeek,
+  fetchSalesForPreviousWeek,
   fetchSalesForYear,
 } from "../queries/sales/sales.get";
 import { getWeekOfMonth } from "date-fns";
 import { UseSalesResponse } from "./hooks.types";
 
-const weekofMonth = getWeekOfMonth(new Date());
 const currentMonth = new Date().getMonth();
 const currentYear = new Date().getFullYear();
 const month = currentMonth === 0 ? 12 : currentMonth - 1;
 const year = currentMonth === 0 ? currentYear - 1 : currentYear;
-const prevWeek = weekofMonth === 1 ? 5 : weekofMonth;
 
 const salesTypeMap = {
   currentWeek: async () => {
-    return await fetchSalesForWeek({
-      year: currentYear,
-      month: currentMonth + 1,
-      week: weekofMonth,
-    });
+    return await fetchSalesForCurrentWeek();
   },
   prevWeek: async () => {
-    return await fetchSalesForWeek({
-      year,
-      month,
-      week: prevWeek,
-    });
+    return await fetchSalesForPreviousWeek();
   },
   currentMonth: async () => {
     return await fetchSalesForMonth({

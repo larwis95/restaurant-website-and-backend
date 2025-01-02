@@ -61,9 +61,7 @@ const SalesTable = () => {
       await updateSale({ date, fields });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [dynamicFetch.type],
-      });
+      queryClient.invalidateQueries();
       toast({
         title: "Success",
         description: `Sale for: ${format(selectedSale?.date ?? new Date(), "MM/dd/yyyy")} updated successfully`,
@@ -107,6 +105,8 @@ const SalesTable = () => {
     });
   };
 
+  console.log("table data", data);
+
   return (
     <>
       <div className="flex flex-row flex-wrap gap-5 items-end">
@@ -129,11 +129,13 @@ const SalesTable = () => {
         </Dialog>
         <h2>
           Sales Total: $
-          {data
-            ?.reduce((prev, curr) => {
-              return prev + (curr.morning || 0) + (curr.night || 0);
-            }, 0)
-            .toFixed(2)}
+          {(Array.isArray(data) &&
+            data
+              ?.reduce((prev, curr) => {
+                return prev + (curr.morning || 0) + (curr.night || 0);
+              }, 0)
+              .toFixed(2)) ||
+            0}
         </h2>
       </div>
       {isPending && (
@@ -156,28 +158,35 @@ const SalesTable = () => {
         </TableHeader>
         <TableBody>
           <Dialog open={updateOpen} onOpenChange={setUpdateOpen}>
-            {data?.map((sale) => (
-              <DialogTrigger key={format(sale.date, "MM/dd/yyyy")} asChild>
-                <TableRow
-                  className="hover:cursor-pointer h-6"
-                  onClick={() => {
-                    setSelectedSale(sale);
-                  }}
-                >
-                  <TableCell>
-                    {format(new UTCDate(sale.date), "MM/dd/yyyy")}
-                  </TableCell>
-                  <TableCell>
-                    {sale.morning ? sale.morning.toFixed(2) : 0}
-                  </TableCell>
-                  <TableCell>{sale.night.toFixed(2)}</TableCell>
-                  <TableCell>{sale.holiday || "No"}</TableCell>
-                  <TableCell>
-                    {(sale.morning + sale.night).toFixed(2)}
-                  </TableCell>
-                </TableRow>
-              </DialogTrigger>
-            ))}
+            {(Array.isArray(data) &&
+              data?.map((sale) => (
+                <DialogTrigger key={sale._id} asChild>
+                  <TableRow
+                    className="hover:cursor-pointer h-6"
+                    onClick={() => {
+                      setSelectedSale(sale);
+                    }}
+                  >
+                    <TableCell>
+                      {format(new UTCDate(sale.date), "MM/dd/yyyy")}
+                    </TableCell>
+                    <TableCell>
+                      {sale.morning ? sale.morning.toFixed(2) : 0}
+                    </TableCell>
+                    <TableCell>{sale.night.toFixed(2)}</TableCell>
+                    <TableCell>{sale.holiday || "No"}</TableCell>
+                    <TableCell>
+                      {(sale.morning + sale.night).toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                </DialogTrigger>
+              ))) || (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center">
+                  No sales found for the selected period.
+                </TableCell>
+              </TableRow>
+            )}
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>

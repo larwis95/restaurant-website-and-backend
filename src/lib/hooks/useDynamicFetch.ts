@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { UseDynamicSalesFetch } from "./hooks.types";
-import { SaleResponse } from "../api.types";
+import { ErrorResponse, SaleResponse } from "../api.types";
 
 export const useDynamicSalesFetch: UseDynamicSalesFetch = (
   queryMap,
@@ -9,7 +9,7 @@ export const useDynamicSalesFetch: UseDynamicSalesFetch = (
 ): {
   isPending: boolean;
   error: Error | null;
-  data: SaleResponse[] | undefined;
+  data: SaleResponse[] | ErrorResponse | undefined;
 } => {
   const { isPending, error, data } = useQuery({
     queryKey: [key, args],
