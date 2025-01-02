@@ -8,11 +8,14 @@ import { startOfWeek, endOfWeek } from "date-fns";
 import {
   findMissSalesForYear,
   findSaleByDay,
+  findSalesByCurrentWeek,
   findSalesByMonth,
+  findSalesByPreviousWeek,
   findSalesByWeek,
   findSalesByYear,
 } from "./findSale";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
+import { Console } from "console";
 
 export const getAllSales = async (
   req: NextRequest,
@@ -47,31 +50,22 @@ export const getSaleForDate = async (
 export const getWeekSales = async (req: NextRequest, res: NextResponse) => {
   const searchParams = req.nextUrl.searchParams.entries();
   const params = Object.fromEntries(searchParams);
-  const { year, month, week, current } = params;
-  if (!current) {
+  const { year, month, week, current, previous } = params;
+
+  if (!current && !previous) {
     return await findSalesByWeek({
       year: parseInt(year),
       month: parseInt(month),
       week: parseInt(week),
     });
   }
-  const now = new Date();
-  const start = startOfWeek(now);
-  const end = endOfWeek(now);
-  await databaseConnection();
-  const currentWeekSales = await Sale.find({
-    date: {
-      $gte: start,
-      $lt: end,
-    },
-  });
-  if (!currentWeekSales) {
-    return NextResponse.json({
-      error: "No sales found for the current week",
-      status: 404,
-    });
+
+  if (current) {
+    return await findSalesByCurrentWeek();
   }
-  return NextResponse.json(currentWeekSales, { status: 200 });
+  if (previous) {
+    return await findSalesByPreviousWeek();
+  }
 };
 
 export const getMonthSales = async (req: NextRequest, res: NextResponse) => {
@@ -113,7 +107,7 @@ export const getMissingSalesDates = async (
   res: NextResponse
 ) => {
   try {
-    return await findMissSalesForYear({});
+    return await findMissSalesForYear();
   } catch (error) {
     const message = getErrorMessage(error);
     return NextResponse.json({ error: message }, { status: 500 });

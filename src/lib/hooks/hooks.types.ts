@@ -1,5 +1,5 @@
 import { UseQueryResult } from "@tanstack/react-query";
-import { SaleResponse } from "../api.types";
+import { ErrorResponse, SaleResponse } from "../api.types";
 
 export type QueryMap = {
   [key: string]: QueryFn;
@@ -19,7 +19,7 @@ export type UseDynamicSalesFetch = (
 ) => {
   isPending: boolean;
   error: Error | null;
-  data: SaleResponse[] | undefined;
+  data: SaleResponse[] | ErrorResponse | undefined;
 };
 
 export type QueryArgs = {

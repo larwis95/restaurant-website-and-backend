@@ -1,12 +1,9 @@
 "use server";
 import { Sale } from "@/models";
 import {
-  startOfWeek,
-  endOfWeek,
   isToday,
   startOfYear,
   eachDayOfInterval,
-  parse,
   startOfMonth,
   endOfMonth,
   getWeekOfMonth,
@@ -20,13 +17,22 @@ import { NextResponse } from "next/server";
 import { MissingDate, SaleResponse } from "../../api.types";
 import { format } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
+import { getPreviousWeekDates, getWeekDates } from "@/lib/helpers/dateUtils";
+import { start } from "repl";
 
-export const findSalesByYear: IFindSaleServerAction = async ({ year }) => {
+const DEC = 12;
+const JAN = 0;
+
+export const findSalesByYear: IFindSaleServerAction = async (args) => {
   await databaseConnection();
+  if (!args) {
+    return NextResponse.json({ error: "Year is required" }, { status: 400 });
+  }
+  const { year } = args;
   if (typeof year === "undefined") {
     return NextResponse.json({ error: "Year is required" }, { status: 400 });
   }
-  const start = startOfYear(new Date(year, 0, 1));
+  const start = startOfYear(new UTCDate(year, JAN, 1));
   const end = new Date(year, 11, 31);
   const sales: SaleResponse[] = await Sale.find(
     {
@@ -46,25 +52,29 @@ export const findSalesByYear: IFindSaleServerAction = async ({ year }) => {
   return NextResponse.json(sales, { status: 200 });
 };
 
-export const findSalesByMonth: IFindSaleServerAction = async ({
-  year,
-  month,
-}) => {
+export const findSalesByMonth: IFindSaleServerAction = async (args) => {
   await databaseConnection();
+  if (!args) {
+    return NextResponse.json(
+      { error: "Year and month are required" },
+      { status: 400 }
+    );
+  }
+  const { year, month } = args;
   if (typeof year === "undefined" || typeof month === "undefined") {
     return NextResponse.json(
       { error: "Year and month are required" },
       { status: 400 }
     );
   }
-  console.log(year, month);
+  const start = startOfMonth(new UTCDate(year, month - 1));
+  const end = endOfMonth(new UTCDate(year, month - 1));
+
   const sales: SaleResponse[] = await Sale.find(
     {
       date: {
-        $gte: new Date(`${year}-${month}-01`),
-        $lt: new Date(
-          `${month === 12 ? year + 1 : year}-${month === 12 ? 1 : month + 1}-01`
-        ),
+        $gte: start,
+        $lt: end,
       },
     },
     "-__v"
@@ -78,22 +88,90 @@ export const findSalesByMonth: IFindSaleServerAction = async ({
   return NextResponse.json(sales, { status: 200 });
 };
 
-export const findSalesByWeek: IFindSaleServerAction = async ({
-  year,
-  month,
-  week,
-}) => {
+export const findSalesByCurrentWeek: IFindSaleServerAction = async () => {
   await databaseConnection();
+  const currentWeek = getWeekDates(new Date()).map((date) =>
+    format(date, "yyyy-MM-dd")
+  );
+
+  console.log(currentWeek);
+
+  try {
+    const sales: SaleResponse[] = await Sale.find(
+      {
+        date: {
+          $gte: currentWeek[0],
+          $lt: currentWeek[currentWeek.length - 1],
+        },
+      },
+      "-__v"
+    );
+    if (!sales) {
+      return NextResponse.json(
+        { error: "No sales found for the current week" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json(sales, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "An error occurred while fetching sales" },
+      { status: 500 }
+    );
+  }
+};
+
+export const findSalesByPreviousWeek: IFindSaleServerAction = async () => {
+  await databaseConnection();
+  const previousWeek = getPreviousWeekDates().map((date) =>
+    format(date, "yyyy-MM-dd")
+  );
+  try {
+    const sales: SaleResponse[] = await Sale.find(
+      {
+        date: {
+          $gte: previousWeek[0],
+          $lt: previousWeek[previousWeek.length - 1],
+        },
+      },
+      "-__v"
+    );
+    if (!sales) {
+      return NextResponse.json(
+        { error: "No sales found for the previous week" },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json(sales, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "An error occurred while fetching sales" },
+      { status: 500 }
+    );
+  }
+};
+
+export const findSalesByWeek: IFindSaleServerAction = async (args) => {
+  await databaseConnection();
+  if (!args) {
+    return NextResponse.json(
+      { error: "Year, month and week are required" },
+      { status: 400 }
+    );
+  }
+
+  const { year, month, week } = args;
   if (typeof year === "undefined" || typeof month === "undefined") {
     return NextResponse.json(
       { error: "Year and month are required" },
       { status: 400 }
     );
   }
+
   const startDateOfMonth = startOfMonth(new Date(year, month - 1));
   const endDateOfMonth = endOfMonth(new Date(year, month - 1));
 
-  const weeksMap = new Map<string, { days: string[] }>();
+  const weeksMap = new Map<string, { day: Date | null }>();
 
   const dates = eachDayOfInterval({
     start: startDateOfMonth,
@@ -102,14 +180,17 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
 
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i];
-    const week = getWeekOfMonth(date);
+    const week = getWeekOfMonth(date, { weekStartsOn: 1 });
     const weekKey = week.toString();
     if (!weeksMap.has(weekKey)) {
       weeksMap.set(weekKey, {
-        days: [],
+        day: null,
       });
+      const weekData = weeksMap.get(weekKey);
+      if (weekData) {
+        weekData.day = date;
+      }
     }
-    weeksMap.get(weekKey)?.days.push(format(date, "yyyy-MM-dd"));
   }
 
   if (typeof week === "undefined") {
@@ -117,30 +198,27 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
   }
 
   const weekKey = week.toString();
-  const weekDays = weeksMap.get(weekKey);
-  const salesData: SaleResponse[] = [];
+  const firstDayOfWeek = weeksMap.get(weekKey)?.day;
 
-  if (!weekDays) {
+  if (!firstDayOfWeek) {
     return NextResponse.json(
       { error: "Invalid week specified" },
       { status: 400 }
     );
   }
+  const weekDates = getWeekDates(firstDayOfWeek).map((date) =>
+    format(date, "yyyy-MM-dd")
+  );
 
-  for (let i = 0; i < weekDays.days.length; i++) {
-    const sale: SaleResponse | null = await Sale.findOne(
-      {
-        date: {
-          $gte: `${weekDays?.days[i]}T00:00:00.000Z`,
-          $lt: `${weekDays?.days[i]}T23:59:59.999Z`,
-        },
+  const salesData: SaleResponse[] = await Sale.find(
+    {
+      date: {
+        $gte: weekDates[0],
+        $lt: weekDates[weekDates.length - 1],
       },
-      "-__v"
-    );
-    if (sale) {
-      salesData.push(sale);
-    }
-  }
+    },
+    "-__v"
+  );
 
   if (!salesData) {
     return NextResponse.json(
@@ -152,11 +230,17 @@ export const findSalesByWeek: IFindSaleServerAction = async ({
   return NextResponse.json(salesData, { status: 200 });
 };
 
-export const findSaleByDay: IFindSaleServerAction = async ({ day }) => {
+export const findSaleByDay: IFindSaleServerAction = async (args) => {
   await databaseConnection();
+  if (!args) {
+    return NextResponse.json({ error: "Day is required" }, { status: 400 });
+  }
+
+  const { day } = args;
   if (typeof day === "undefined") {
     return NextResponse.json({ error: "Day is required" }, { status: 400 });
   }
+
   const sale: SaleResponse | null = await Sale.findOne(
     {
       date: {
@@ -166,6 +250,7 @@ export const findSaleByDay: IFindSaleServerAction = async ({ day }) => {
     },
     "-__v"
   );
+
   if (!sale) {
     return NextResponse.json(
       { error: "No sales found for the day" },
@@ -186,7 +271,6 @@ const findOldestSale = async () => {
 
 export const findMissSalesForYear: IFindMissingSaleServerAction = async () => {
   await databaseConnection();
-  const year = new Date().getFullYear();
   const firstSaleDate = await findOldestSale();
   console.log(firstSaleDate);
   let start = startOfYear(new UTCDate(firstSaleDate));
@@ -201,7 +285,7 @@ export const findMissSalesForYear: IFindMissingSaleServerAction = async () => {
       {
         $match: {
           date: {
-            $gte: startOfYear(firstSaleDate),
+            $gte: firstSaleDate,
             $lt: end,
           },
         },

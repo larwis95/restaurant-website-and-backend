@@ -1,10 +1,18 @@
-import { get } from "http";
 import { MissingDate, SaleResponse, SuccessResponse } from "../../api.types";
 import { QueryArgs } from "../../hooks/hooks.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 
 export const fetchSalesForCurrentWeek = async (): Promise<SaleResponse[]> => {
-  const response = await fetch(`/api/sales/week`);
+  const response = await fetch(`/api/sales/week?current=true`);
+  const data: SaleResponse[] = await response.json();
+  if (!data) {
+    throw new Error("Error fetching sales data.");
+  }
+  return data;
+};
+
+export const fetchSalesForPreviousWeek = async (): Promise<SaleResponse[]> => {
+  const response = await fetch(`/api/sales/week?previous=true`);
   const data: SaleResponse[] = await response.json();
   if (!data) {
     throw new Error("Error fetching sales data.");

@@ -12,8 +12,6 @@ const useSalesGraphData = (data: UseSalesResponse) => {
     prevYear,
   } = data;
 
-  console.log(data);
-
   const total = useMemo(
     () => ({
       currentWeek: currentWeek.data?.reduce(
@@ -33,7 +31,7 @@ const useSalesGraphData = (data: UseSalesResponse) => {
         0
       ),
       prevWeekToDay: prevWeek.data?.reduce((acc, curr) => {
-        if (getDay(curr.date) < getDay(new Date())) {
+        if (getDay(curr.date) <= getDay(new Date())) {
           return acc + curr.morning + curr.night;
         }
         return acc;
@@ -43,7 +41,7 @@ const useSalesGraphData = (data: UseSalesResponse) => {
         0
       ),
       prevMonthToDay: prevMonth.data?.reduce((acc, curr) => {
-        if (getDate(curr.date) < getDate(new Date())) {
+        if (getDate(curr.date) <= getDate(new Date())) {
           return acc + curr.morning + curr.night;
         }
         return acc;
@@ -53,20 +51,13 @@ const useSalesGraphData = (data: UseSalesResponse) => {
         0
       ),
       prevYearToDay: prevYear.data?.reduce((acc, curr) => {
-        if (getDayOfYear(curr.date) < getDayOfYear(new Date())) {
+        if (getDayOfYear(curr.date) <= getDayOfYear(new Date())) {
           return acc + curr.morning + curr.night;
         }
         return acc;
       }, 0),
     }),
-    [
-      currentWeek.data,
-      currentMonth.data,
-      currentYear.data,
-      prevWeek.data,
-      prevMonth.data,
-      prevYear.data,
-    ]
+    [currentMonth, currentWeek, currentYear, prevMonth, prevWeek, prevYear]
   );
 
   const chartData = useMemo(
@@ -110,14 +101,7 @@ const useSalesGraphData = (data: UseSalesResponse) => {
         []
       ),
     }),
-    [
-      currentMonth.data,
-      currentYear.data,
-      prevMonth.data,
-      prevYear.data,
-      currentWeek.data,
-      prevWeek.data,
-    ]
+    [currentMonth, currentWeek, currentYear, prevMonth, prevWeek, prevYear]
   );
 
   return { total, chartData };

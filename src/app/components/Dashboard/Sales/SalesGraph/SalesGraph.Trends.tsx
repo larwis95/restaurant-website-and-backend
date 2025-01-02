@@ -17,6 +17,7 @@ interface ITrendsProps {
 }
 
 const Trends: React.FC<ITrendsProps> = ({ total, trends }) => {
+  console.log(total, trends);
   const trendPercentage = (current: number, prev: number) => {
     if (prev === 0 || current === 0) return "Needs data";
     const diff = current - prev;
