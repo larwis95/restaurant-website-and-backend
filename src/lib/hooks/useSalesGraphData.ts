@@ -31,7 +31,10 @@ const useSalesGraphData = (data: UseSalesResponse) => {
         0
       ),
       prevWeekToDay: prevWeek.data?.reduce((acc, curr) => {
-        if (getDay(curr.date) <= getDay(new Date())) {
+        const prevWeekDay = getDay(curr.date) === 0 ? 7 : getDay(curr.date);
+        const currentDay = getDay(new Date()) === 0 ? 7 : getDay(new Date());
+
+        if (prevWeekDay <= currentDay) {
           return acc + curr.morning + curr.night;
         }
         return acc;
