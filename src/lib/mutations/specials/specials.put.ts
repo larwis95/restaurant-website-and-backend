@@ -1,19 +1,14 @@
-import { SpecialResponse, ErrorResponse } from "../../api.types";
+import { IPutFunction } from "@/lib/api.interfaces";
+import { ErrorResponse, ItemResponse, SpecialRequest } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 
-const putSpecial = async ({
+export const putSpecial: IPutFunction<SpecialRequest, ItemResponse> = async ({
   _id,
   name,
   price,
   description,
   image,
-}: {
-  _id: string;
-  name: string;
-  price: number | { small?: number; medium?: number; large?: number };
-  description: string;
-  image: string;
-}): Promise<SpecialResponse> => {
+}) => {
   try {
     const response = await fetch(`/api/special/${_id}`, {
       method: "PUT",
@@ -22,7 +17,7 @@ const putSpecial = async ({
       },
       body: JSON.stringify({ _id, name, price, description, image }),
     });
-    const data: SpecialResponse | ErrorResponse = await response.json();
+    const data: ItemResponse | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }
@@ -32,11 +27,10 @@ const putSpecial = async ({
   }
 };
 
-export const putActiveSpecial = async ({
-  specials,
-}: {
-  specials: SpecialResponse[];
-}): Promise<SpecialResponse[]> => {
+export const putActiveSpecial: IPutFunction<
+  SpecialRequest[],
+  ItemResponse[]
+> = async (specials): Promise<ItemResponse[]> => {
   try {
     const response = await fetch(`/api/special/active`, {
       method: "PUT",
@@ -45,7 +39,7 @@ export const putActiveSpecial = async ({
       },
       body: JSON.stringify({ specials }),
     });
-    const data: SpecialResponse[] | ErrorResponse = await response.json();
+    const data: ItemResponse[] | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }
@@ -54,5 +48,3 @@ export const putActiveSpecial = async ({
     throw new Error(getErrorMessage(error));
   }
 };
-
-export default putSpecial;

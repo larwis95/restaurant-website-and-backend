@@ -1,9 +1,11 @@
-import { ErrorResponse, ItemPostRequest, ItemResponse } from "../../api.types";
+import { IPostFunction } from "@/lib/api.interfaces";
+import { ErrorResponse, ItemRequest, ItemResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 
-export const postMutationForItem = async (
-  item: ItemPostRequest
-): Promise<ItemResponse | ErrorResponse> => {
+export const postMutationForItem: IPostFunction<
+  ItemRequest,
+  ItemResponse
+> = async (item) => {
   try {
     const response = await fetch(`/api/item`, {
       method: "POST",

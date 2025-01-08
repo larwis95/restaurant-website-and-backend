@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { UseSalesResponse } from "./hooks.types";
-import { getMonth, getDay, getDate, getDayOfYear } from "date-fns";
+import { getMonth, getDay, getDate, getDayOfYear, getYear } from "date-fns";
 
 const useSalesGraphData = (data: UseSalesResponse) => {
   const {
@@ -72,6 +72,7 @@ const useSalesGraphData = (data: UseSalesResponse) => {
       })),
       currentYear: currentYear.data?.reduce<{ month: number; total: number }[]>(
         (acc, curr) => {
+          if (getYear(curr.date) !== getYear(new Date())) return acc;
           const month = getMonth(curr.date);
           const total = curr.morning + curr.night;
           const index = acc.findIndex((item) => item.month === month);

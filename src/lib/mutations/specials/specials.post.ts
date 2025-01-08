@@ -1,21 +1,19 @@
-import { SpecialResponse, ErrorResponse } from "../../api.types";
+import { IPostFunction } from "@/lib/api.interfaces";
+import { ItemResponse, ErrorResponse, SpecialRequest } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 
-const postSpecial = async (body: {
-  name: string;
-  description: string;
-  image: string;
-  price: number;
-}): Promise<SpecialResponse | ErrorResponse> => {
+export const postSpecial: IPostFunction<SpecialRequest, ItemResponse> = async (
+  special
+) => {
   try {
     const response = await fetch(`/api/special`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify(special),
     });
-    const data: SpecialResponse | ErrorResponse = await response.json();
+    const data: ItemResponse | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }
@@ -26,7 +24,7 @@ const postSpecial = async (body: {
 };
 
 export const postActiveSpecial = async (): Promise<
-  SpecialResponse[] | ErrorResponse
+  ItemResponse[] | ErrorResponse
 > => {
   try {
     const response = await fetch(`/api/special/active`, {
@@ -35,7 +33,7 @@ export const postActiveSpecial = async (): Promise<
         "Content-Type": "application/json",
       },
     });
-    const data: SpecialResponse[] | ErrorResponse = await response.json();
+    const data: ItemResponse[] | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }
@@ -44,5 +42,3 @@ export const postActiveSpecial = async (): Promise<
     throw new Error(getErrorMessage(error));
   }
 };
-
-export default postSpecial;

@@ -24,11 +24,9 @@ import {
   getSpecials,
   getActiveSpecials,
 } from "@/lib/queries/specials/get.specials";
-import putSpecial from "@/lib/mutations/specials/specials.put";
-import deleteSpecial from "@/lib/mutations/specials/specials.delete";
-import { putActiveSpecial } from "@/lib/mutations/specials/specials.put";
+import { putSpecial, deleteSpecial, putActiveSpecial } from "@/lib/mutations";
 import { useState } from "react";
-import { AddSpecialForm } from "../Form/Add";
+import { Form } from "../Form";
 import Sortable from "../Menu/Sortable.menu";
 import { SpecialsCheckBox } from "./Specials.checkbox";
 
@@ -62,7 +60,28 @@ const SpecialAccordion = () => {
               <DialogTitle>Add Special</DialogTitle>
               <DialogDescription>Add a special to the menu.</DialogDescription>
             </DialogHeader>
-            <AddSpecialForm setModalOpen={setModalOpen} />
+            <Form.Root
+              itemType="special"
+              mutationType="post"
+              onClose={() => {
+                setModalOpen(!modalOpen);
+              }}
+            >
+              <Form.Input label="Name" type="text" value="" name="name" />
+              <Form.PriceInput
+                type="number"
+                label="Price"
+                value={0}
+                name="price"
+              />
+              <Form.TextArea
+                label="Description"
+                type="text"
+                value=""
+                name="description"
+              />
+              <Form.ImageSelector />
+            </Form.Root>
           </DialogContent>
         </Dialog>
         <Popover>

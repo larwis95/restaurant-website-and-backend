@@ -1,13 +1,11 @@
 import getErrorMessage from "@/lib/getErrorMessage";
-import { ErrorResponse, ItemResponse } from "../../api.types";
+import { ErrorResponse, ItemRequest, ItemResponse } from "../../api.types";
+import { IPutFunction } from "@/lib/api.interfaces";
 
-export const putMutationForItem = async ({
-  _id,
-  name,
-  price,
-  description,
-  image,
-}: ItemResponse): Promise<ItemResponse> => {
+export const putMutationForItem: IPutFunction<
+  ItemRequest,
+  ItemResponse
+> = async ({ _id, name, price, description, image }): Promise<ItemResponse> => {
   try {
     const response = await fetch(`/api/item`, {
       method: "PUT",

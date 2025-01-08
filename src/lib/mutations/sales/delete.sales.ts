@@ -1,11 +1,8 @@
 import getErrorMessage from "@/lib/getErrorMessage";
 import { ErrorResponse, SuccessResponse } from "../../api.types";
+import { IDeleteFunction } from "@/lib/api.interfaces";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export const deleteSaleByDate = async (
-  date: Date
-): Promise<ErrorResponse | SuccessResponse<undefined>> => {
+export const deleteSaleByDate: IDeleteFunction<Date> = async (date) => {
   try {
     if (!date) {
       throw new Error("Date is required");
@@ -13,7 +10,7 @@ export const deleteSaleByDate = async (
     const response = await fetch(`/api/sales/${date}`, {
       method: "DELETE",
     });
-    const data = await response.json();
+    const data: SuccessResponse | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }

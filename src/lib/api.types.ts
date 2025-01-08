@@ -5,9 +5,38 @@ export type ErrorResponse = {
 };
 
 export type MenuResponse = {
+  _id: string;
   name: string;
-  description: string;
   items: ItemResponse[];
+};
+
+export type PostItemArg = {
+  name: string;
+  price: number;
+  description: string;
+  category: string;
+};
+
+export type PostSaleArg = {
+  date: Date;
+  morning: number;
+  night: number;
+  holiday?: string;
+};
+
+export type PutSaleArg = {
+  date: Date;
+  morning: number;
+  night: number;
+  holiday?: string;
+};
+
+export type PutItemArg = {
+  _id: string;
+  name: string;
+  price: number;
+  description: string;
+  category: string;
 };
 
 export type ItemResponse = {
@@ -16,6 +45,7 @@ export type ItemResponse = {
   price: number | { small?: number; medium?: number; large?: number };
   description: string;
   image: string;
+  category?: string;
 };
 
 export type SaleResponse = {
@@ -26,21 +56,13 @@ export type SaleResponse = {
   holiday?: string;
 };
 
-export type SpecialResponse = {
-  _id: string;
-  name: string;
-  description: string;
-  image: string;
-  price: number | { small?: number; medium?: number; large?: number };
-};
-
 export type DeleteResponse = {
   message: string;
 };
 
-export type SuccessResponse<T> = {
+export type SuccessResponse<T = void> = {
   message: string;
-  data?: T;
+  data?: T | null;
 };
 
 export type MissingDate = {
@@ -106,16 +128,37 @@ export type SaleRequest = {
   holiday?: string;
 };
 
-export type ItemPostRequest = {
+export type ItemRequest = {
+  _id?: string;
   name: string;
-  price: number;
+  price:
+    | {
+        small?: number;
+        medium?: number;
+        large?: number;
+      }
+    | number;
   description: string;
-  category: string;
+  image?: string;
+  category?: string;
 };
 
 export type SpecialRequest = {
+  _id?: string;
   name: string;
   description: string;
-  image: string;
-  price: number;
+  image?: string;
+  price:
+    | {
+        small?: number;
+        medium?: number;
+        large?: number;
+      }
+    | number;
+};
+
+export type MenuRequest = {
+  _id?: string;
+  name: string;
+  items: ItemResponse[];
 };

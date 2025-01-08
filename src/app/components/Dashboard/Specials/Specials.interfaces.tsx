@@ -1,6 +1,6 @@
-import { SpecialResponse } from "@/lib/api.types";
+import { ItemResponse } from "@/lib/api.types";
 
 export interface ISpecialCheckboxProps {
-  specials: SpecialResponse[];
-  activeSpecials: SpecialResponse[];
+  specials: ItemResponse[];
+  activeSpecials: ItemResponse[];
 }

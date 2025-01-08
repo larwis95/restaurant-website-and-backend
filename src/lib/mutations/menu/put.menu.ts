@@ -1,20 +1,23 @@
 import getErrorMessage from "@/lib/getErrorMessage";
-import { ErrorResponse, ItemResponse, MenuResponse } from "../../api.types";
+import {
+  ErrorResponse,
+  ItemResponse,
+  MenuRequest,
+  MenuResponse,
+} from "../../api.types";
+import { IPutFunction } from "@/lib/api.interfaces";
 
-export const putMutatiuonForMenu = async ({
-  category,
-  items,
-}: {
-  category: string;
-  items: ItemResponse[];
-}) => {
+export const putMutatiuonForMenu: IPutFunction<
+  MenuRequest,
+  MenuResponse
+> = async (menu) => {
   try {
-    const response = await fetch(`/api/menu/${category}`, {
+    const response = await fetch(`/api/menu/${menu.name}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ items }),
+      body: JSON.stringify(menu),
     });
     const data: MenuResponse | ErrorResponse = await response.json();
     if ("error" in data) {

@@ -1,46 +1,32 @@
-import { DeleteResponse, ErrorResponse, ItemResponse } from "@/lib/api.types";
-import { mutationFn } from "./types.menu";
+import {
+  ItemRequest,
+  ItemResponse,
+  MenuRequest,
+  MenuResponse,
+  SpecialRequest,
+} from "@/lib/api.types";
+import { IDeleteFunction, IPutFunction } from "@/lib/api.interfaces";
 
 export interface IMenuItemProps {
   item: ItemResponse;
+
   className?: string;
+
   currentlyDragged?: boolean;
+
   mutationMap: {
-    put: ({
-      _id,
-      name,
-      price,
-      description,
-      image,
-    }: {
-      _id: string;
-      name: string;
-      price: number | { small?: number; medium?: number; large?: number };
-      description: string;
-      image: string;
-    }) => Promise<ItemResponse>;
-    del: (id: string) => Promise<DeleteResponse | ErrorResponse>;
+    put: IPutFunction<ItemRequest | SpecialRequest, ItemResponse>;
+
+    del: IDeleteFunction<string, ItemResponse>;
   };
 }
 
-export interface ISortableProps {
+export type ISortableProps = {
   items: ItemResponse[];
   category?: string;
-  mutation: mutationFn;
+  mutation: (arg: any) => any;
   mutationMap: {
-    put: ({
-      _id,
-      name,
-      price,
-      description,
-      image,
-    }: {
-      _id: string;
-      name: string;
-      price: number | { small?: number; medium?: number; large?: number };
-      description: string;
-      image: string;
-    }) => Promise<ItemResponse>;
-    del: (id: string) => Promise<DeleteResponse | ErrorResponse>;
+    put: IPutFunction<ItemRequest | SpecialRequest, ItemResponse>;
+    del: IDeleteFunction<string, ItemResponse>;
   };
-}
+};

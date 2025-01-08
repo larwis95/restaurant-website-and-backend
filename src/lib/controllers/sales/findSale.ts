@@ -33,7 +33,7 @@ export const findSalesByYear: IFindSaleServerAction = async (args) => {
     return NextResponse.json({ error: "Year is required" }, { status: 400 });
   }
   const start = startOfYear(new UTCDate(year, JAN, 1));
-  const end = new Date(year, 11, 31);
+  const end = new UTCDate(year, 11, 31);
   const sales: SaleResponse[] = await Sale.find(
     {
       date: {
@@ -93,8 +93,6 @@ export const findSalesByCurrentWeek: IFindSaleServerAction = async () => {
   const currentWeek = getWeekDates(new Date()).map((date) =>
     format(date, "yyyy-MM-dd")
   );
-
-  console.log(currentWeek);
 
   try {
     const sales: SaleResponse[] = await Sale.find(
@@ -272,7 +270,6 @@ const findOldestSale = async () => {
 export const findMissSalesForYear: IFindMissingSaleServerAction = async () => {
   await databaseConnection();
   const firstSaleDate = await findOldestSale();
-  console.log(firstSaleDate);
   let start = startOfYear(new UTCDate(firstSaleDate));
   let end = new UTCDate();
   let dates = [];

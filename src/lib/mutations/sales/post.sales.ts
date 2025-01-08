@@ -1,7 +1,10 @@
 import getErrorMessage from "@/lib/getErrorMessage";
 import { ErrorResponse, SaleRequest, SaleResponse } from "../../api.types";
+import { IPostFunction } from "@/lib/api.interfaces";
 
-export const addSale = async (sale: SaleRequest): Promise<SaleResponse> => {
+export const addSale: IPostFunction<SaleRequest, SaleResponse> = async (
+  sale
+) => {
   try {
     const response = await fetch(`/api/sales`, {
       method: "POST",
@@ -20,9 +23,10 @@ export const addSale = async (sale: SaleRequest): Promise<SaleResponse> => {
   }
 };
 
-export const bulkAddSales = async (
-  sales: SaleRequest[]
-): Promise<SaleResponse[]> => {
+export const bulkAddSales: IPostFunction<
+  SaleRequest[],
+  SaleResponse[]
+> = async (sales) => {
   try {
     const response = await fetch(`/api/sales/bulk`, {
       method: "POST",

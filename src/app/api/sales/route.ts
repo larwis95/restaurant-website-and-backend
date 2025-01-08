@@ -6,15 +6,18 @@ import { NextRequest, NextResponse } from "next/server";
 
 const putSale = async (req: NextRequest, res: NextResponse) => {
   const body = await req.json();
-  const { date, fields }: { date: string; fields: UpdateSaleFields } = body;
+  const { date, morning, night, holiday } = body;
   try {
-    if (!date || !fields) {
+    if (!date || morning === undefined || night === undefined) {
       return NextResponse.json(
         { error: "Date and fields are required" },
         { status: 400 }
       );
     }
-    const sale = await updateSale({ date: new Date(date), fields });
+    const sale = await updateSale({
+      date: new Date(date),
+      fields: { morning, night, holiday },
+    });
     if (typeof sale === "object" && "error" in sale) {
       return NextResponse.json(sale, { status: 400 });
     }

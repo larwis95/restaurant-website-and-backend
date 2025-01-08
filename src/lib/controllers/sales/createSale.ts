@@ -4,8 +4,7 @@ import {
   ICreateSaleSeverAction,
 } from "../../api.interfaces";
 import { Sale } from "@/models";
-import { data } from "@tensorflow/tfjs";
-import { SaleRequest, SaleResponse } from "../../api.types";
+import { SaleResponse } from "../../api.types";
 
 export const createSale: ICreateSaleSeverAction = async ({
   date,

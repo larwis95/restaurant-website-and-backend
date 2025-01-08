@@ -47,9 +47,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({
   const queryClient = useQueryClient();
 
   const deleteItem = useMutation({
-    mutationFn: async () => {
-      await del(_id);
-    },
+    mutationFn: del,
     onSuccess: () => {
       toast({
         title: "Success",
@@ -102,7 +100,7 @@ const MenuItem: React.FC<IMenuItemProps> = ({
 
   const handleSave = (field: keyof ItemResponse, value: Price) => {
     if (value === undefined) return;
-    setUpdatedItem((prev) => ({ ...prev, [field]: value }));
+    setUpdatedItem((prev: ItemResponse) => ({ ...prev, [field]: value }));
   };
 
   return (
@@ -166,14 +164,16 @@ const MenuItem: React.FC<IMenuItemProps> = ({
           <Button
             variant="outline"
             type="button"
+            disabled={deleteItem.isPending}
             className="text-red-600 border border-red-600"
-            onClick={() => deleteItem.mutate()}
+            onClick={() => deleteItem.mutate(_id)}
           >
             {deleteItem.isPending ? "Deleting" : "Delete"}
           </Button>
           <Button
             variant="outline"
             type="submit"
+            disabled={updateItem.isPending}
             className={`border ${
               updateItem.isPending
                 ? "pointer-events-none text-red-600 border-red-600"

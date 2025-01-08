@@ -1,4 +1,9 @@
-import { ItemResponse, SpecialResponse } from "@/lib/api.types";
+import {
+  ItemResponse,
+  MenuRequest,
+  MenuResponse,
+  SpecialRequest,
+} from "@/lib/api.types";
 import {
   DndContext,
   closestCenter,
@@ -20,6 +25,7 @@ import { toast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import MenuItem from "./MenuItem.menu";
 import { ISortableProps } from "./Menu.interfaces";
+import { data } from "@tensorflow/tfjs";
 
 export const ItemsContext = createContext({
   items: [] as ItemResponse[],
@@ -30,22 +36,14 @@ export const Sortable: React.FC<ISortableProps> = ({
   category,
   mutation,
   mutationMap,
-}) => {
+}: ISortableProps) => {
   const queryClient = useQueryClient();
 
   const isMobile = window.innerWidth < 1024;
 
   const sortMenu = useMutation({
-    mutationFn: async (
-      arg:
-        | { category: string; items: ItemResponse[] }
-        | { specials: SpecialResponse[] }
-    ) => {
-      if (!mutation) return;
-      await mutation(arg);
-    },
+    mutationFn: mutation,
     onError: (error) => {
-      if (!mutation) return;
       toast({
         title: "Error",
         description: "Failed to update items sort order",
@@ -93,8 +91,13 @@ export const Sortable: React.FC<ISortableProps> = ({
       const newIndex = clientItems.findIndex((item) => item._id === over.id);
       const newItems = arrayMove(clientItems, oldIndex, newIndex);
       setClientItems(newItems);
-      if (category) return sortMenu.mutate({ category, items: newItems });
-      sortMenu.mutate({ specials: newItems as SpecialResponse[] });
+      if (!category) {
+        return sortMenu.mutate(newItems.map((item) => item._id));
+      }
+      return sortMenu.mutate({
+        name: category,
+        items: newItems,
+      });
     }
     setActiveId(null);
   };
@@ -128,9 +131,8 @@ export const Sortable: React.FC<ISortableProps> = ({
           {activeId ? (
             <MenuItem
               item={
-                clientItems.find(
-                  (item) => item._id === activeId
-                ) as ItemResponse
+                clientItems.find((item) => item._id === activeId) ??
+                ({} as ItemResponse)
               }
               className={`bg-slate-900 border border-border w-full pointer-events-none`}
               mutationMap={mutationMap}

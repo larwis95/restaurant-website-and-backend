@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Special, ActiveSpecials } from "@/models";
-import { ErrorResponse, SpecialResponse } from "../../api.types";
+import { ErrorResponse, ItemResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 import databaseConnection from "@/lib/db";
 import { ActiveSpecialsSchema } from "@/models/types";
@@ -8,7 +8,7 @@ import { ActiveSpecialsSchema } from "@/models/types";
 const getSpecials = async (
   req: NextRequest,
   res: NextResponse
-): Promise<NextResponse<SpecialResponse[] | ErrorResponse>> => {
+): Promise<NextResponse<ItemResponse[] | ErrorResponse>> => {
   try {
     await databaseConnection();
     const specials = await Special.find();
@@ -30,7 +30,7 @@ const getSpecials = async (
 const getSpecialsById = async (
   req: NextRequest,
   context: { params: { id: string } }
-): Promise<NextResponse<SpecialResponse | ErrorResponse>> => {
+): Promise<NextResponse<ItemResponse | ErrorResponse>> => {
   try {
     await databaseConnection();
     const { id } = context.params;
@@ -50,7 +50,7 @@ const getSpecialsById = async (
 export const getActiveSpecials = async (
   req: NextRequest,
   res: NextResponse
-): Promise<NextResponse<SpecialResponse[] | ErrorResponse>> => {
+): Promise<NextResponse<ItemResponse[] | ErrorResponse>> => {
   try {
     await databaseConnection();
     const activeSpecials: ActiveSpecialsSchema =
@@ -62,7 +62,7 @@ export const getActiveSpecials = async (
       );
     }
     return NextResponse.json(
-      activeSpecials.specials as unknown as SpecialResponse[],
+      activeSpecials.specials as unknown as ItemResponse[],
       {
         status: 200,
       }

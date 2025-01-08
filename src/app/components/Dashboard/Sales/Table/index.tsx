@@ -22,23 +22,18 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { AddSaleForm, UpdateSaleForm } from "../../Form";
-import { useToast } from "@/hooks/use-toast";
-import { updateSale } from "@/lib/mutations/sales/put.sales";
-import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useState, useMemo, useCallback } from "react";
 import { useDynamicSalesFetch } from "@/lib/hooks/useDynamicFetch";
 import { format, getWeekOfMonth } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
-import { UpdateSaleFields } from "@/lib/api.types";
-import { IFilterFormState, ISelectedSale } from "./Table.interfaces";
+import { SaleResponse, UpdateSaleFields } from "@/lib/api.types";
+import { IFilterFormState } from "./Table.interfaces";
 import { Button } from "@/components/ui/button";
+import { Form } from "../../Form";
 import FilterForm from "./Table.FilterForm";
 import { DialogDescription } from "@radix-ui/react-dialog";
 
 const SalesTable = () => {
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
   const [addOpen, setAddOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
   const [dynamicFetch, setDynamicFetch] = useState<IFilterFormState>({
@@ -50,35 +45,7 @@ const SalesTable = () => {
     },
   });
 
-  const putSale = useMutation({
-    mutationFn: async ({
-      date,
-      fields,
-    }: {
-      date: Date;
-      fields: UpdateSaleFields;
-    }) => {
-      await updateSale({ date, fields });
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries();
-      toast({
-        title: "Success",
-        description: `Sale for: ${format(selectedSale?.date ?? new Date(), "MM/dd/yyyy")} updated successfully`,
-      });
-      setSelectedSale(null);
-      setUpdateOpen(false);
-    },
-    onError: (error) => {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    },
-  });
-
-  const [selectedSale, setSelectedSale] = useState<ISelectedSale | null>(null);
+  const [selectedSale, setSelectedSale] = useState<SaleResponse | null>(null);
 
   const { isPending, error, data } = useDynamicSalesFetch(
     {
@@ -92,20 +59,17 @@ const SalesTable = () => {
     dynamicFetch.args
   );
 
-  const handleUpdateSale = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!selectedSale) return;
-    putSale.mutate({
-      date: selectedSale.date,
-      fields: {
-        morning: selectedSale.morning,
-        night: selectedSale.night,
-        holiday: selectedSale.holiday,
-      },
-    });
-  };
+  const totalSales = useMemo(() => {
+    if (!Array.isArray(data)) return 0;
+    return data
+      .reduce((prev, curr) => prev + (curr.morning || 0) + (curr.night || 0), 0)
+      .toFixed(2);
+  }, [data]);
 
-  console.log("table data", data);
+  const handleRowClick = useCallback((sale: SaleResponse) => {
+    setSelectedSale(sale);
+    setUpdateOpen(true);
+  }, []);
 
   return (
     <>
@@ -124,23 +88,44 @@ const SalesTable = () => {
                 Fill out the form to add a sale.
               </DialogDescription>
             </DialogHeader>
-            <AddSaleForm type={dynamicFetch.type} setModalOpen={setAddOpen} />
+            <Form.Root
+              itemType="sale"
+              mutationType="post"
+              onClose={() => setAddOpen(false)}
+            >
+              <Form.DatePicker
+                label="Date"
+                type="date"
+                value=""
+                name="date"
+                allowPicker
+              />
+              <Form.Input
+                label="Morning"
+                type="number"
+                value={0}
+                name="morning"
+              />
+              <Form.Input label="Night" type="number" value={0} name="night" />
+              <Form.Input
+                label="Holiday?"
+                type="text"
+                value=""
+                name="holiday"
+              />
+            </Form.Root>
           </DialogContent>
         </Dialog>
-        <h2>
-          Sales Total: $
-          {(Array.isArray(data) &&
-            data
-              ?.reduce((prev, curr) => {
-                return prev + (curr.morning || 0) + (curr.night || 0);
-              }, 0)
-              .toFixed(2)) ||
-            0}
-        </h2>
+        <h2>Sales Total: ${totalSales}</h2>
       </div>
       {isPending && (
         <div className="w-full flex items-center justify-center">
           <LoadingSpinner className="text-secondary" />
+        </div>
+      )}
+      {error && (
+        <div className="w-full flex items-center justify-center text-red-500">
+          Error loading sales data.
         </div>
       )}
       <Table className="h-fit">
@@ -158,14 +143,12 @@ const SalesTable = () => {
         </TableHeader>
         <TableBody>
           <Dialog open={updateOpen} onOpenChange={setUpdateOpen}>
-            {(Array.isArray(data) &&
-              data?.map((sale) => (
+            {Array.isArray(data) && data.length > 0 ? (
+              data.map((sale) => (
                 <DialogTrigger key={sale._id} asChild>
                   <TableRow
                     className="hover:cursor-pointer h-6"
-                    onClick={() => {
-                      setSelectedSale(sale);
-                    }}
+                    onClick={() => handleRowClick(sale)}
                   >
                     <TableCell>
                       {format(new UTCDate(sale.date), "MM/dd/yyyy")}
@@ -180,7 +163,8 @@ const SalesTable = () => {
                     </TableCell>
                   </TableRow>
                 </DialogTrigger>
-              ))) || (
+              ))
+            ) : (
               <TableRow>
                 <TableCell colSpan={5} className="text-center">
                   No sales found for the selected period.
@@ -198,12 +182,42 @@ const SalesTable = () => {
                   Fill out the form to update the sale.
                 </DialogDescription>
               </DialogHeader>
-              <UpdateSaleForm
-                handleUpdateSale={handleUpdateSale}
-                selectedSale={selectedSale}
-                setSelectedSale={setSelectedSale}
-                setModalOpen={setUpdateOpen}
-              />
+              {selectedSale && (
+                <Form.Root
+                  itemType="sale"
+                  mutationType="put"
+                  item={selectedSale}
+                  onClose={() => {
+                    setSelectedSale(null);
+                    setUpdateOpen(false);
+                  }}
+                >
+                  <Form.DatePicker
+                    label="Date"
+                    type="date"
+                    value={format(new UTCDate(selectedSale.date), "yyyy-MM-dd")}
+                    name="date"
+                  />
+                  <Form.Input
+                    label="Morning"
+                    type="number"
+                    value={selectedSale.morning}
+                    name="morning"
+                  />
+                  <Form.Input
+                    label="Night"
+                    type="number"
+                    value={selectedSale.night}
+                    name="night"
+                  />
+                  <Form.Input
+                    label="Holiday?"
+                    type="text"
+                    value={selectedSale.holiday || ""}
+                    name="holiday"
+                  />
+                </Form.Root>
+              )}
             </DialogContent>
           </Dialog>
         </TableBody>
