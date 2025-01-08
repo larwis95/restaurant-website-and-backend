@@ -1,17 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Special } from "@/models";
-import {
-  ErrorResponse,
-  SpecialResponse,
-  SuccessResponse,
-} from "../../api.types";
+import { ErrorResponse, ItemResponse, SuccessResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 import databaseConnection from "@/lib/db";
 
 const deleteSpecial = async (
   req: NextRequest,
   context: { params: { id: string } }
-): Promise<NextResponse<SuccessResponse<SpecialResponse> | ErrorResponse>> => {
+): Promise<NextResponse<SuccessResponse<ItemResponse> | ErrorResponse>> => {
   try {
     await databaseConnection();
     const { id } = context.params;

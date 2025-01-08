@@ -7,11 +7,10 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import BulkAddSales from "./ModalContent/BulkAddSales";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { UTCDate } from "@date-fns/utc";
-import { Button } from "@/components/ui/button";
+import BulkAddSales from "./BulkAddSale";
 import { useState } from "react";
 
 export const DashBoardNotification = () => {
@@ -49,13 +48,13 @@ export const DashBoardNotification = () => {
       <PopoverContent className="w-fit flex justify-start">
         {missingSales && missingSales.dates.length > 0 ? (
           <ScrollArea className="w-fit h-80 flex flex-col justify-start">
-            <div className="flex flex-col gap-2  w-full justify-start">
+            <div className="flex flex-col gap-2  w-full justify-start p-2">
               <h2 className="text-lg font-bold text-center text-white">
                 Missing Sales
               </h2>
               <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-                <DialogTrigger>
-                  <Button variant="outline">Add Missing Sales</Button>
+                <DialogTrigger className="w-fit border-white p-2 hover:bg-white hover:text-primary transition hover:border-green-500 duration-500">
+                  <p>Add Missing Sales</p>
                 </DialogTrigger>
                 <BulkAddSales setModalOpen={setModalOpen} />
               </Dialog>

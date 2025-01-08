@@ -1,20 +1,17 @@
 import getErrorMessage from "@/lib/getErrorMessage";
 import { ErrorResponse, SaleResponse, UpdateSaleFields } from "../../api.types";
+import { IPutFunction } from "@/lib/api.interfaces";
 
-export const updateSale = async ({
-  date,
-  fields,
-}: {
-  date: Date;
-  fields: UpdateSaleFields;
-}) => {
+export const updateSale: IPutFunction<SaleResponse, SaleResponse> = async (
+  sale
+) => {
   try {
     const response = await fetch(`/api/sales`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ date, fields }),
+      body: JSON.stringify(sale),
     });
     const data: SaleResponse | ErrorResponse = await response.json();
     if ("error" in data) {

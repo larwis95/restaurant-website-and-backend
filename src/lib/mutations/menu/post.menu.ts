@@ -1,13 +1,18 @@
+import { IPostFunction } from "@/lib/api.interfaces";
+import { MenuRequest, MenuResponse } from "@/lib/api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 
-export const postMutationForMenu = async (name: string) => {
+export const postMutationForMenu: IPostFunction<
+  MenuRequest,
+  MenuResponse
+> = async (menu) => {
   try {
     const response = await fetch(`/api/menu`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify(menu),
     });
     const data = await response.json();
     if ("error" in data) {

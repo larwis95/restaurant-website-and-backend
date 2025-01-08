@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Special, ActiveSpecials } from "@/models";
-import { ErrorResponse, SpecialResponse } from "../../api.types";
+import { ErrorResponse, ItemResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 import databaseConnection from "@/lib/db";
 
 const postSpecial = async (
   req: NextRequest,
   res: NextResponse
-): Promise<NextResponse<SpecialResponse | ErrorResponse>> => {
+): Promise<NextResponse<ItemResponse | ErrorResponse>> => {
   try {
     await databaseConnection();
     const { name, description, image, price } = await req.json();
@@ -35,10 +35,10 @@ const postSpecial = async (
 export const postActiveSpecial = async (
   req: NextRequest,
   res: NextResponse
-): Promise<NextResponse<SpecialResponse | ErrorResponse>> => {
+): Promise<NextResponse<ItemResponse | ErrorResponse>> => {
   try {
     await databaseConnection();
-    const checkActiveSpecial: SpecialResponse[] = await ActiveSpecials.find();
+    const checkActiveSpecial: ItemResponse[] = await ActiveSpecials.find();
     if (checkActiveSpecial.length > 0) {
       return NextResponse.json(
         { error: "Active special already exists" },

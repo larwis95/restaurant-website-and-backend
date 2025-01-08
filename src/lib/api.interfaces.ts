@@ -14,6 +14,18 @@ export interface IFindMissingSaleServerAction {
   (): Promise<NextResponse<SuccessResponse<MissingDate[]> | ErrorResponse>>;
 }
 
+export interface IPostFunction<T = void, S = void> {
+  (arg: T): Promise<S>;
+}
+
+export interface IPutFunction<T = void, S = void> {
+  (arg: T): Promise<S>;
+}
+
+export interface IDeleteFunction<T = void, S = void> {
+  (arg: T): Promise<SuccessResponse<S>>;
+}
+
 export interface IUpdateSaleSeverAction {
   ({}: {
     date: Date;

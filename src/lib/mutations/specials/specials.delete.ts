@@ -1,18 +1,15 @@
-import {
-  SuccessResponse,
-  ErrorResponse,
-  SpecialResponse,
-} from "../../api.types";
+import { IDeleteFunction } from "@/lib/api.interfaces";
+import { SuccessResponse, ErrorResponse, ItemResponse } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 
-const deleteSpecial = async (
+export const deleteSpecial: IDeleteFunction<string, ItemResponse> = async (
   id: string
-): Promise<SuccessResponse<SpecialResponse> | ErrorResponse> => {
+) => {
   try {
     const response = await fetch(`/api/special/${id}`, {
       method: "DELETE",
     });
-    const data: SuccessResponse<SpecialResponse> | ErrorResponse =
+    const data: SuccessResponse<ItemResponse> | ErrorResponse =
       await response.json();
     if ("error" in data) {
       throw new Error(data.error);
@@ -22,5 +19,3 @@ const deleteSpecial = async (
     throw new Error(getErrorMessage(error));
   }
 };
-
-export default deleteSpecial;

@@ -37,20 +37,18 @@ const WeekCalendar: React.FC<IWeekCardProps> = ({ prediction }) => {
               >
                 <h3 className="text-lg">{day}</h3>
                 <CardDescription
-                  className={`flex flex-col justify-start items-start`}
+                  className={`flex flex-col justify-start items-start text-sm`}
                 >
-                  <h3 className="text-sm">
-                    $
-                    {prediction[
-                      day.toLowerCase() as keyof IPrediction
-                    ]?.morning?.toFixed(2)}
-                  </h3>
-                  <h3 className="text-sm">
-                    $
-                    {prediction[
-                      day.toLowerCase() as keyof IPrediction
-                    ]?.night?.toFixed(2)}
-                  </h3>
+                  $
+                  {prediction[
+                    day.toLowerCase() as keyof IPrediction
+                  ]?.morning?.toFixed(2)}
+                </CardDescription>
+                <CardDescription className="flex flex-col justify-start items-start text-sm">
+                  $
+                  {prediction[
+                    day.toLowerCase() as keyof IPrediction
+                  ]?.night?.toFixed(2)}
                 </CardDescription>
               </div>
             );

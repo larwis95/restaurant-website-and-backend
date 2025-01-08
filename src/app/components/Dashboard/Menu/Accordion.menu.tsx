@@ -12,10 +12,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { AddItemForm, AddMenuCategoryForm } from "../Form";
 import { putMutationForItem } from "@/lib/mutations/item/put.item";
-import { deleteMutationForItem } from "@/lib/mutations/item/delete.item";
 import { putMutatiuonForMenu } from "@/lib/mutations/menu/put.menu";
+import { deleteMutationForItem } from "@/lib/mutations/item/delete.item";
 import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { fetchAllMenus } from "@/lib/queries/menu/get.menu";
@@ -23,6 +22,7 @@ import { LoadingSpinner } from "@/components/ui/loading";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Sortable from "./Sortable.menu";
+import { Form } from "../Form";
 
 const MenuAccordion: React.FC = () => {
   const { isPending, data, error } = useQuery({
@@ -70,7 +70,18 @@ const MenuAccordion: React.FC = () => {
               Add a new category to the menu.
             </DialogDescription>
           </DialogHeader>
-          <AddMenuCategoryForm setModalOpen={setModalOpen} />
+          <Form.Root
+            itemType="menu"
+            mutationType="post"
+            onClose={() =>
+              setModalOpen({
+                addCategory: !modalOpen.addCategory,
+                addItem: false,
+              })
+            }
+          >
+            <Form.Input label="Name" type="text" value="" name="name" />
+          </Form.Root>
         </DialogContent>
       </Dialog>
       <Accordion type="single" className="w-full" collapsible>
@@ -102,10 +113,37 @@ const MenuAccordion: React.FC = () => {
                           Add a new item to {category.name}.
                         </DialogDescription>
                       </DialogHeader>
-                      <AddItemForm
+                      <Form.Root
+                        itemType="item"
+                        mutationType="post"
+                        onClose={() =>
+                          setModalOpen({
+                            addCategory: false,
+                            addItem: !modalOpen.addItem,
+                          })
+                        }
                         category={category.name}
-                        setModalOpen={setModalOpen}
-                      />
+                      >
+                        <Form.Input
+                          label="Name"
+                          type="text"
+                          value=""
+                          name="name"
+                        />
+                        <Form.PriceInput
+                          label="Price"
+                          value={0}
+                          name="price"
+                          type="number"
+                        />
+                        <Form.TextArea
+                          label="Description"
+                          type="text"
+                          value=""
+                          name="description"
+                        />
+                        <Form.ImageSelector />
+                      </Form.Root>
                     </DialogContent>
                   </Dialog>
                 </div>

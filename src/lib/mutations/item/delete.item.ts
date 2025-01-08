@@ -1,9 +1,16 @@
 import getErrorMessage from "@/lib/getErrorMessage";
-import { DeleteResponse, ErrorResponse } from "../../api.types";
+import {
+  DeleteResponse,
+  ErrorResponse,
+  ItemResponse,
+  SuccessResponse,
+} from "../../api.types";
+import { IDeleteFunction } from "@/lib/api.interfaces";
 
-export const deleteMutationForItem = async (
-  _id: string
-): Promise<DeleteResponse | ErrorResponse> => {
+export const deleteMutationForItem: IDeleteFunction<
+  string,
+  ItemResponse
+> = async (_id: string) => {
   try {
     const response = await fetch(`/api/item`, {
       method: "DELETE",
@@ -12,7 +19,8 @@ export const deleteMutationForItem = async (
       },
       body: JSON.stringify({ _id }),
     });
-    const data: DeleteResponse | ErrorResponse = await response.json();
+    const data: SuccessResponse<ItemResponse> | ErrorResponse =
+      await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }

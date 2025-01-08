@@ -1,5 +1,4 @@
-import { putActiveSpecial } from "@/lib/mutations/specials/specials.put";
-import { postActiveSpecial } from "@/lib/mutations/specials/specials.post";
+import { putActiveSpecial } from "@/lib/mutations";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
@@ -7,7 +6,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ISpecialCheckboxProps } from "./Specials.interfaces";
-import { SpecialResponse } from "@/lib/api.types";
+import { ItemResponse } from "@/lib/api.types";
 import { useQueryClient } from "@tanstack/react-query";
 
 const SpecialsCheckBox: React.FC<ISpecialCheckboxProps> = ({
@@ -16,8 +15,8 @@ const SpecialsCheckBox: React.FC<ISpecialCheckboxProps> = ({
 }) => {
   const queryClient = useQueryClient();
   const putActiveSpecials = useMutation({
-    mutationFn: async (activeSpecials: SpecialResponse[]) => {
-      await putActiveSpecial({ specials: activeSpecials });
+    mutationFn: async (activeSpecials: ItemResponse[]) => {
+      await putActiveSpecial(activeSpecials);
     },
     onSuccess: () => {
       toast({

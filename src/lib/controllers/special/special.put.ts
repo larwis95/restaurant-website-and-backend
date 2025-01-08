@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Special, ActiveSpecials } from "@/models";
-import { ErrorResponse, SpecialResponse } from "../../api.types";
+import { ErrorResponse, ItemResponse, SpecialRequest } from "../../api.types";
 import getErrorMessage from "@/lib/getErrorMessage";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import databaseConnection from "@/lib/db";
@@ -8,7 +8,7 @@ import databaseConnection from "@/lib/db";
 const putSpecial = async (
   req: NextRequest,
   context: { params: Params }
-): Promise<NextResponse<SpecialResponse | ErrorResponse>> => {
+): Promise<NextResponse<SpecialRequest | ErrorResponse>> => {
   try {
     await databaseConnection();
     const { name, description, image, price } = await req.json();
@@ -39,11 +39,11 @@ const putSpecial = async (
 
 export const putActiveSpecial = async (
   req: NextRequest
-): Promise<NextResponse<SpecialResponse[] | ErrorResponse>> => {
+): Promise<NextResponse<ItemResponse[] | ErrorResponse>> => {
   try {
     await databaseConnection();
     const { specials } = await req.json();
-    const checkActiveSpecial: SpecialResponse[] = await ActiveSpecials.find();
+    const checkActiveSpecial: ItemResponse[] = await ActiveSpecials.find();
     if (checkActiveSpecial.length === 0) {
       await ActiveSpecials.create({ specials });
       return NextResponse.json(specials, { status: 201 });
@@ -54,7 +54,6 @@ export const putActiveSpecial = async (
         specials,
       }
     ).populate("specials");
-
     if (!updatedActiveSpecial) {
       return NextResponse.json(
         { error: "Active special not updated" },

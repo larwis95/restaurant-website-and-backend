@@ -1,10 +1,10 @@
 import getErrorMessage from "@/lib/getErrorMessage";
-import { ErrorResponse, SpecialResponse } from "../../api.types";
+import { ErrorResponse, ItemResponse } from "../../api.types";
 
-const getSpecials = async (): Promise<SpecialResponse[]> => {
+const getSpecials = async (): Promise<ItemResponse[]> => {
   try {
     const response = await fetch("/api/special", { cache: "no-store" });
-    const data: SpecialResponse[] | ErrorResponse = await response.json();
+    const data: ItemResponse[] | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }
@@ -14,10 +14,10 @@ const getSpecials = async (): Promise<SpecialResponse[]> => {
   }
 };
 
-const getSpecialById = async (id: string): Promise<SpecialResponse> => {
+const getSpecialById = async (id: string): Promise<ItemResponse> => {
   try {
     const response = await fetch(`/api/special/${id}`);
-    const data: SpecialResponse | ErrorResponse = await response.json();
+    const data: ItemResponse | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }
@@ -27,11 +27,11 @@ const getSpecialById = async (id: string): Promise<SpecialResponse> => {
   }
 };
 
-const getSpecialsServerAction = async (): Promise<SpecialResponse[]> => {
+const getSpecialsServerAction = async (): Promise<ItemResponse[]> => {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   try {
     const response = await fetch(`${apiUrl}/special`);
-    const data: SpecialResponse[] | ErrorResponse = await response.json();
+    const data: ItemResponse[] | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }
@@ -41,10 +41,10 @@ const getSpecialsServerAction = async (): Promise<SpecialResponse[]> => {
   }
 };
 
-const getActiveSpecials = async (): Promise<SpecialResponse[]> => {
+const getActiveSpecials = async (): Promise<ItemResponse[]> => {
   try {
     const response = await fetch("/api/special/active");
-    const data: SpecialResponse[] | ErrorResponse = await response.json();
+    const data: ItemResponse[] | ErrorResponse = await response.json();
     if ("error" in data) {
       throw new Error(data.error);
     }
