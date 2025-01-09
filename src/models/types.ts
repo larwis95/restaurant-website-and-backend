@@ -37,3 +37,11 @@ export type SpecialSchema = {
 export type ActiveSpecialsSchema = {
   specials: SpecialSchema[];
 };
+
+export type ApplicationSchema = {
+  name: string;
+  about: string;
+  phone: string;
+  position: string;
+  email: string;
+};

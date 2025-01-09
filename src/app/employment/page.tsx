@@ -1,6 +1,6 @@
 import Section from "../components/Section";
 import Collage from "../components/Collage";
-import makingPizza from "../../../public/images/728CD99A-D369-481C-9CCC-4CA6FB791574.webp";
+import makingPizza from "../../../public/images/DSC_6654.webp";
 import transaction from "../../../public/images/transaction.webp";
 import team from "../../../public/images/DSC_6549.webp";
 import kitchen from "../../../public/images/DSC_7225.webp";
@@ -26,9 +26,11 @@ const EmploymentPage: React.FC = () => {
     },
   ];
   return (
-    <div className="w-full flex flex-col pt-24 overflow-x-hidden">
-      <Section className="w-full h-fit flex flex-col justify-center items-start">
+    <div className="w-full flex flex-col pt-24 overflow-x-hidden xl:px-24 md:px-12 sm:px-6">
+      <Section className="w-full flex flex-col justify-center items-start">
         <Collage photos={photos} />
+      </Section>
+      <Section className="w-full h-fit flex flex-col justify-center items-center">
         <EmploymentForm />
       </Section>
     </div>

@@ -4,7 +4,6 @@ import LayoutGrid from "./Menu.LayoutGrid";
 import MenuCard from "../Cards/Menu.Cards";
 import { useContext } from "react";
 import Section from "../Section";
-import SelectedCard from "../Cards/SelectedCard";
 
 const MenuSection = () => {
   const { menu } = useContext(MenuContext);

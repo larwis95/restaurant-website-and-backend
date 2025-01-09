@@ -14,24 +14,26 @@ import {
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
+type FormState = {
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+  about: string;
+  id: string;
+};
 interface IComboBoxProps {
   positions: Array<{ value: string; label: string }>;
+  onChange: Dispatch<SetStateAction<FormState>>;
 }
 
-const ComboBox: React.FC<IComboBoxProps> = ({ positions }) => {
+const ComboBox: React.FC<IComboBoxProps> = ({ positions, onChange }) => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   return (
     <>
-      <input
-        type="text"
-        value={value}
-        name="position"
-        readOnly
-        className="hidden"
-      />
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -63,7 +65,15 @@ const ComboBox: React.FC<IComboBoxProps> = ({ positions }) => {
         </PopoverTrigger>
         <PopoverContent className="w-[200px] p-0">
           <Command>
-            <CommandInput placeholder="Search for a position" />
+            <CommandInput
+              placeholder="Search for a position"
+              onValueChange={(search) => {
+                onChange((prev) => {
+                  return { ...prev, position: search };
+                });
+                setValue(search);
+              }}
+            />
             <CommandList>
               <CommandEmpty>No positions found</CommandEmpty>
               <CommandGroup>
@@ -72,7 +82,10 @@ const ComboBox: React.FC<IComboBoxProps> = ({ positions }) => {
                     key={position.value}
                     value={position.value}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
+                      onChange((prev) => {
+                        return { ...prev, position: currentValue };
+                      });
+                      setValue(currentValue);
                       setOpen(false);
                     }}
                     className={`${position.value === value ? "border-2 border-green-600" : ""} transition duration-500 `}

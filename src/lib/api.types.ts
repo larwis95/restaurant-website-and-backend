@@ -162,3 +162,20 @@ export type MenuRequest = {
   name: string;
   items: ItemResponse[];
 };
+
+export type ApplicationRequest = {
+  name: string;
+  about: string;
+  phone: string;
+  position: string;
+  email: string;
+};
+
+export type ApplicationResponse = {
+  _id: string;
+  name: string;
+  about: string;
+  phone: string;
+  position: string;
+  email: string;
+};

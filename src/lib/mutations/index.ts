@@ -9,6 +9,9 @@ import { deleteMutationForItem } from "./item/delete.item";
 import { addSale } from "./sales/post.sales";
 import { updateSale } from "./sales/put.sales";
 import { deleteSaleByDate } from "./sales/delete.sales";
+import { postMutationForApplication } from "./application/post.application";
+import { putMutationForApplication } from "./application/put.application";
+import { deleteMutationForApplication } from "./application/delete.application";
 
 export {
   postMutationForMenu,
@@ -24,4 +27,7 @@ export {
   addSale,
   updateSale,
   deleteSaleByDate,
+  postMutationForApplication,
+  putMutationForApplication,
+  deleteMutationForApplication,
 };

@@ -21,6 +21,7 @@ const SelectedCard = forwardRef<HTMLDivElement, IMenuCardProps>(
     const handleOutSideClick = (e: React.MouseEvent) => {
       setSelected(null);
       document.body.style.overflow = "auto";
+      document.body.style.overflowX = "hidden";
     };
 
     return (
