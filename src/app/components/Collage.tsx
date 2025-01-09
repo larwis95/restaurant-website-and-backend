@@ -8,38 +8,20 @@ interface ICollageProps {
 
 const Collage: React.FC<ICollageProps> = ({ photos }) => {
   return (
-    <div className="w-full h-[200svh] xl:h-fit lg:h-fit md:h-fit sm:h-[200svh] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 items-center max-w-7xl gap-4">
-      {photos.map((photo, index) => (
-        <motion.div
-          key={index}
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.4 }}
-          className="w-full h-full relative rounded-lg overflow-hidden"
-        >
-          <Image
-            src={photo.src}
-            alt={photo.alt}
-            className="w-full h-full  object-cover object-top"
-          />
-        </motion.div>
-      ))}
-      <motion.h2
-        className="text-3xl text-secondary font-bold p-4 text-nowrap"
-        initial={{
-          opacity: 0,
-          y: 50,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          delay: photos.length * 0.4,
-        }}
-      >
-        Join Our Team
-      </motion.h2>
+    <div className="flex flex-col flex-wrap w-full h-full items-stretch justify-center">
+      <div className="grid xl:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-1 items-stretch">
+        {photos.map((photo, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.4 }}
+            className="relative rounded-lg overflow-hidden"
+          >
+            <Image src={photo.src} alt={photo.alt} height={400} />
+          </motion.div>
+        ))}
+      </div>
     </div>
   );
 };
