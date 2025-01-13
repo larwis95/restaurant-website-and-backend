@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { Application } from "@/models";
 import { ApplicationResponse } from "@/lib/api.types";
 import databaseConnection from "@/lib/db";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
-const putApplication = async (req: NextRequest) => {
+const putApplication = async (req: NextRequest, context: Params) => {
   const { body } = await req.json();
-  const { _id, name, email, phone, about, position } = body;
+  const { id: id } = context.params;
+  const { name, email, phone, about, position, status } = body;
 
-  if (!_id || !name || !email || !phone || !about || !position) {
+  if (!id || !name || !email || !phone || !about || !position || !status) {
     return NextResponse.json(
       { error: "Please provide all fields" },
       { status: 400 }
@@ -19,8 +21,8 @@ const putApplication = async (req: NextRequest) => {
   try {
     const application: ApplicationResponse | null =
       await Application.findByIdAndUpdate(
-        _id,
-        { name, email, phone, about, position },
+        id,
+        { name, email, phone, about, position, status },
         { new: true }
       );
 

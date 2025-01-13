@@ -7,7 +7,9 @@ import databaseConnection from "@/lib/db";
 export const getAllApplications = async (req: NextRequest) => {
   await databaseConnection();
   try {
-    const applications: ApplicationResponse[] = await Application.find();
+    const applications: ApplicationResponse[] = await Application.find({
+      sort: { createdAt: -1 },
+    });
     return NextResponse.json(applications, { status: 200 });
   } catch (error) {
     return NextResponse.json(
@@ -22,7 +24,7 @@ export const getApplicationById = async (
   context: { params: Params }
 ) => {
   const { id } = context.params;
-
+  console.log(id);
   if (!id) {
     return NextResponse.json({ error: "ID is required" }, { status: 400 });
   }
