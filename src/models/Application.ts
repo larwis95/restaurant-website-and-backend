@@ -22,6 +22,10 @@ const applicationSchema = new Schema<ApplicationSchema>({
     type: String,
     required: true,
   },
+  status: {
+    type: String,
+    default: "unread",
+  },
 });
 
 export default mongoose.models.Application ||

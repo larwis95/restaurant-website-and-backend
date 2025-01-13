@@ -22,7 +22,7 @@ type FormState = {
   phone: string;
   position: string;
   about: string;
-  id: string;
+  _id: string;
 };
 interface IComboBoxProps {
   positions: Array<{ value: string; label: string }>;

@@ -44,4 +44,5 @@ export type ApplicationSchema = {
   phone: string;
   position: string;
   email: string;
+  status: "unread" | "read" | "pending" | "rejected";
 };

@@ -1,15 +1,59 @@
 "use client";
 import ComboBox from "./ComboBox";
 import { Button } from "@/components/ui/button";
-import emailjs from "@emailjs/browser";
-import { useState } from "react";
+import emailjs, { send } from "@emailjs/browser";
+import { useState, Dispatch, SetStateAction } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { postMutationForApplication } from "@/lib/mutations";
 import { toast } from "@/hooks/use-toast";
+import { set } from "mongoose";
+import { ApplicationResponse } from "@/lib/api.types";
+
+interface FormState {
+  name: string;
+  email: string;
+  phone: string;
+  position: string;
+  about: string;
+  _id: string;
+}
 
 const EmploymentForm = () => {
   const publicKey = "_FvnLE_owZ6NC5rlv";
   const serviceId = "service_9l8d7sf";
   const templateId = "template_7aaaqxo";
+
+  const [formState, setFormState] = useState<FormState>({
+    name: "",
+    email: "",
+    phone: "",
+    position: "",
+    about: "",
+    _id: "",
+  });
+
+  const [submitted, setSubmitted] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+
+  const { data, mutate } = useMutation({
+    mutationKey: ["postApplication"],
+    mutationFn: postMutationForApplication,
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: "Failed to submit application",
+        variant: "destructive",
+      });
+    },
+    onSuccess: async (result) => {
+      toast({
+        title: "Success",
+        description: "Application submitted successfully",
+      });
+      await sendEmail(result);
+    },
+  });
 
   const positions = [
     { value: "Front of House", label: "Front of House" },
@@ -18,18 +62,6 @@ const EmploymentForm = () => {
     { value: "Delivery", label: "Delivery" },
   ];
 
-  const [formState, setFormState] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    position: "",
-    about: "",
-    id: "",
-  });
-
-  const [submitted, setSubmitted] = useState(false);
-  const [isPending, setIsPending] = useState(false);
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -37,25 +69,35 @@ const EmploymentForm = () => {
     setFormState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { name, email, phone, position, about } = formState;
-
-    if (!name || !email || !phone || !position || !about) {
-      return toast({
+    setIsPending(true);
+    try {
+      mutate(formState);
+    } catch (error) {
+      toast({
         title: "Error",
-        description: "Please fill out all fields",
+        description: "Failed to submit application",
         variant: "destructive",
       });
     }
+  };
 
-    setIsPending(true);
+  const sendEmail = async (result: ApplicationResponse) => {
+    if (!result) return;
+    const { name, email, phone, position, about, _id } = result;
     try {
-      const updatedFormState = { ...formState, id: Date.now().toString() };
       const emailResponse = await emailjs.send(
         serviceId,
         templateId,
-        updatedFormState,
+        {
+          name,
+          email,
+          phone,
+          position,
+          about,
+          id: _id,
+        },
         publicKey
       );
 

@@ -1,4 +1,4 @@
 export type Tab = {
   name: string;
-  href: string;
+  page: JSX.Element;
 };

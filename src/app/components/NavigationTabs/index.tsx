@@ -18,7 +18,7 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ tabs }) => {
       <TabsList>
         {tabs.map((tab) => (
           <TabsTrigger
-            key={tab.href}
+            key={tab.name}
             value={tab.name}
             data-state={
               activeTab

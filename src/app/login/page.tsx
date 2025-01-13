@@ -12,7 +12,7 @@ const Login: React.FC = () => {
     if (session) {
       router.push("/dashboard");
     }
-  }, [session]);
+  }, [session, router]);
   return (
     <div className="w-full h-fit flex flex-col items-center pt-24 p-4 overflow-x-hidden">
       <Section className="flex flex-col w-fit p-6 border border-border rounded-sm h-fit bg-slate-900">

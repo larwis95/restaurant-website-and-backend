@@ -4,8 +4,7 @@ import { ApplicationResponse } from "@/lib/api.types";
 import databaseConnection from "@/lib/db";
 
 const postApplication = async (req: NextRequest) => {
-  const { body } = await req.json();
-  const { name, email, phone, about, position } = body;
+  const { name, email, phone, about, position } = await req.json();
 
   if (!name || !email || !phone || !about || !position) {
     return NextResponse.json(

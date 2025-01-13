@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Application } from "@/models";
 import databaseConnection from "@/lib/db";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
-const deleteApplication = async (req: NextRequest) => {
-  const { body } = await req.json();
-  const { _id } = body;
+const deleteApplication = async (req: NextRequest, context: Params) => {
+  const { id } = context.params;
 
-  if (!_id) {
+  if (!id) {
     return NextResponse.json({ error: "ID is required" }, { status: 400 });
   }
 
   await databaseConnection();
 
   try {
-    const application = await Application.findByIdAndDelete(_id);
+    const application = await Application.findByIdAndDelete(id);
 
     if (!application) {
       return NextResponse.json(
