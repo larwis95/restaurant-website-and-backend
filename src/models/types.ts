@@ -45,4 +45,5 @@ export type ApplicationSchema = {
   position: string;
   email: string;
   status: "unread" | "read" | "pending" | "rejected";
+  createdAt: Date;
 };

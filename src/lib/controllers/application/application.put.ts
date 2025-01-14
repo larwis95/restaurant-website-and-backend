@@ -5,26 +5,18 @@ import databaseConnection from "@/lib/db";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 
 const putApplication = async (req: NextRequest, context: Params) => {
-  const { body } = await req.json();
-  const { id: id } = context.params;
-  const { name, email, phone, about, position, status } = body;
+  const body = await req.json();
+  const { id } = context.params;
 
-  if (!id || !name || !email || !phone || !about || !position || !status) {
-    return NextResponse.json(
-      { error: "Please provide all fields" },
-      { status: 400 }
-    );
+  if (!body) {
+    return NextResponse.json({ error: "Body is required" }, { status: 400 });
   }
 
   await databaseConnection();
 
   try {
     const application: ApplicationResponse | null =
-      await Application.findByIdAndUpdate(
-        id,
-        { name, email, phone, about, position, status },
-        { new: true }
-      );
+      await Application.findByIdAndUpdate(id, { ...body }, { new: true });
 
     if (!application) {
       return NextResponse.json(

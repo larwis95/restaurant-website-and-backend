@@ -6,30 +6,35 @@ import MenuPage from "./dashboard.menu";
 import SpecialPage from "./dashboard.specials";
 import ApplicationPage from "./dashboard.applications";
 import { AnimatePresence } from "framer-motion";
+import { useMemo } from "react";
 
 const DashboardPage: React.FC = () => {
   const searchParams = useSearchParams();
-  const tabs = [
-    { name: "Sales", page: <SalesPage /> },
-    { name: "Menu", page: <MenuPage /> },
-    { name: "Specials", page: <SpecialPage /> },
-    { name: "Applications", page: <ApplicationPage /> },
-  ];
+  const activeTab = searchParams.get("tab");
 
-  const renderPage = () => {
-    const pageMap = new Map<string, JSX.Element>(
-      tabs.map((tab) => [tab.name, tab.page])
+  const tabs = useMemo(
+    () => [
+      { name: "Sales", page: <SalesPage /> },
+      { name: "Menu", page: <MenuPage /> },
+      { name: "Specials", page: <SpecialPage /> },
+      { name: "Applications", page: <ApplicationPage /> },
+    ],
+    []
+  );
+
+  const renderPage = useMemo(() => {
+    const activePage = tabs.find(
+      (tab) => tab.name.toLowerCase() === activeTab?.toLowerCase()
     );
-    const activeTab = searchParams.get("tab");
-    return pageMap.get(activeTab ? activeTab : "Sales") as JSX.Element;
-  };
+    return activePage ? activePage.page : tabs[0].page;
+  }, [activeTab, tabs]);
 
   return (
     <div className="w-full h-fit flex flex-col pt-24 pb-1 overflow-x-hidden">
       <div className="flex w-full flex-row justify-center items-center p-4">
         <NavigationTabs tabs={tabs} />
       </div>
-      <AnimatePresence mode="wait">{renderPage()}</AnimatePresence>
+      <AnimatePresence mode="wait">{renderPage}</AnimatePresence>
     </div>
   );
 };

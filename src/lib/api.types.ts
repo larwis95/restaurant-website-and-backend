@@ -164,11 +164,14 @@ export type MenuRequest = {
 };
 
 export type ApplicationRequest = {
+  _id?: string;
   name: string;
   about: string;
   phone: string;
   position: string;
   email: string;
+  createdAt?: Date;
+  status?: "unread" | "read" | "pending" | "rejected";
 };
 
 export type ApplicationResponse = {
@@ -178,4 +181,6 @@ export type ApplicationResponse = {
   phone: string;
   position: string;
   email: string;
+  createdAt: Date;
+  status: "unread" | "read" | "pending" | "rejected";
 };
