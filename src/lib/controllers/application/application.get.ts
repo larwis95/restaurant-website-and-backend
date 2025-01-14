@@ -7,9 +7,7 @@ import databaseConnection from "@/lib/db";
 export const getAllApplications = async (req: NextRequest) => {
   await databaseConnection();
   try {
-    const applications: ApplicationResponse[] = await Application.find({
-      sort: { createdAt: -1 },
-    });
+    const applications: ApplicationResponse[] = await Application.find();
     return NextResponse.json(applications, { status: 200 });
   } catch (error) {
     return NextResponse.json(

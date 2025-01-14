@@ -11,7 +11,7 @@ export const putMutationForApplication: IPutFunction<
   ApplicationResponse
 > = async (application: ApplicationRequest) => {
   try {
-    const response = await fetch(`/api/application`, {
+    const response = await fetch(`/api/application/${application._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

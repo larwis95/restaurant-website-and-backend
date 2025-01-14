@@ -26,6 +26,10 @@ const applicationSchema = new Schema<ApplicationSchema>({
     type: String,
     default: "unread",
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export default mongoose.models.Application ||

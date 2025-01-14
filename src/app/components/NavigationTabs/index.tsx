@@ -7,6 +7,7 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ tabs }) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const activeTab = searchParams.get("tab");
+
   const handleTabChange = (href: string) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", href);
@@ -29,7 +30,7 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ tabs }) => {
                   ? "active"
                   : "inactive"
             }
-            onClick={() => handleTabChange(tab.name)}
+            onClick={() => handleTabChange(tab.name.toLowerCase())}
           >
             {tab.name}
           </TabsTrigger>
