@@ -43,3 +43,6 @@ next-env.d.ts
 /src/lib/db/seedBaseUser.ts
 /src/lib/db/menuSeed.ts
 /src/lib/db/*.json
+
+.dependency-cruiser.js
+dependency-graph.svg

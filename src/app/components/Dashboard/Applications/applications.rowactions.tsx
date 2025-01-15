@@ -1,9 +1,22 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { putMutationForApplication } from "@/lib/mutations";
-import { Application } from "./applications.columns";
+import {
+  putMutationForApplication,
+  deleteMutationForApplication,
+} from "@/lib/mutations";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { toast } from "@/hooks/use-toast";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
+
+type Application = {
+  _id: string;
+  name: string;
+  position: string;
+  createdAt: Date;
+  status: "unread" | "read" | "pending" | "rejected";
+  email: string;
+  phone: string;
+  about: string;
+};
 
 export const RejectApplication = ({
   row,
@@ -82,4 +95,42 @@ export const ViewApplication = ({
   };
 
   return <DropdownMenuItem onClick={handleView}>View</DropdownMenuItem>;
+};
+
+export const DeleteApplication = ({
+  row,
+}: {
+  row: { original: Application };
+}) => {
+  const { _id, name } = row.original;
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation({
+    mutationKey: ["applications", _id],
+    mutationFn: deleteMutationForApplication,
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+      toast({
+        title: "Success",
+        description: `Application for ${name} has been deleted`,
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: `Failed to delete application for ${name}: ${error.message}`,
+        variant: "destructive",
+      });
+    },
+  });
+
+  return (
+    <DropdownMenuItem
+      onClick={() => {
+        mutate(_id);
+      }}
+      className="text-red-500"
+    >
+      Delete
+    </DropdownMenuItem>
+  );
 };

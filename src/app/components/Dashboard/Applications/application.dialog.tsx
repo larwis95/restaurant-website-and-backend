@@ -11,12 +11,16 @@ import {
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { getApplicationById } from "@/lib/queries/applications/get.applications";
-import { putMutationForApplication } from "@/lib/mutations";
+import {
+  putMutationForApplication,
+  deleteMutationForApplication,
+} from "@/lib/mutations";
 import { useSearchParams, useRouter } from "next/navigation";
 import titleCase from "@/lib/helpers/titleCase";
 import { LoadingSpinner } from "@/components/ui/loading";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { UTCDate } from "@date-fns/utc";
 
 export const ApplicationDialog = ({ id }: { id: string }) => {
   const queryClient = useQueryClient();
@@ -28,6 +32,14 @@ export const ApplicationDialog = ({ id }: { id: string }) => {
   const { mutate } = useMutation({
     mutationKey: ["applications", id],
     mutationFn: putMutationForApplication,
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
+
+  const { mutate: deleteApplication } = useMutation({
+    mutationKey: ["applications", id],
+    mutationFn: deleteMutationForApplication,
     onSuccess: () => {
       queryClient.invalidateQueries();
     },
@@ -92,7 +104,7 @@ export const ApplicationDialog = ({ id }: { id: string }) => {
           <DialogDescription>
             {data
               ? "Application received: " +
-                format(data.createdAt, "MM/dd/yyyy h:mm a")
+                format(new UTCDate(data.createdAt), "MM/dd/yyyy h:mm a")
               : "Loading..."}
           </DialogDescription>
           {renderStatus()}
@@ -130,6 +142,16 @@ export const ApplicationDialog = ({ id }: { id: string }) => {
             className="text-red-500 border-red-500 hover:bg-red-500 hover:text-white transition duration-500"
           >
             Reject
+          </Button>
+          <Button
+            onClick={() => {
+              deleteApplication(id);
+              handleDialogClose();
+            }}
+            variant="outline"
+            className="text-red-500 border-red-500 hover:bg-red-500 hover:text-white transition duration-500"
+          >
+            Delete
           </Button>
         </DialogFooter>
       </DialogContent>

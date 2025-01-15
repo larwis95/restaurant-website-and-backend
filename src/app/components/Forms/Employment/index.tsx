@@ -1,13 +1,12 @@
 "use client";
 import ComboBox from "./ComboBox";
 import { Button } from "@/components/ui/button";
-import emailjs, { send } from "@emailjs/browser";
-import { useState, Dispatch, SetStateAction } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import emailjs from "@emailjs/browser";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { postMutationForApplication } from "@/lib/mutations";
 import { toast } from "@/hooks/use-toast";
-import { set } from "mongoose";
 import { ApplicationResponse } from "@/lib/api.types";
 
 interface FormState {
@@ -20,9 +19,19 @@ interface FormState {
 }
 
 const EmploymentForm = () => {
-  const publicKey = "_FvnLE_owZ6NC5rlv";
-  const serviceId = "service_9l8d7sf";
-  const templateId = "template_7aaaqxo";
+  const production = process.env.NODE_ENV === "production";
+
+  const keys = production
+    ? {
+        serviceId: "service_9l8d7sf",
+        templateId: "template_7aaaqxo",
+        publicKey: "_FvnLE_owZ6NC5rlv",
+      }
+    : {
+        serviceId: "portfolio_contact",
+        templateId: "template_ksu85kb",
+        publicKey: "p4TYc78A-HIpcGYZU",
+      };
 
   const [formState, setFormState] = useState<FormState>({
     name: "",
@@ -36,10 +45,10 @@ const EmploymentForm = () => {
   const [submitted, setSubmitted] = useState(false);
   const [isPending, setIsPending] = useState(false);
 
-  const { data, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationKey: ["postApplication"],
     mutationFn: postMutationForApplication,
-    onError: (error) => {
+    onError: () => {
       toast({
         title: "Error",
         description: "Failed to submit application",
@@ -72,15 +81,7 @@ const EmploymentForm = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsPending(true);
-    try {
-      mutate(formState);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to submit application",
-        variant: "destructive",
-      });
-    }
+    mutate(formState);
   };
 
   const sendEmail = async (result: ApplicationResponse) => {
@@ -88,8 +89,8 @@ const EmploymentForm = () => {
     const { name, email, phone, position, about, _id } = result;
     try {
       const emailResponse = await emailjs.send(
-        serviceId,
-        templateId,
+        keys.serviceId,
+        keys.templateId,
         {
           name,
           email,
@@ -98,7 +99,7 @@ const EmploymentForm = () => {
           about,
           id: _id,
         },
-        publicKey
+        keys.publicKey
       );
 
       if (emailResponse.status === 200) {
@@ -110,7 +111,7 @@ const EmploymentForm = () => {
       } else {
         throw new Error("Failed to submit");
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Application failed to submit",
@@ -121,21 +122,19 @@ const EmploymentForm = () => {
     }
   };
 
+  const renderSubmitText = () => {
+    if (isPending) return "Submitting...";
+    if (submitted) return "Submitted";
+    return "Submit";
+  };
+
   return (
     <>
       <motion.h2
         className="text-3xl text-secondary font-bold p-4 text-nowrap"
-        initial={{
-          opacity: 0,
-          y: 50,
-        }}
-        animate={{
-          opacity: 1,
-          y: 0,
-        }}
-        transition={{
-          delay: 4 * 0.4,
-        }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.6 }}
       >
         Join Our Team
       </motion.h2>
@@ -182,8 +181,7 @@ const EmploymentForm = () => {
           className="border-secondary hover:border-green-600 hover:text-green-600"
           disabled={isPending || submitted}
         >
-          {isPending ? "Submitting..." : "Submit"}
-          {submitted && "✔️"}
+          {renderSubmitText()}
         </Button>
       </form>
     </>

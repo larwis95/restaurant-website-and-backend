@@ -11,7 +11,7 @@ export const deleteMutationForApplication: IDeleteFunction<
   ApplicationResponse
 > = async (_id: string) => {
   try {
-    const response = await fetch(`/api/application`, {
+    const response = await fetch(`/api/application/${_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
