@@ -23,10 +23,10 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ tabs }) => {
             value={tab.name}
             data-state={
               activeTab
-                ? activeTab === tab.name
+                ? activeTab.toLowerCase() === tab.name.toLowerCase()
                   ? "active"
                   : "inactive"
-                : tab.name === tabs[0].name
+                : tab.name.toLowerCase() === tabs[0].name.toLowerCase()
                   ? "active"
                   : "inactive"
             }

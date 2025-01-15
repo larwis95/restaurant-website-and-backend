@@ -23,10 +23,7 @@ const ApplicationPage = () => {
   const renderTable = () => {
     if (!data) return null;
     if (data === undefined) return null;
-    const filteredData = data.filter(
-      (app: Application) => app.status === "unread" || app.status === "read"
-    );
-    return <DataTable columns={columns} data={filteredData} />;
+    return <DataTable columns={columns} data={data} />;
   };
 
   return (
