@@ -9,7 +9,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { getApplicationById } from "@/lib/queries/applications/get.applications";
 import {
   putMutationForApplication,
@@ -22,14 +22,21 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { UTCDate } from "@date-fns/utc";
 
-export const ApplicationDialog = ({ id }: { id: string }) => {
+interface ApplicationDialogProps {
+  id: string;
+}
+
+const ApplicationDialog: React.FC<ApplicationDialogProps> = ({ id }) => {
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const { isPending, data, error } = useQuery({
     queryKey: ["application", id],
     queryFn: () => getApplicationById(id),
   });
 
-  const { mutate } = useMutation({
+  const { mutate: updateApplication } = useMutation({
     mutationKey: ["applications", id],
     mutationFn: putMutationForApplication,
     onSuccess: () => {
@@ -42,69 +49,67 @@ export const ApplicationDialog = ({ id }: { id: string }) => {
     mutationFn: deleteMutationForApplication,
     onSuccess: () => {
       queryClient.invalidateQueries();
+      handleDialogClose();
     },
   });
 
   useEffect(() => {
     if (data && data.status === "unread") {
-      mutate({ ...data, status: "read" });
+      updateApplication({ ...data, status: "read" });
     }
-  }, [data, mutate]);
+  }, [data, updateApplication]);
 
-  const searchParams = useSearchParams();
   const searchParamsId = searchParams.get("id");
-  const router = useRouter();
-
   const dialogOpen = searchParamsId !== null && searchParamsId === id;
 
-  const handleDialogClose = () => {
+  const handleDialogClose = useCallback(() => {
     const params = new URLSearchParams(searchParams.toString());
     params.delete("id");
     params.set("tab", "applications");
-    router.push("/dashboard" + "?" + params.toString(), { scroll: false });
-  };
+    router.push("/dashboard?" + params.toString(), { scroll: false });
+  }, [searchParams, router]);
 
-  const renderStatus = () => {
+  const handleStatusChange = useCallback(
+    (status: "pending" | "rejected") => {
+      if (data) {
+        updateApplication({ ...data, status });
+      }
+    },
+    [data, updateApplication]
+  );
+
+  const renderStatus = useCallback(() => {
     if (!data || error || isPending) return null;
-    let baseClass =
-      "transition duration-500 p-1 rounded-md w-fit text-bold border-2";
-    let className = "";
-    switch (data.status) {
-      case "unread":
-        className = cn(baseClass, "border-yellow-500 text-yellow-500");
-        break;
-      case "read":
-        className = cn(baseClass, "border-blue-500 text-blue-500");
-        break;
-      case "pending":
-        className = cn(baseClass, "border-green-500 text-green-500");
-        break;
-      case "rejected":
-        className = cn(baseClass, "border-red-500 text-red-500");
-        break;
-    }
-    return <span className={className}>{titleCase(data.status)}</span>;
-  };
 
-  const handleStatusChange = (status: "pending" | "rejected") => {
-    if (!data) return;
-    mutate({ ...data, status });
-  };
+    const baseClass =
+      "transition duration-500 p-1 rounded-md w-fit text-bold border-2";
+    const statusClasses = {
+      unread: "border-yellow-500 text-yellow-500",
+      read: "border-blue-500 text-blue-500",
+      pending: "border-green-500 text-green-500",
+      rejected: "border-red-500 text-red-500",
+    };
+
+    return (
+      <span className={cn(baseClass, statusClasses[data.status])}>
+        {titleCase(data.status)}
+      </span>
+    );
+  }, [data, error, isPending]);
 
   return (
     <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
-            {data ? titleCase(data.name) + "'s Application" : "Loading..."}
+            {data ? `${titleCase(data.name)}'s Application` : "Loading..."}
           </DialogTitle>
           <DialogDescription>
             {data ? data.position : "Loading..."}
           </DialogDescription>
           <DialogDescription>
             {data
-              ? "Application received: " +
-                format(new UTCDate(data.createdAt), "MM/dd/yyyy h:mm a")
+              ? `Application received: ${format(new UTCDate(data.createdAt), "MM/dd/yyyy h:mm a")}`
               : "Loading..."}
           </DialogDescription>
           {renderStatus()}
@@ -144,10 +149,7 @@ export const ApplicationDialog = ({ id }: { id: string }) => {
             Reject
           </Button>
           <Button
-            onClick={() => {
-              deleteApplication(id);
-              handleDialogClose();
-            }}
+            onClick={() => deleteApplication(id)}
             variant="outline"
             className="text-red-500 border-red-500 hover:bg-red-500 hover:text-white transition duration-500"
           >
@@ -158,3 +160,5 @@ export const ApplicationDialog = ({ id }: { id: string }) => {
     </Dialog>
   );
 };
+
+export default ApplicationDialog;
