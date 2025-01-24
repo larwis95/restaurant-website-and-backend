@@ -5,11 +5,8 @@ import { useSearchParams } from "next/navigation";
 import Section from "../components/Section";
 import { DataTable } from "../components/Dashboard/Applications/applications.table";
 import { LoadingSpinner } from "@/components/ui/loading";
-import {
-  Application,
-  columns,
-} from "../components/Dashboard/Applications/applications.columns";
-import { ApplicationDialog } from "../components/Dashboard/Applications/application.dialog";
+import { columns } from "../components/Dashboard/Applications/applications.columns";
+import ApplicationDialog from "../components/Dashboard/Applications/application.dialog";
 
 const ApplicationPage = () => {
   const searchParams = useSearchParams();

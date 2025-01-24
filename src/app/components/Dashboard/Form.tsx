@@ -116,7 +116,11 @@ const Root: FC<IFormProps> = ({
       item = formData.date.toString();
     if (typeof formData === "object" && "name" in formData)
       item = formData.name;
-    return `${titleCase(itemType)}: ${typeof formData === "object" && !("date" in formData) ? titleCase(item) : format(new UTCDate(item), "MM/dd/yyyy")} ${mutationType === "put" ? "updat" : "add"}ed successfully`;
+    return `${titleCase(itemType)}: ${
+      typeof formData === "object" && !("date" in formData)
+        ? titleCase(item)
+        : format(new UTCDate(item), "MM/dd/yyyy")
+    } ${mutationType === "put" ? "updated" : "added"} successfully`;
   };
 
   const mutationFunc = mutationMap[mutationType][itemType];
@@ -173,7 +177,7 @@ const Root: FC<IFormProps> = ({
 };
 
 const Input: FC<IInputProps> = ({ label, type, value, name, required }) => {
-  const { formData, handleChange } = useContext(FormContext);
+  const { handleChange } = useContext(FormContext);
   const [inputValue, setInputValue] = useState<string | number>(value);
 
   return (
@@ -204,13 +208,11 @@ const DatePicker: FC<IDatePicker> = ({
   allowPicker,
   required,
 }) => {
-  const { formData, handleChange } = useContext(FormContext);
+  const { handleChange } = useContext(FormContext);
   const renderDate = (): string => {
     if (!value) return format(new UTCDate(), "yyyy-MM-dd");
-    if (typeof formData === "string") return "";
-    if (typeof formData === "object" && "date" in formData)
-      return format(new UTCDate(formData.date), "yyyy-MM-dd");
-    return "";
+    if (typeof value === "string") return value;
+    return format(new UTCDate(value), "yyyy-MM-dd");
   };
   const [inputValue, setInputValue] = useState<string | number | undefined>(
     renderDate()
@@ -235,16 +237,14 @@ const DatePicker: FC<IDatePicker> = ({
   );
 };
 
-const TextArea: FC<IInputProps> = ({ label, type, value, name, required }) => {
-  const { formData, handleChange } = useContext(FormContext);
+const TextArea: FC<IInputProps> = ({ label, value, name, required }) => {
+  const { handleChange } = useContext(FormContext);
 
   return (
     <div className="flex flex-col justify-start items-start gap-1">
       <label>{label}</label>
       <textarea
-        value={
-          typeof formData === "object" ? (formData as any)[name] : formData
-        }
+        value={value}
         id={name}
         onChange={(e) => handleChange(e, name)}
         className="border border-border rounded-md p-2 bg-primary text-white hover:cursor-pointer hover:border-secondary hover:bg-slate-700 transition duration-500 focus:bg-slate-600 focus:border-x-green-600 focus:border-y-green-600 w-fit"
@@ -395,7 +395,11 @@ const ImageSelector: FC = () => {
                 alt={image}
                 width={80}
                 height={80}
-                className={`cursor-pointer ${selectedImage === index ? "border border-green-600 pointer-events-none cursor-auto" : "hover:scale-105 hover:border-secondary border border-border transition-all duration-500"}`}
+                className={`cursor-pointer ${
+                  selectedImage === index
+                    ? "border border-green-600 pointer-events-none cursor-auto"
+                    : "hover:scale-105 hover:border-secondary border border-border transition-all duration-500"
+                }`}
                 onClick={() => {
                   setFormData({ ...formData, image: image });
                   setSelectedImage(index);
