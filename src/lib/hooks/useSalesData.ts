@@ -5,13 +5,11 @@ import {
   fetchSalesForPreviousWeek,
   fetchSalesForYear,
 } from "../queries/sales/sales.get";
-import { getWeekOfMonth } from "date-fns";
 import { UseSalesResponse } from "./hooks.types";
 
 const currentMonth = new Date().getMonth();
 const currentYear = new Date().getFullYear();
 const month = currentMonth === 0 ? 12 : currentMonth - 1;
-const year = currentMonth === 0 ? currentYear - 1 : currentYear;
 
 const salesTypeMap = {
   currentWeek: async () => {
@@ -23,12 +21,12 @@ const salesTypeMap = {
   currentMonth: async () => {
     return await fetchSalesForMonth({
       year: currentYear,
-      month: currentMonth + 1,
+      month: currentMonth,
     });
   },
   prevMonth: async () => {
     return await fetchSalesForMonth({
-      year,
+      year: currentYear,
       month,
     });
   },
@@ -39,7 +37,7 @@ const salesTypeMap = {
   },
   prevYear: async () => {
     return await fetchSalesForYear({
-      year,
+      year: currentYear - 1,
     });
   },
 };
