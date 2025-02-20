@@ -96,7 +96,7 @@ const SalesTable = () => {
               <Form.DatePicker
                 label="Date"
                 type="date"
-                value=""
+                value={format(new UTCDate(), "yyyy-MM-dd")}
                 name="date"
                 allowPicker
               />

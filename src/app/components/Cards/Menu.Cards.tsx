@@ -12,7 +12,6 @@ import {
 } from "@/components/ui/card";
 import { renderPrice } from "@/lib/helpers/renderPrice";
 import SelectedCard from "./SelectedCard";
-import { set } from "mongoose";
 
 const MenuCard: React.FC<IMenuCardProps> = ({ item }) => {
   const { name, price, description, image } = item;
